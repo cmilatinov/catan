@@ -1,4 +1,6 @@
-package main;
+package display;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class DisplayMode {
 	
@@ -10,6 +12,7 @@ public class DisplayMode {
 			DisplayMode.CENTER,		// Center Y
 			DisplayMode.MAX_SIZE,	// Max width
 			DisplayMode.MAX_SIZE,	// Max height
+			GLFW_CURSOR_NORMAL,		// Normal cursor
 			false,					// Not decorated
 			true,					// Use VSYNC
 			false,					// Not always on top
@@ -21,6 +24,7 @@ public class DisplayMode {
 			DisplayMode.CENTER,		// Center Y
 			DisplayMode.MAX_SIZE,	// Max width
 			DisplayMode.MAX_SIZE,	// Max height
+			GLFW_CURSOR_NORMAL,		// Normal cursor
 			false,					// Not decorated
 			true,					// Use VSYNC
 			false,					// Not always on top
@@ -32,6 +36,7 @@ public class DisplayMode {
 			DisplayMode.CENTER, 	// Center Y
 			1280, 					// Width
 			720, 					// Height
+			GLFW_CURSOR_NORMAL,		// Normal cursor
 			true, 					// Decorated
 			true, 					// Use VSYNC
 			false,					// Not always on top
@@ -39,18 +44,21 @@ public class DisplayMode {
 		);
 	
 	private int x, y;
-	private int w, h;
+	private int width, height;
+	
+	private int cursorMode;
 	
 	private boolean decorated;
 	private boolean vsync;
 	private boolean alwaysOnTop;
 	private boolean fullscreen;
 	
-	public DisplayMode(int x, int y, int width, int height, boolean decorated, boolean vsync, boolean alwaysOnTop, boolean fullscreen) {
+	public DisplayMode(int x, int y, int width, int height, int cursorMode, boolean decorated, boolean vsync, boolean alwaysOnTop, boolean fullscreen) {
 		this.x = x;
 		this.y = y;
-		this.w = width;
-		this.h = height;
+		this.width = width;
+		this.height = height;
+		this.cursorMode = cursorMode;
 		this.decorated = decorated;
 		this.vsync = vsync;
 		this.alwaysOnTop = alwaysOnTop;
@@ -66,11 +74,15 @@ public class DisplayMode {
 	}
 	
 	public int getWidth() {
-		return w;
+		return width;
 	}
 	
 	public int getHeight() {
-		return h;
+		return height;
+	}
+	
+	public int getCursorMode() {
+		return cursorMode;
 	}
 	
 	public boolean isDecorated() {
@@ -87,6 +99,9 @@ public class DisplayMode {
 	
 	public boolean isFullscreen() {
 		return fullscreen;
+	}
+	public DisplayMode copy() {
+		return new DisplayMode(x, y, width, height, cursorMode, decorated, vsync, alwaysOnTop, fullscreen);
 	}
 	
 }

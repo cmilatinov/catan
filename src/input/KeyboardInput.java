@@ -1,29 +1,41 @@
 package input;
 
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.HashMap;
 
-import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+
+import display.Window;
 
 /**
  * Manages key input and assigns key callbacks.
  */
-public class KeyboardInput extends GLFWKeyCallback {
+public class KeyboardInput implements GLFWKeyCallbackI {
 
-	// Array holding booleans of each key to keep track of which one is being used
-	private static final boolean keys[] = new boolean[Short.MAX_VALUE * 2];
+	// The window from which to catch key events
+	private final Window window;
 
 	// Hash maps containing bindings for key presses and releases.
 	private final HashMap<Integer, KeyCallback> keyPressed = new HashMap<Integer, KeyCallback>();
 	private final HashMap<Integer, KeyCallback> keyReleased = new HashMap<Integer, KeyCallback>();
 
 	/**
+	 * Creates a new keyboard input object using the specified window as its parent.
+	 * 
+	 * @param window The window from which to catch key events.
+	 */
+	public KeyboardInput(Window window) {
+		this.window = window;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public void invoke(long window, int key, int scancode, int action, int mods) {
 
-		keys[key] = action != GLFW_RELEASE;
+		if (window != this.window.getHandle())
+			return;
 
 		if (keyReleased.get(key) != null && action == GLFW_RELEASE)
 			keyReleased.get(key).invoke(mods);
@@ -40,8 +52,8 @@ public class KeyboardInput extends GLFWKeyCallback {
 	 * @return [<b>boolean</b>] True if the specified key is being held down, false
 	 *         otherwise.
 	 */
-	public static boolean isKeyDown(int key) {
-		return keys[key];
+	public boolean isKeyDown(int key) {
+		return glfwGetKey(window.getHandle(), key) == GLFW_PRESS;
 	}
 
 	/**
