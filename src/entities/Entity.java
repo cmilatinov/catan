@@ -120,7 +120,7 @@ public class Entity {
 	 * Scales the entity by a percentage of its current size.
 	 * 
 	 * @param scale The floating point quantity by which to scale the entity.
-	 * @return [<b>void</b>]
+	 * @return [{@link Entity}] This same instance of the class.
 	 */
 	public Entity scale(float scale) {
 		this.scale *= scale;
