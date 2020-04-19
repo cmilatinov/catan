@@ -1,5 +1,7 @@
 package entities;
 
+import gameplay.Board;
+
 public class Building {
 
 	private enum Type {
@@ -29,6 +31,10 @@ public class Building {
 	
 	public Player getOwner() {
 		return this.owner;
+	}
+	
+	public void rewardOwner(Board.TileTypes tileType) {
+		this.owner.giveCards(tileType, getValue());
 	}
 	
 }

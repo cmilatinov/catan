@@ -7,6 +7,19 @@ import java.util.Random;
 import entities.Building;
 
 public class Board {
+	public enum TileTypes {
+		SHEEP,
+		ROCK,
+		BRICK,
+		WHEAT,
+		WOOD,
+		DESSERT;
+		
+		public static TileTypes getRandomType() {
+            Random random = new Random();
+            return values()[random.nextInt(values().length)];
+        }
+	}
 
 	private ArrayList<Tile> tiles;
 	
@@ -35,18 +48,7 @@ public class Board {
 	}
 	
 	public static class Tile {
-		private enum TileTypes {
-			SHEEP,
-			ROCK,
-			BRICK,
-			WHEAT,
-			DESSERT;
-			
-			public static TileTypes getRandomType() {
-	            Random random = new Random();
-	            return values()[random.nextInt(values().length)];
-	        }
-		}
+		
 		private TileTypes type;
 		private ArrayList<Vertex> vertices;
 		private int value;
@@ -64,7 +66,7 @@ public class Board {
 		public void rewardSettlers() {
 			vertices.forEach(v -> {
 				if(v.getBuilding() != null) {
-					v.getBuilding().getOwner();
+					v.getBuilding().rewardOwner(type);
 				}
 			});
 		}
