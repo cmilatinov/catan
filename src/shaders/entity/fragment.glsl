@@ -1,9 +1,11 @@
 #version 330 core
 
-in vec3 pass_pos;
+in vec2 pass_UV;
 
 out vec4 fragColor;
 
+uniform sampler2D tex;
+
 void main(void) {
-	fragColor = vec4(pass_pos, 1);
+	fragColor = texture(tex, pass_UV);
 }

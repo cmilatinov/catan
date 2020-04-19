@@ -32,8 +32,9 @@ import org.lwjgl.BufferUtils;
 
 import log.Logger;
 import main.Engine;
+import objects.GameObject;
 
-public abstract class Shader {
+public abstract class Shader implements GameObject {
 
 	// Shader types
 	private static final int SHADER_VERTEX = 0b1;
@@ -89,9 +90,13 @@ public abstract class Shader {
 		// Attach all shaders to the program.
 		glAttachShader(program, vertexShader);
 		glAttachShader(program, fragmentShader);
+		
+		// Bind the attributes used in the shader program.
+		bindAttributes();
 
 		// Link the program.
 		glLinkProgram(program);
+		glValidateProgram(program);
 
 		// Check linking status
 		IntBuffer status = BufferUtils.createIntBuffer(1);
@@ -289,10 +294,6 @@ public abstract class Shader {
 	 */
 	public void stop() {
 		glUseProgram(0);
-	}
-
-	public int getProgramID() {
-		return program;
 	}
 
 }

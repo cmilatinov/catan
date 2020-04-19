@@ -1,10 +1,13 @@
 package objects;
 
-public class Mesh {
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+
+public class Mesh implements GameObject {
 	
-	private VAO vao;
-	
-	private int vertexCount;
+	private final VAO vao;
+	private final int vertexCount;
 	
 	protected Mesh(VAO vao, int vertexCount) {
 		this.vao = vao;
@@ -17,6 +20,14 @@ public class Mesh {
 	
 	public int getVertexCount() {
 		return vertexCount;
+	}
+	
+	public void draw() {
+		glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+	}
+	
+	public void destroy() {
+		vao.destroy();
 	}
 	
 }

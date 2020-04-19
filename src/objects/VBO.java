@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL15.glGenBuffers;
 /**
  * Represents a Vertex Buffer Object (VBO).
  */
-public class VBO {
+public class VBO implements GameObject {
 
 	/**
 	 * The VBO's ID.
@@ -91,7 +91,7 @@ public class VBO {
 	/**
 	 * Deletes the VBO.
 	 */
-	public void delete() {
+	public void destroy() {
 		glDeleteBuffers(id);
 	}
 

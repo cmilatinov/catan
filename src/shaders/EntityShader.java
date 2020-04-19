@@ -1,6 +1,6 @@
 package shaders;
 
-public class StaticShader extends Shader {
+public class EntityShader extends Shader {
 	
 	private static final String VERTEX_FILE = "/shaders/entity/vertex.glsl";
 	private static final String FRAGMENT_FILE = "/shaders/entity/fragment.glsl";
@@ -11,12 +11,14 @@ public class StaticShader extends Shader {
 	
 	public final UniformMatrix4f projectionViewMatrix = new UniformMatrix4f("projViewMatrix");
 	public final UniformMatrix4f modelMatrix = new UniformMatrix4f("modelMatrix");
+	public final UniformInt textureSampler = new UniformInt("tex");
 
-	public StaticShader() {
+	public EntityShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		registerUniforms(
 				projectionViewMatrix,
-				modelMatrix
+				modelMatrix,
+				textureSampler
 			);
 	}
 

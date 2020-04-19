@@ -14,7 +14,7 @@ import input.MouseInput;
 
 public class CameraFPS extends Camera {
 	
-	private float speed = 10.0f;
+	private float speed = 3.0f;
 	
 	private KeyboardInput keyboard;
 	private MouseInput mouse;
@@ -24,7 +24,7 @@ public class CameraFPS extends Camera {
 		super(aspect, fov);
 		this.keyboard = keyboard;
 		this.mouse = mouse;
-		this.mouseCallback = this.mouse.setSensitivity(0.3f).registerMouseMoveCallback((double x, double y, double dx, double dy) -> 
+		this.mouseCallback = this.mouse.setSensitivity(0.2f).registerMouseMoveCallback((double x, double y, double dx, double dy) -> 
 			rotate(new Vector3f((float)dy, (float)dx, 0)));
 	}
 	

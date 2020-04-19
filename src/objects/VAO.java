@@ -16,7 +16,7 @@ import java.util.HashMap;
 /**
  * Represents a Vertex Array Object (VAO).
  */
-public class VAO {
+public class VAO implements GameObject {
 
 	/**
 	 * The VAO's ID.
@@ -177,9 +177,9 @@ public class VAO {
 	/**
 	 * Deletes the VAO and all VBOs used as attributes.
 	 */
-	public void delete() {
+	public void destroy() {
 		for (int key : attributes.keySet())
-			attributes.get(key).delete();
+			attributes.get(key).destroy();
 		glDeleteVertexArrays(id);
 	}
 

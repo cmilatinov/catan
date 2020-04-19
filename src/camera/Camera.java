@@ -5,7 +5,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public abstract class Camera {
+import objects.GameObject;
+
+public abstract class Camera implements GameObject {
 
 	private float aspect, fov;
 	
@@ -81,7 +83,7 @@ public abstract class Camera {
 		
 		Vector4f vec = transform.transform(new Vector4f(1, 0, 0, 1));
 
-		return new Vector3f(vec.x / vec.w, vec.y / vec.w, -vec.z / vec.w);
+		return new Vector3f(vec.x / vec.w, vec.y / vec.w, -vec.z / vec.w).normalize();
 	}
 	
 	public Vector3f right() {

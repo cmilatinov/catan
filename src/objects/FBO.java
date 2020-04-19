@@ -1,7 +1,9 @@
 package objects;
 
-public class FBO {
-	
-	
+public class FBO implements GameObject {
+		
+	public void destroy() {
+		
+	}
 	
 }
