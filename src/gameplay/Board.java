@@ -9,8 +9,6 @@ public class Board {
 	private ArrayList<Integer> tileNumbers = new ArrayList<Integer>();
 	
 	private final int BOARD_VERTICES = 54;
-	private final int BOARD_TILES = 19;
-	
 	private final int[] BOARD_TILES_PER_ROW = {3, 4, 5, 4, 3};
 	
 	public enum TileTypes {
@@ -126,6 +124,8 @@ public class Board {
 			
 			vertexIndex += vertexIndexConst;
 		}
+		
+		
 	}
 	
 	public int roll() {
@@ -141,81 +141,6 @@ public class Board {
 		
 		for(Tile t : tilesRolled) {
 			t.rewardSettlers();
-		}
-	}
-	
-	public static class Tile {
-		
-		private TileTypes type;
-		private ArrayList<Vertex> vertices;
-		private int value;
-		
-		public Tile() {
-			type = TileTypes.getRandomType();
-			value = (int)(Math.random()*12) + 1; 
-			vertices = new ArrayList<Vertex>();
-		}
-		
-		public Tile(TileTypes type) {
-			this.type = type;
-			this.value = (int)(Math.random()*12) + 1;
-			vertices = new ArrayList<Vertex>();
-		}
-		
-		public Tile(TileTypes type, int value) {
-			this.type = type;
-			this.value = value;
-			vertices = new ArrayList<Vertex>();
-		}
-		
-		public int getValue() {
-			return value;
-		}
-		
-		public void addVertex(Vertex v) {
-			vertices.add(v);
-		}
-		
-		public void setValue(int value) {
-			this.value = value;
-		}
-		
-		public TileTypes getType() {
-			return this.type;
-		}
-		
-		public void rewardSettlers() {
-			vertices.forEach(v -> {
-				if(v.getBuilding() != null) {
-					v.getBuilding().rewardOwner(type);
-				}
-			});
-		}
-		
-	}
-	
-	public static class Vertex {
-		private Building building;
-		private TileTypes port;
-		
-		public Vertex() {
-			
-		}
-		
-		public Building getBuilding() {
-			return building;
-		}
-		
-		public void setBuilding(Building building) {
-			this.building = building;
-		}
-		
-		public void upgradeBuilding() {
-			building.upgrade();
-		}
-		
-		public int getBuildingValue() {
-			return building.getValue();
 		}
 	}
 	

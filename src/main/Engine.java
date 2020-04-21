@@ -25,6 +25,7 @@ import camera.CameraFPS;
 import display.DisplayMode;
 import display.Window;
 import entities.Entity;
+import gameplay.Board;
 import lights.Light;
 import log.Logger;
 import objects.GameObject;
@@ -91,6 +92,9 @@ public class Engine {
 		Texture textureWheat = addObjectToCleanup(loader.loadTexture2D("tile_wheat.png", GL_LINEAR, true));
 		Texture textureBlue = addObjectToCleanup(loader.loadTexture2D("blue.png", GL_NEAREST, false));
 		
+		// Board shit
+		Board b = new Board();
+		
 		// Textured meshes
 		TexturedMesh modelTileBrick = new TexturedMesh(meshTile, textureBrick);
 		TexturedMesh modelTileDesert = new TexturedMesh(meshTile, textureDesert);
@@ -105,18 +109,18 @@ public class Engine {
 		
 		final float scale = 0.999f;
 		
-		Entity tile1 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0, 0, -5));
-		Entity tile1R = new Entity(modelTileDesert).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -5));
-		Entity tile1L = new Entity(modelTileForest).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -5));
-		
-		Entity tile2 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(0, 0, -2));
-		Entity tile2R = new Entity(modelTileStone).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -2));
-		Entity tile2L = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -2));
-		
-		Entity tile3 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0.866f, 0, -3.5f));
-		Entity tile4 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(3 * 0.866f, 0, -3.5f));
-		Entity tile5 = new Entity(modelTileStone).scale(scale).translate(new Vector3f(-0.866f, 0, -3.5f));
-		Entity tile6 = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-3 * 0.866f, 0, -3.5f));
+//		Entity tile1 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0, 0, -5));
+//		Entity tile1R = new Entity(modelTileDesert).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -5));
+//		Entity tile1L = new Entity(modelTileForest).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -5));
+//		
+//		Entity tile2 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(0, 0, -2));
+//		Entity tile2R = new Entity(modelTileStone).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -2));
+//		Entity tile2L = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -2));
+//		
+//		Entity tile3 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0.866f, 0, -3.5f));
+//		Entity tile4 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(3 * 0.866f, 0, -3.5f));
+//		Entity tile5 = new Entity(modelTileStone).scale(scale).translate(new Vector3f(-0.866f, 0, -3.5f));
+//		Entity tile6 = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-3 * 0.866f, 0, -3.5f));
 		
 		Entity road = new Entity(modelRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0.14f, -3.5f));
 		Entity settlement = new Entity(modelSettlement).scale(0.040f).translate(new Vector3f(0, 0.1f, -3));
@@ -148,18 +152,22 @@ public class Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Render
-			eRenderer.render(cam, tile1, sun);
-			eRenderer.render(cam, tile1R, sun);
-			eRenderer.render(cam, tile1L, sun);
+			// List of entities from Board
+			// for loop
 			
-			eRenderer.render(cam, tile2, sun);
-			eRenderer.render(cam, tile2R, sun);
-			eRenderer.render(cam, tile2L, sun);
-			
-			eRenderer.render(cam, tile3, sun);
-			eRenderer.render(cam, tile4, sun);
-			eRenderer.render(cam, tile5, sun);
-			eRenderer.render(cam, tile6, sun);
+			//eRenderer.render(cam, tile, sun);
+//			eRenderer.render(cam, tile1, sun);
+//			eRenderer.render(cam, tile1R, sun);
+//			eRenderer.render(cam, tile1L, sun);
+//			
+//			eRenderer.render(cam, tile2, sun);
+//			eRenderer.render(cam, tile2R, sun);
+//			eRenderer.render(cam, tile2L, sun);
+//			
+//			eRenderer.render(cam, tile3, sun);
+//			eRenderer.render(cam, tile4, sun);
+//			eRenderer.render(cam, tile5, sun);
+//			eRenderer.render(cam, tile6, sun);
 			
 			eRenderer.render(cam, road, sun);
 			
