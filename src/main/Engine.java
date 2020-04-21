@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
@@ -24,6 +25,7 @@ import camera.CameraFPS;
 import display.DisplayMode;
 import display.Window;
 import entities.Entity;
+import lights.Light;
 import log.Logger;
 import objects.GameObject;
 import objects.GameObjectFactory;
@@ -72,10 +74,55 @@ public class Engine {
 
 		// Load a cube
 		GameObjectFactory loader = new GameObjectFactory();
-		Mesh mesh = loader.loadOBJ("./models/cube.obj");
-		Texture texture = loader.loadTexture2D("diamond_ore.png", GL_NEAREST, true);
-		TexturedMesh model = addObjectToCleanup(new TexturedMesh(mesh, texture));
-		Entity cube = new Entity(model).scale(0.5f).rotate(new Vector3f(180, 0, 0)).translate(new Vector3f(0, 0, -5));
+		
+		// Meshes
+		Mesh meshTile = addObjectToCleanup(loader.loadOBJ("./models/tile.obj"));
+		Mesh meshRoad = addObjectToCleanup(loader.loadOBJ("./models/road.obj"));
+		Mesh meshSettlement = addObjectToCleanup(loader.loadOBJ("./models/settlement.obj"));
+		Mesh meshCity = addObjectToCleanup(loader.loadOBJ("./models/city.obj"));
+		Mesh meshRobber = addObjectToCleanup(loader.loadOBJ("./models/robber.obj"));
+		
+		// Textures
+		Texture textureBrick = addObjectToCleanup(loader.loadTexture2D("tile_brick.png", GL_LINEAR, true));
+		Texture textureDesert = addObjectToCleanup(loader.loadTexture2D("tile_desert.png", GL_LINEAR, true));
+		Texture textureForest = addObjectToCleanup(loader.loadTexture2D("tile_forest.png", GL_LINEAR, true));
+		Texture textureSheep = addObjectToCleanup(loader.loadTexture2D("tile_sheep.png", GL_LINEAR, true));
+		Texture textureStone = addObjectToCleanup(loader.loadTexture2D("tile_stone.png", GL_LINEAR, true));
+		Texture textureWheat = addObjectToCleanup(loader.loadTexture2D("tile_wheat.png", GL_LINEAR, true));
+		Texture textureBlue = addObjectToCleanup(loader.loadTexture2D("blue.png", GL_NEAREST, false));
+		
+		// Textured meshes
+		TexturedMesh modelTileBrick = new TexturedMesh(meshTile, textureBrick);
+		TexturedMesh modelTileDesert = new TexturedMesh(meshTile, textureDesert);
+		TexturedMesh modelTileForest =new TexturedMesh(meshTile, textureForest);
+		TexturedMesh modelTileSheep = new TexturedMesh(meshTile, textureSheep);
+		TexturedMesh modelTileStone = new TexturedMesh(meshTile, textureStone);
+		TexturedMesh modelTileWheat = new TexturedMesh(meshTile, textureWheat);
+		TexturedMesh modelRoad = new TexturedMesh(meshRoad, textureBlue);
+		TexturedMesh modelSettlement = new TexturedMesh(meshSettlement, textureBlue);
+		TexturedMesh modelCity = new TexturedMesh(meshCity, textureBlue);
+		TexturedMesh modelRobber = new TexturedMesh(meshRobber, textureBlue);
+		
+		final float scale = 0.999f;
+		
+		Entity tile1 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0, 0, -5));
+		Entity tile1R = new Entity(modelTileDesert).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -5));
+		Entity tile1L = new Entity(modelTileForest).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -5));
+		
+		Entity tile2 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(0, 0, -2));
+		Entity tile2R = new Entity(modelTileStone).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -2));
+		Entity tile2L = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -2));
+		
+		Entity tile3 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0.866f, 0, -3.5f));
+		Entity tile4 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(3 * 0.866f, 0, -3.5f));
+		Entity tile5 = new Entity(modelTileStone).scale(scale).translate(new Vector3f(-0.866f, 0, -3.5f));
+		Entity tile6 = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-3 * 0.866f, 0, -3.5f));
+		
+		Entity road = new Entity(modelRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0.14f, -3.5f));
+		Entity settlement = new Entity(modelSettlement).scale(0.040f).translate(new Vector3f(0, 0.1f, -3));
+		Entity city = new Entity(modelCity).scale(0.045f).translate(new Vector3f(0, 0.1f, -4));
+		
+		Light sun = new Light(new Vector3f(1, 1, 1), new Vector3f(300, 1000, 0));
 
 		// OpenGL stuff
 		glEnable(GL_DEPTH_TEST);
@@ -101,12 +148,28 @@ public class Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Render
-			eRenderer.render(cam, cube);
+			eRenderer.render(cam, tile1, sun);
+			eRenderer.render(cam, tile1R, sun);
+			eRenderer.render(cam, tile1L, sun);
+			
+			eRenderer.render(cam, tile2, sun);
+			eRenderer.render(cam, tile2R, sun);
+			eRenderer.render(cam, tile2L, sun);
+			
+			eRenderer.render(cam, tile3, sun);
+			eRenderer.render(cam, tile4, sun);
+			eRenderer.render(cam, tile5, sun);
+			eRenderer.render(cam, tile6, sun);
+			
+			eRenderer.render(cam, road, sun);
+			
+			eRenderer.render(cam, settlement, sun);
+			eRenderer.render(cam, city, sun);
 
 			// Update
 			window.update();
 			cam.update(delta);
-
+			
 			lastTime = currentTime;
 		}
 

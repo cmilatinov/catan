@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 
 import camera.Camera;
 import entities.Entity;
+import lights.Light;
 import objects.GameObject;
 import objects.Mesh;
 import objects.Texture;
@@ -23,7 +24,7 @@ public class EntityRenderer implements GameObject {
 	}
 	
 	
-	public void render(Camera cam, Entity e) {
+	public void render(Camera cam, Entity e, Light l) {
 		
 		Mesh mesh = e.getModel().getMesh();
 		Texture texture = e.getModel().getTexture();
@@ -31,6 +32,12 @@ public class EntityRenderer implements GameObject {
 		shader.use();
 		shader.projectionViewMatrix.set(cam.createProjectionViewMatrix());
 		shader.modelMatrix.set(e.getTransform());
+		
+		shader.numLights.set(1);
+		shader.lightPositions.set(0, l.getPosition());
+		shader.lightColors.set(0, l.getColor());
+		
+		shader.cameraPos.set(cam.getPosition());
 		
 		mesh.getVAO().bind(0, 1, 2);
 		texture.bindToTextureUnit(0);

@@ -9,16 +9,29 @@ public class EntityShader extends Shader {
 	private static final String ATTRIBUTE_NORMAL = "normal";
 	private static final String ATTRIBUTE_UV = "uv";
 	
+	private static final int MAX_LIGHTS = 10;
+	
 	public final UniformMatrix4f projectionViewMatrix = new UniformMatrix4f("projViewMatrix");
 	public final UniformMatrix4f modelMatrix = new UniformMatrix4f("modelMatrix");
+	
 	public final UniformInt textureSampler = new UniformInt("tex");
+	
+	public final UniformVector3fArray lightPositions = new UniformVector3fArray("lightPositions", MAX_LIGHTS);
+	public final UniformVector3fArray lightColors = new UniformVector3fArray("lightColors", MAX_LIGHTS);
+	public final UniformInt numLights = new UniformInt("numLights");
+	
+	public final UniformVector3f cameraPos = new UniformVector3f("cameraPos");
 
 	public EntityShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		registerUniforms(
 				projectionViewMatrix,
 				modelMatrix,
-				textureSampler
+				textureSampler,
+				lightPositions,
+				lightColors,
+				numLights,
+				cameraPos
 			);
 	}
 

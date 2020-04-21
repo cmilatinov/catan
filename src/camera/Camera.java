@@ -43,6 +43,14 @@ public abstract class Camera implements GameObject {
 		return this;
 	}
 	
+	public Vector3f getRotation() {
+		return new Vector3f(rot);
+	}
+	
+	public Vector3f getPosition() {
+		return new Vector3f(pos);
+	}
+	
 	public Camera setRotation(Vector3f rot) {
 		if(rot != null)
 			this.rot = rot;
