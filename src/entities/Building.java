@@ -1,12 +1,14 @@
 package entities;
 
 import gameplay.Board;
+import log.Logger;
+import main.Engine;
 
 public class Building {
 
 	private enum Type {
 		SETTLEMENT,
-		CITY
+		CITY;
 	}
 	
 	private Type type;
@@ -19,7 +21,7 @@ public class Building {
 	
 	public void upgrade() {
 		if(type == Type.CITY) {
-			System.out.println("ERROR: Unable to upgrade a city.");
+			Engine.LOGGER.log(Logger.ERROR, "Unable to upgrade a city.");
 		}
 		
 		type = Type.CITY;
