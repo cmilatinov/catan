@@ -8,6 +8,11 @@ public class Board {
 	private HashMap<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
 	private ArrayList<Integer> tileNumbers = new ArrayList<Integer>();
 	
+	private final int BOARD_VERTICES = 54;
+	private final int BOARD_TILES = 19;
+	
+	private final int[] BOARD_TILES_PER_ROW = {3, 4, 5, 4, 3};
+	
 	public enum TileTypes {
 		SHEEP,
 		ROCK,
@@ -49,6 +54,11 @@ public class Board {
 	
 	private void createBoard() {
 		tiles = new ArrayList<Tile>();
+		ArrayList<Vertex> boardVertices = new ArrayList<Vertex>();
+		
+		for(int i = 0; i < BOARD_VERTICES; i ++) {
+			boardVertices.add(new Vertex());
+		}
 		
 		Iterator tileIterator = tileQuantities.entrySet().iterator();
 		
@@ -79,6 +89,43 @@ public class Board {
 		
 		Collections.shuffle(tiles);
 		
+		int tileIndex = 0;
+		int vertexIndex = 0;
+		
+		int vertexRowConst = 6;
+		int vertexIndexConst = 3;
+		// Binding vertices
+		for(int row = 0; row < BOARD_TILES_PER_ROW.length; row ++ ) {
+			
+			switch(BOARD_TILES_PER_ROW[row]) {
+			case 3:
+				vertexRowConst = 6;
+				break;
+			case 4:
+				vertexRowConst = 8;
+				break;
+			case 5:
+				vertexRowConst = 9;
+				break;
+			}
+			
+			for(int t = 0; t < BOARD_TILES_PER_ROW[row]; t ++ ) {
+				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex));
+				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + 1));
+				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + 2));
+				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + vertexRowConst + 2));
+				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + vertexRowConst + 3));
+				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + vertexRowConst + 4));
+				
+				vertexIndex += 2;
+			}
+			
+			if(row > 0 && BOARD_TILES_PER_ROW[row - 1] > BOARD_TILES_PER_ROW[row]) {
+				vertexIndexConst ++;
+			}
+			
+			vertexIndex += vertexIndexConst;
+		}
 	}
 	
 	public int roll() {
@@ -106,23 +153,27 @@ public class Board {
 		public Tile() {
 			type = TileTypes.getRandomType();
 			value = (int)(Math.random()*12) + 1; 
-			vertices = new ArrayList<Vertex>(Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex(), new Vertex(), new Vertex()));
+			vertices = new ArrayList<Vertex>();
 		}
 		
 		public Tile(TileTypes type) {
 			this.type = type;
 			this.value = (int)(Math.random()*12) + 1;
-			vertices = new ArrayList<Vertex>(Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex(), new Vertex(), new Vertex()));
+			vertices = new ArrayList<Vertex>();
 		}
 		
 		public Tile(TileTypes type, int value) {
 			this.type = type;
 			this.value = value;
-			vertices = new ArrayList<Vertex>(Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex(), new Vertex(), new Vertex()));
+			vertices = new ArrayList<Vertex>();
 		}
 		
 		public int getValue() {
 			return value;
+		}
+		
+		public void addVertex(Vertex v) {
+			vertices.add(v);
 		}
 		
 		public void setValue(int value) {
