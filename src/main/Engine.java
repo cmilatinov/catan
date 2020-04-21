@@ -103,24 +103,11 @@ public class Engine {
 		TexturedMesh modelCity = new TexturedMesh(meshCity, textureBlue);
 		TexturedMesh modelRobber = new TexturedMesh(meshRobber, textureBlue);
 		
-		final float scale = 0.999f;
-		
-		Entity tile1 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0, 0, -5));
-		Entity tile1R = new Entity(modelTileDesert).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -5));
-		Entity tile1L = new Entity(modelTileForest).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -5));
-		
-		Entity tile2 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(0, 0, -2));
-		Entity tile2R = new Entity(modelTileStone).scale(scale).translate(new Vector3f(2 * 0.866f, 0, -2));
-		Entity tile2L = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-2 * 0.866f, 0, -2));
-		
-		Entity tile3 = new Entity(modelTileBrick).scale(scale).translate(new Vector3f(0.866f, 0, -3.5f));
-		Entity tile4 = new Entity(modelTileSheep).scale(scale).translate(new Vector3f(3 * 0.866f, 0, -3.5f));
-		Entity tile5 = new Entity(modelTileStone).scale(scale).translate(new Vector3f(-0.866f, 0, -3.5f));
-		Entity tile6 = new Entity(modelTileWheat).scale(scale).translate(new Vector3f(-3 * 0.866f, 0, -3.5f));
-		
 		Entity road = new Entity(modelRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0.14f, -3.5f));
 		Entity settlement = new Entity(modelSettlement).scale(0.040f).translate(new Vector3f(0, 0.1f, -3));
 		Entity city = new Entity(modelCity).scale(0.045f).translate(new Vector3f(0, 0.1f, -4));
+		
+		Entity robber = new Entity(modelRobber).scale(0.01f);
 		
 		Light sun = new Light(new Vector3f(1, 1, 1), new Vector3f(300, 1000, 0));
 
@@ -148,23 +135,11 @@ public class Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Render
-			eRenderer.render(cam, tile1, sun);
-			eRenderer.render(cam, tile1R, sun);
-			eRenderer.render(cam, tile1L, sun);
-			
-			eRenderer.render(cam, tile2, sun);
-			eRenderer.render(cam, tile2R, sun);
-			eRenderer.render(cam, tile2L, sun);
-			
-			eRenderer.render(cam, tile3, sun);
-			eRenderer.render(cam, tile4, sun);
-			eRenderer.render(cam, tile5, sun);
-			eRenderer.render(cam, tile6, sun);
-			
 			eRenderer.render(cam, road, sun);
-			
 			eRenderer.render(cam, settlement, sun);
 			eRenderer.render(cam, city, sun);
+			
+			eRenderer.render(cam, robber, sun);
 
 			// Update
 			window.update();
