@@ -91,7 +91,7 @@ public abstract class Camera implements GameObject {
 		
 		Vector4f vec = transform.transform(new Vector4f(1, 0, 0, 1));
 
-		return new Vector3f(vec.x / vec.w, vec.y / vec.w, -vec.z / vec.w).normalize();
+		return new Vector3f(vec.x / vec.w, vec.y / vec.w, -vec.z / vec.w);
 	}
 	
 	public Vector3f right() {

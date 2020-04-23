@@ -143,16 +143,16 @@ public class GameObjectFactory {
 	/**
 	 * Loads a texture from a file into a texture object.
 	 * 
-	 * @param filename The file name.
+	 * @param filepath Path to the bitmap file.
 	 * @param mipmap   Whether or not to generate a mipmap for the texture.
 	 * @return [{@link Texture}] Null if the texture could not be loaded, otherwise
-	 *         returns the texture object corresponding to the loaded texture.
+	 *         returns the texture object corresponding to the loaded bitmap.
 	 */
-	public Texture loadTexture2D(String filename, int filtering, boolean mipmap) {
+	public Texture loadTexture2D(String filepath, int filtering, boolean mipmap) {
 		try {
 
 			// Load the file
-			BufferedImage img = ImageIO.read(new File("./textures/" + filename));
+			BufferedImage img = ImageIO.read(new File(filepath));
 
 			// Generate a new OpenGL texture
 			Texture result = null;
