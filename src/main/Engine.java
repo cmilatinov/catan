@@ -107,10 +107,6 @@ public class Engine {
 			glClearColor(0, 0.4f, 0.4f, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
-			for(int i = 0; i < titty.length; i ++) {
-				eRenderer.render(cam, titty[i], sun);
-			}
-			
 			eRenderer.render(cam, road, sun);
 			eRenderer.render(cam, settlement, sun);
 			eRenderer.render(cam, city, sun);
