@@ -8,8 +8,10 @@ public class Board {
 	private HashMap<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
 	private ArrayList<Integer> tileNumbers = new ArrayList<Integer>();
 	
-	private final int BOARD_VERTICES = 54;
-	private final int[] BOARD_TILES_PER_ROW = {3, 4, 5, 4, 3};
+	private int boardRadius;
+	
+	private int boardVertices = 0;
+	private final int[] TILES_PER_ROW;
 	
 	public enum TileTypes {
 		SHEEP,
@@ -25,9 +27,24 @@ public class Board {
         }
 	}
 
-	private ArrayList<Tile> tiles;
+	public ArrayList<Tile> tiles;
 	
-	public Board() {
+	/**
+	 * Constructor to create a board.
+	 * 
+	 * @param mapRadius - Radius of the board.
+	 */
+	public Board(int boardRadius) {
+		// Sets up the amount of tiles per row that we want depending on the board radius.
+		this.boardRadius = boardRadius;
+		TILES_PER_ROW = new int[boardRadius * 2 - 1];
+		boardVertices = 0;
+		for(int i = 0; i <= (int)TILES_PER_ROW.length/2; i ++) {
+			boardVertices += (((boardRadius + i) * 4) + 2);
+			TILES_PER_ROW[i] = boardRadius + i;
+			TILES_PER_ROW[TILES_PER_ROW.length - i - 1] = boardRadius + i;
+		}
+		
 		tileQuantities.put(TileTypes.SHEEP, 4);
 		tileQuantities.put(TileTypes.WHEAT, 4);
 		tileQuantities.put(TileTypes.WOOD, 4);
@@ -52,10 +69,10 @@ public class Board {
 	
 	private void createBoard() {
 		tiles = new ArrayList<Tile>();
-		ArrayList<Vertex> boardVertices = new ArrayList<Vertex>();
+		ArrayList<Vertex> verticesList = new ArrayList<Vertex>();
 		
-		for(int i = 0; i < BOARD_VERTICES; i ++) {
-			boardVertices.add(new Vertex());
+		for(int i = 0; i < boardVertices; i ++) {
+			verticesList.add(new Vertex());
 		}
 		
 		Iterator tileIterator = tileQuantities.entrySet().iterator();
@@ -87,44 +104,23 @@ public class Board {
 		
 		Collections.shuffle(tiles);
 		
-		int tileIndex = 0;
-		int vertexIndex = 0;
+		// t for tile and v for vertex
+		int vIndex = 0;
+		int tIndex = 0;
 		
-		int vertexRowConst = 6;
-		int vertexIndexConst = 3;
-		// Binding vertices
-		for(int row = 0; row < BOARD_TILES_PER_ROW.length; row ++ ) {
-			
-			switch(BOARD_TILES_PER_ROW[row]) {
-			case 3:
-				vertexRowConst = 6;
-				break;
-			case 4:
-				vertexRowConst = 8;
-				break;
-			case 5:
-				vertexRowConst = 9;
-				break;
-			}
-			
-			for(int t = 0; t < BOARD_TILES_PER_ROW[row]; t ++ ) {
-				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex));
-				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + 1));
-				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + 2));
-				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + vertexRowConst + 2));
-				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + vertexRowConst + 3));
-				tiles.get(tileIndex).addVertex(boardVertices.get(vertexIndex + vertexRowConst + 4));
+		for(int row = 0; row < TILES_PER_ROW.length; row ++) {
+			for(int t = 0; t < TILES_PER_ROW[row]; t ++) {
+				tiles.get(tIndex).addVertex(verticesList.get(vIndex ++));
+				tiles.get(tIndex).addVertex(verticesList.get(vIndex ++));
+				tiles.get(tIndex).addVertex(verticesList.get(vIndex));
 				
-				vertexIndex += 2;
+				tiles.get(tIndex).addVertex(verticesList.get(vIndex + (TILES_PER_ROW[row] * 2)));
+				tiles.get(tIndex).addVertex(verticesList.get(vIndex + (TILES_PER_ROW[row] * 2) + 1));
+				tiles.get(tIndex).addVertex(verticesList.get(vIndex + (TILES_PER_ROW[row] * 2) + 2));
 			}
 			
-			if(row > 0 && BOARD_TILES_PER_ROW[row - 1] > BOARD_TILES_PER_ROW[row]) {
-				vertexIndexConst ++;
-			}
-			
-			vertexIndex += vertexIndexConst;
+			vIndex ++;
 		}
-		
 		
 	}
 	
