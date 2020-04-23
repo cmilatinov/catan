@@ -23,11 +23,6 @@ import camera.CameraFPS;
 import display.DisplayMode;
 import display.Window;
 import entities.Entity;
-<<<<<<< HEAD
-import gameplay.Board;
-import gameplay.Tile;
-=======
->>>>>>> e5e9742982d4cba7b9424541750580d374924585
 import lights.Light;
 import log.Logger;
 import objects.GameObject;
@@ -93,8 +88,6 @@ public class Engine {
 		Entity robber = new Entity(blueRobber).scale(0.01f);
 		
 		Light sun = new Light(new Vector3f(1, 1, 1), new Vector3f(1000, 1000, 0));
-
-		
 
 		// Shader
 		EntityRenderer eRenderer = addObjectToCleanup(new EntityRenderer());
