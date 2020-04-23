@@ -2,8 +2,6 @@ package gameplay;
 
 import java.util.ArrayList;
 
-import gameplay.Board.TileTypes;
-
 public class Tile{
 	
 	private TileTypes type;

@@ -7,27 +7,12 @@ import entities.Building;
 public class Board {
 	private HashMap<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
 	private ArrayList<Integer> tileNumbers = new ArrayList<Integer>();
+	private ArrayList<Tile> tiles;
 	
 	private int boardRadius;
 	
 	private int boardVertices = 0;
 	private final int[] TILES_PER_ROW;
-	
-	public enum TileTypes {
-		SHEEP,
-		ROCK,
-		BRICK,
-		WHEAT,
-		WOOD,
-		DESERT;
-		
-		public static TileTypes getRandomType() {
-            Random random = new Random();
-            return values()[random.nextInt(values().length)];
-        }
-	}
-
-	public ArrayList<Tile> tiles;
 	
 	/**
 	 * Constructor to create a board.
@@ -71,7 +56,7 @@ public class Board {
 		tiles = new ArrayList<Tile>();
 		ArrayList<Vertex> verticesList = new ArrayList<Vertex>();
 		
-		for(int i = 0; i < boardVertices; i ++) {
+		for(int i = 0; i < this.boardVertices; i ++) {
 			verticesList.add(new Vertex());
 		}
 		

@@ -1,7 +1,6 @@
 package gameplay;
 
 import entities.Building;
-import gameplay.Board.TileTypes;
 
 public class Vertex {
 	private Building building;

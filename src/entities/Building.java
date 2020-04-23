@@ -1,6 +1,7 @@
 package entities;
 
 import gameplay.Board;
+import gameplay.TileTypes;
 import log.Logger;
 import main.Engine;
 
@@ -35,7 +36,7 @@ public class Building {
 		return this.owner;
 	}
 	
-	public void rewardOwner(Board.TileTypes tileType) {
+	public void rewardOwner(TileTypes tileType) {
 		this.owner.giveCards(tileType, getValue());
 	}
 	
