@@ -14,7 +14,7 @@ import input.MouseInput;
 
 public class CameraFPS extends Camera {
 	
-	private float speed = 30.0f;
+	private float speed = 10.0f;
 	
 	private KeyboardInput keyboard;
 	private MouseInput mouse;

@@ -8,8 +8,6 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
@@ -25,16 +23,18 @@ import camera.CameraFPS;
 import display.DisplayMode;
 import display.Window;
 import entities.Entity;
+<<<<<<< HEAD
 import gameplay.Board;
 import gameplay.Tile;
+=======
+>>>>>>> e5e9742982d4cba7b9424541750580d374924585
 import lights.Light;
 import log.Logger;
 import objects.GameObject;
-import objects.GameObjectFactory;
-import objects.Mesh;
-import objects.Texture;
 import objects.TexturedMesh;
 import render.EntityRenderer;
+import resources.GameResources;
+import resources.Resource;
 
 public class Engine {
 
@@ -73,113 +73,28 @@ public class Engine {
 		// Escape to close the game
 		window.keyboard().registerKeyUp(GLFW_KEY_ESCAPE, (int mods) -> window.close());
 		window.mouse().centerCursorInWindow();
-
-		// Load a cube
-		GameObjectFactory loader = new GameObjectFactory();
 		
-		// Meshes
-		Mesh meshTile = addObjectToCleanup(loader.loadOBJ("./models/tile.obj"));
-		Mesh meshRoad = addObjectToCleanup(loader.loadOBJ("./models/road.obj"));
-		Mesh meshSettlement = addObjectToCleanup(loader.loadOBJ("./models/settlement.obj"));
-		Mesh meshCity = addObjectToCleanup(loader.loadOBJ("./models/city.obj"));
-		Mesh meshRobber = addObjectToCleanup(loader.loadOBJ("./models/robber.obj"));
-		
-		// Textures
-		Texture textureBrick = addObjectToCleanup(loader.loadTexture2D("tile_brick.png", GL_LINEAR, true));
-		Texture textureDesert = addObjectToCleanup(loader.loadTexture2D("tile_desert.png", GL_LINEAR, true));
-		Texture textureForest = addObjectToCleanup(loader.loadTexture2D("tile_forest.png", GL_LINEAR, true));
-		Texture textureSheep = addObjectToCleanup(loader.loadTexture2D("tile_sheep.png", GL_LINEAR, true));
-		Texture textureStone = addObjectToCleanup(loader.loadTexture2D("tile_stone.png", GL_LINEAR, true));
-		Texture textureWheat = addObjectToCleanup(loader.loadTexture2D("tile_wheat.png", GL_LINEAR, true));
-		Texture textureBlue = addObjectToCleanup(loader.loadTexture2D("blue.png", GL_NEAREST, false));
-		
-		// Textured meshes
-		TexturedMesh modelTileBrick = new TexturedMesh(meshTile, textureBrick);
-		TexturedMesh modelTileDesert = new TexturedMesh(meshTile, textureDesert);
-		TexturedMesh modelTileForest =new TexturedMesh(meshTile, textureForest);
-		TexturedMesh modelTileSheep = new TexturedMesh(meshTile, textureSheep);
-		TexturedMesh modelTileStone = new TexturedMesh(meshTile, textureStone);
-		TexturedMesh modelTileWheat = new TexturedMesh(meshTile, textureWheat);
-		TexturedMesh modelRoad = new TexturedMesh(meshRoad, textureBlue);
-		TexturedMesh modelSettlement = new TexturedMesh(meshSettlement, textureBlue);
-		TexturedMesh modelCity = new TexturedMesh(meshCity, textureBlue);
-		TexturedMesh modelRobber = new TexturedMesh(meshRobber, textureBlue);
-		
-		// Board shit
-		Board b = new Board(3);
-		Entity[] titty = new Entity[b.tiles.size()];
-		TexturedMesh currentMesh;
-		float scale = 0.999f;
-		
-		for(int i = 0; i < b.tiles.size(); i ++) {
-			
-			switch(b.tiles.get(i).getType()) {
-			case SHEEP:
-				titty[i] = new Entity(modelTileSheep).scale(scale);
-				break;
-			case BRICK:
-				titty[i] = new Entity(modelTileBrick).scale(scale);
-				break;
-			case WOOD:
-				titty[i] = new Entity(modelTileForest).scale(scale);
-				break;
-			case WHEAT:
-				titty[i] = new Entity(modelTileWheat).scale(scale);
-				break;
-			case ROCK: 
-				titty[i] = new Entity(modelTileStone).scale(scale);
-				break;
-			case DESERT:
-				titty[i] = new Entity(modelTileDesert).scale(scale);
-				break;
-			}
-			
-		}
-		
-		titty[0].translate(new Vector3f(-1.732f, 0, 3));
-		titty[1].translate(new Vector3f(0, 0, 3));
-		titty[2].translate(new Vector3f(1.732f, 0, 3));
-		
-		titty[3].translate(new Vector3f(-2.598f, 0, 1.5f));
-		titty[4].translate(new Vector3f(-0.866f, 0, 1.5f));
-		titty[5].translate(new Vector3f(0.866f, 0, 1.5f));
-		titty[6].translate(new Vector3f(2.598f, 0, 1.5f));
-		
-		titty[7].translate(new Vector3f(-3.464f, 0, 0));
-		titty[8].translate(new Vector3f(-1.732f, 0, 0));
-		titty[9].translate(new Vector3f(0, 0, 0));
-		titty[10].translate(new Vector3f(1.732f, 0, 0));
-		titty[11].translate(new Vector3f(3.464f, 0, 0));
-		
-		titty[12].translate(new Vector3f(-2.598f, 0, -1.5f));
-		titty[13].translate(new Vector3f(-0.866f, 0, -1.5f));
-		titty[14].translate(new Vector3f(0.866f, 0, -1.5f));
-		titty[15].translate(new Vector3f(2.598f, 0, -1.5f));
-		
-		titty[16].translate(new Vector3f(-1.732f, 0, -3));
-		titty[17].translate(new Vector3f(0, 0, -3));
-		titty[18].translate(new Vector3f(1.732f, 0, -3));
-		
-		Entity robber = new Entity(modelRobber).scale(0.01f);
-		
-		for(int i = 0; i < titty.length; i ++) {
-			if(b.tiles.get(i).getType() == Board.TileTypes.DESERT) {
-				robber.translate(titty[i].getPosition());
-			}
-		}
-		
-		Entity road = new Entity(modelRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0.14f, -3.5f));
-		Entity settlement = new Entity(modelSettlement).scale(0.040f).translate(new Vector3f(0, 0.1f, -3));
-		Entity city = new Entity(modelCity).scale(0.045f).translate(new Vector3f(0, 0.1f, -4));
-		
-		
-		
-		Light sun = new Light(new Vector3f(1, 1, 1), new Vector3f(300, 1000, 0));
-
 		// OpenGL stuff
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
+		
+		// Load resources
+		GameResources.loadAll();
+		
+		TexturedMesh blueRoad = new TexturedMesh(GameResources.get(Resource.MESH_ROAD), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
+		TexturedMesh blueSettlement = new TexturedMesh(GameResources.get(Resource.MESH_SETTLEMENT), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
+		TexturedMesh blueCity = new TexturedMesh(GameResources.get(Resource.MESH_CITY), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
+		TexturedMesh blueRobber = new TexturedMesh(GameResources.get(Resource.MESH_ROBBER), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
+		
+		Entity road = new Entity(blueRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0.14f, -3.5f));
+		Entity settlement = new Entity(blueSettlement).scale(0.040f).translate(new Vector3f(0, 0.1f, -3));
+		Entity city = new Entity(blueCity).scale(0.045f).translate(new Vector3f(0, 0.1f, -4));
+		Entity robber = new Entity(blueRobber).scale(0.01f);
+		
+		Light sun = new Light(new Vector3f(1, 1, 1), new Vector3f(1000, 1000, 0));
+
+		
 
 		// Shader
 		EntityRenderer eRenderer = addObjectToCleanup(new EntityRenderer());
