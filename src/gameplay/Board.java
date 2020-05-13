@@ -1,15 +1,14 @@
 package gameplay;
 
-import java.util.*;
-
-import entities.Building;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Board {
-	private HashMap<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
+	private Map<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
 	private ArrayList<Integer> tileNumbers = new ArrayList<Integer>();
 	private ArrayList<Tile> tiles;
-	
-	private int boardRadius;
 	
 	private int boardVertices = 0;
 	private final int[] TILES_PER_ROW;
@@ -21,7 +20,6 @@ public class Board {
 	 */
 	public Board(int boardRadius) {
 		// Sets up the amount of tiles per row that we want depending on the board radius.
-		this.boardRadius = boardRadius;
 		TILES_PER_ROW = new int[boardRadius * 2 - 1];
 		boardVertices = 0;
 		for(int i = 0; i <= (int)TILES_PER_ROW.length/2; i ++) {
@@ -60,12 +58,9 @@ public class Board {
 			verticesList.add(new Vertex());
 		}
 		
-		Iterator tileIterator = tileQuantities.entrySet().iterator();
-		
-		while(tileIterator.hasNext()) {
-			Map.Entry mapElement = (Map.Entry)tileIterator.next(); 
-			for(int i = 0; i < (int)mapElement.getValue(); i ++) {
-				tiles.add(new Tile((TileTypes) mapElement.getKey()));
+		for(TileTypes t : tileQuantities.keySet()) {
+			for(int i = 0; i < (int)tileQuantities.get(t); i ++) {
+				tiles.add(new Tile(t));
 			}
 		}
 		

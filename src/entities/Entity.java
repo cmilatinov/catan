@@ -8,7 +8,7 @@ import objects.TexturedMesh;
 /**
  * Represents an in-game entity with a position, rotation, and scale.
  */
-public class Entity {
+public abstract class Entity {
 
 	/**
 	 * Rotation, velocity and position of the entity.
@@ -227,6 +227,9 @@ public class Entity {
 
 	}
 
-	//public abstract void update(double delta);
+	public abstract void update(double delta);
+	
+	public abstract boolean shouldUpdate();
+	public abstract boolean shouldRender();
 
 }

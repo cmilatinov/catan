@@ -1,6 +1,5 @@
 package entities;
 
-import gameplay.Board;
 import gameplay.TileTypes;
 import log.Logger;
 import main.Engine;

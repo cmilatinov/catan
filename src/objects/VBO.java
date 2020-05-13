@@ -2,6 +2,7 @@ package objects;
 
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glBufferSubData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 
@@ -78,13 +79,37 @@ public class VBO implements GameObject {
 	/**
 	 * Stores an integer array of data in the VBO.
 	 * 
-	 * @param data The data to store in the VBO.
+	 * @param data  The data to store in the VBO.
 	 * @param usage The purpose of the VBO (eg. {@link #GL_STATIC_DRAW} or
 	 *              {@link #GL_DYNAMIC_DRAW}).
 	 * @return [{@link VBO}] This same instance of the class.
 	 */
 	public VBO store(int[] data, int usage) {
 		glBufferData(type, data, usage);
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param offset The offset in the buffer to start loading the data at, in bytes.
+	 * @param data The data to load in the buffer.
+	 * @return
+	 */
+	public VBO storeSubData(int offset, float[] data) {
+		glBufferSubData(type, offset, data);
+		return this;
+	}
+
+	/**
+	 * Allocates memory to the buffer object.
+	 * 
+	 * @param size  The size in bytes of the memory to allocate to this buffer.
+	 * @param usage The purpose of the VBO (eg. {@link #GL_STATIC_DRAW} or
+	 *              {@link #GL_DYNAMIC_DRAW}).
+	 * @return [{@link VBO}] This same instance of the class.
+	 */
+	public VBO allocate(int size, int usage) {
+		glBufferData(type, size, usage);
 		return this;
 	}
 

@@ -17,8 +17,10 @@ public class Logger {
 	// Log prefixes
 	private static final String[] LOG_PREFIXES = { 
 			"[$date] ",
-			"[$date] DEBUG — ",
-			"[$date] WARNING — ", "[$date] ERROR — " };
+			"[$date] DEBUG - ",
+			"[$date] WARNING - ", 
+			"[$date] ERROR - " 
+	};
 
 	// Number of characters to add to new lines.
 	private static final int NEWLINE_NUM_CHARS[] = { 15, 23, 24, 23 };

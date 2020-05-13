@@ -2,7 +2,6 @@ package entities;
 
 import java.util.HashMap;
 
-import gameplay.Board;
 import gameplay.TileTypes;
 
 public class Player {

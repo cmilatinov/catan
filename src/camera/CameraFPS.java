@@ -6,45 +6,49 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 import org.joml.Vector3f;
 
-import input.KeyboardInput;
-import input.MouseInput;
+import display.Window;
 
 public class CameraFPS extends Camera {
 	
 	private float speed = 10.0f;
 	
-	private KeyboardInput keyboard;
-	private MouseInput mouse;
-	private int mouseCallback;
+	private final Window window;
 	
-	public CameraFPS(float aspect, float fov, KeyboardInput keyboard, MouseInput mouse) {
-		super(aspect, fov);
-		this.keyboard = keyboard;
-		this.mouse = mouse;
-		this.mouseCallback = this.mouse.setSensitivity(0.2f).registerMouseMoveCallback((double x, double y, double dx, double dy) -> 
-			rotate(new Vector3f((float)dy, (float)dx, 0)));
+	private final int mouseMoveCallback;
+	
+	public CameraFPS(float fov, Window window) {
+		super((float)window.getWidth() / (float)window.getHeight(), fov);
+		this.window = window;
+		this.mouseMoveCallback = window.mouse()
+				.registerMouseMoveCallback((double x, double y, double dx, double dy) -> {
+					if(window.mouse().isMouseDown(GLFW_MOUSE_BUTTON_LEFT))
+						rotate(new Vector3f((float)dy, (float)dx, 0));
+				}
+			);
+		window.mouse().setSensitivity(0.2f);
 	}
 	
 	public void update(double delta) {
-		if (keyboard.isKeyDown(GLFW_KEY_W))
+		if (window.keyboard().isKeyDown(GLFW_KEY_W))
 			pos = pos.add(forward().mul((float)delta * speed));
 
-		if (keyboard.isKeyDown(GLFW_KEY_S))
+		if (window.keyboard().isKeyDown(GLFW_KEY_S))
 			pos.sub(forward().mul((float)delta * speed));
 
-		if (keyboard.isKeyDown(GLFW_KEY_A))
+		if (window.keyboard().isKeyDown(GLFW_KEY_A))
 			pos.sub(right().mul((float)delta * speed));
 
-		if (keyboard.isKeyDown(GLFW_KEY_D))
+		if (window.keyboard().isKeyDown(GLFW_KEY_D))
 			pos = pos.add(right().mul((float)delta * speed));
 
-		if (keyboard.isKeyDown(GLFW_KEY_LEFT_SHIFT))
+		if (window.keyboard().isKeyDown(GLFW_KEY_LEFT_SHIFT))
 			pos.sub(new Vector3f(0, (float)delta * speed, 0));
 
-		if (keyboard.isKeyDown(GLFW_KEY_SPACE))
+		if (window.keyboard().isKeyDown(GLFW_KEY_SPACE))
 			pos = pos.add(new Vector3f(0, (float)delta * speed, 0));
 	}
 	
@@ -54,7 +58,7 @@ public class CameraFPS extends Camera {
 	}
 	
 	public void destroy() {
-		mouse.removeMouseMoveCallback(mouseCallback);
+		window.mouse().removeMouseMoveCallback(mouseMoveCallback);
 	}
 
 }

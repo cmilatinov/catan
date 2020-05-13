@@ -10,8 +10,10 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
+import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a Vertex Array Object (VAO).
@@ -24,9 +26,9 @@ public class VAO implements GameObject {
 	private int id;
 
 	/**
-	 * The VBOs serving as attributes of the VAO.
+	 * The VBOs attached to this VAO.
 	 */
-	private HashMap<Integer, VBO> attributes = new HashMap<Integer, VBO>();
+	private List<VBO> vbos = new ArrayList<VBO>();
 
 	/**
 	 * Creates a Vertex Array Object (VAO) with the specified ID.
@@ -111,8 +113,8 @@ public class VAO implements GameObject {
 		// Bind the buffer.
 		buffer.bind();
 
-		// Add it to the attribute lists.
-		attributes.put(attribIndex, buffer);
+		// Add it to the vbo list.
+		vbos.add(buffer);
 
 		// Store the data in it.
 		buffer.store(data, usage);
@@ -146,8 +148,8 @@ public class VAO implements GameObject {
 		// Bind the buffer.
 		buffer.bind();
 
-		// Add it to the attribute lists.
-		attributes.put(attribIndex, buffer);
+		// Add it to the vbo list.
+		vbos.add(buffer);
 
 		// Store the data in it.
 		buffer.store(data, usage);
@@ -160,17 +162,31 @@ public class VAO implements GameObject {
 
 		return this;
 	}
+	
+	/**
+	 * Creates an instanced attribute for this VAO based on the currently bound VBO and the given arguments.
+	 * 
+	 * @param attribIndex The attribute list index in which to store the data.
+	 * @param vectorSize The size of a single vertex worth of data (eg. 3 for a 3D position).
+	 * @param dataType The type of data (eg. {@link #GL_FLOAT}).
+	 * @param stride The stride of the data in bytes (size of data for a single instance).
+	 * @param offset The offset of the data in bytes (always less than the stride).
+	 * @return
+	 */
+	public VAO addInstancedAttribute(int attribIndex, int vectorSize, int dataType, int stride, int offset) {
+		glVertexAttribPointer(attribIndex, vectorSize, dataType, false, stride, offset);
+		glVertexAttribDivisor(attribIndex, 1);
+		return this;
+	}
 
 	/**
-	 * Add a VBO to this VAO's attribute lists, to be deleted when this VAO is
-	 * deleted.
+	 * Add a VBO to this VAO, to be deleted when this VAO is deleted.
 	 * 
-	 * @param attribIndex The attribute list index to bind the VBO to.
-	 * @param vbo         The VBO object to associate to this VAO.
+	 * @param vbo The VBO object to associate to this VAO.
 	 * @return [{@link VAO}] This same instance of the class.
 	 */
-	public VAO addVBO(int attribIndex, VBO vbo) {
-		attributes.put(attribIndex, vbo);
+	public VAO addVBO(VBO vbo) {
+		vbos.add(vbo);
 		return this;
 	}
 
@@ -178,8 +194,8 @@ public class VAO implements GameObject {
 	 * Deletes the VAO and all VBOs used as attributes.
 	 */
 	public void destroy() {
-		for (int key : attributes.keySet())
-			attributes.get(key).destroy();
+		for (VBO vbo : vbos)
+			vbo.destroy();
 		glDeleteVertexArrays(id);
 	}
 
