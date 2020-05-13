@@ -3,6 +3,9 @@ package gameplay;
 import java.util.*;
 
 import entities.Building;
+import objects.TexturedMesh;
+import resources.GameResources;
+import resources.Resource;
 
 public class Board {
 	private HashMap<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
@@ -32,8 +35,8 @@ public class Board {
 		
 		tileQuantities.put(TileTypes.SHEEP, 4);
 		tileQuantities.put(TileTypes.WHEAT, 4);
-		tileQuantities.put(TileTypes.WOOD, 4);
-		tileQuantities.put(TileTypes.ROCK, 3);
+		tileQuantities.put(TileTypes.FOREST, 4);
+		tileQuantities.put(TileTypes.STONE, 3);
 		tileQuantities.put(TileTypes.BRICK, 3);
 		tileQuantities.put(TileTypes.DESERT, 1);
 		
@@ -65,7 +68,9 @@ public class Board {
 		while(tileIterator.hasNext()) {
 			Map.Entry mapElement = (Map.Entry)tileIterator.next(); 
 			for(int i = 0; i < (int)mapElement.getValue(); i ++) {
-				tiles.add(new Tile((TileTypes) mapElement.getKey()));
+				tiles.add(new Tile
+						(GameResources.get(Resource.getTileModel((TileTypes) mapElement.getKey()))
+						, (TileTypes) mapElement.getKey()));
 			}
 		}
 		
@@ -89,12 +94,26 @@ public class Board {
 		
 		Collections.shuffle(tiles);
 		
+		// Assigning all the vertices to the tiles
 		// t for tile and v for vertex
 		int vIndex = 0;
 		int tIndex = 0;
 		
+		double startHexX = 2;
+		double startHexY = 0;
+		double hexZ = 2;
+		
+		double currHexX;
+		double currHexY;
+		
 		for(int row = 0; row < TILES_PER_ROW.length; row ++) {
+			currHexX = startHexX * -1;
+			currHexY = startHexY;
+			
 			for(int t = 0; t < TILES_PER_ROW[row]; t ++) {
+				
+				hexZ = (row - 2) * -1;
+				
 				tiles.get(tIndex).addVertex(verticesList.get(vIndex ++));
 				tiles.get(tIndex).addVertex(verticesList.get(vIndex ++));
 				tiles.get(tIndex).addVertex(verticesList.get(vIndex));
@@ -102,9 +121,37 @@ public class Board {
 				tiles.get(tIndex).addVertex(verticesList.get(vIndex + (TILES_PER_ROW[row] * 2)));
 				tiles.get(tIndex).addVertex(verticesList.get(vIndex + (TILES_PER_ROW[row] * 2) + 1));
 				tiles.get(tIndex).addVertex(verticesList.get(vIndex + (TILES_PER_ROW[row] * 2) + 2));
+				
+				tiles.get(tIndex).setHexagonalCoords(currHexX++, currHexY--, hexZ);
+				
+				tiles.get(tIndex).getHexagonalCoords();
+			}
+			
+			if(row + 1 != TILES_PER_ROW.length) {
+				if(TILES_PER_ROW[row] > TILES_PER_ROW[row+1]) {
+					startHexX --;
+				} else {
+					startHexY ++;
+				}
+			} else {
+				startHexX --;
 			}
 			
 			vIndex ++;
+		}
+		
+		
+		
+		// Positioning all the tiles
+		// First storing all the tiles in a clock type of order
+		int[] outerclock = new int[3];
+		for(int l = 0; l < outerclock.length; l ++) {
+			for(int r = 0; r < TILES_PER_ROW.length -1; r ++) {
+				int bRad = boardRadius + 1;
+				for(int t = 0; t < bRad; t ++) {
+					
+				}
+			}
 		}
 		
 	}
@@ -123,6 +170,10 @@ public class Board {
 		for(Tile t : tilesRolled) {
 			t.rewardSettlers();
 		}
+	}
+	
+	public ArrayList<Tile> getTiles() {
+		return tiles;
 	}
 	
 }

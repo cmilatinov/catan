@@ -4,10 +4,10 @@ import java.util.Random;
 
 public enum TileTypes {
 	SHEEP,
-	ROCK,
+	STONE,
 	BRICK,
 	WHEAT,
-	WOOD,
+	FOREST,
 	DESERT;
 	
 	public static TileTypes getRandomType() {

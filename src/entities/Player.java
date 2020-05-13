@@ -12,8 +12,8 @@ public class Player {
 		resourceCards = new HashMap<TileTypes, Integer>();
 		resourceCards.put(TileTypes.BRICK, 0);
 		resourceCards.put(TileTypes.SHEEP, 0);
-		resourceCards.put(TileTypes.ROCK, 0);
-		resourceCards.put(TileTypes.WOOD, 0);
+		resourceCards.put(TileTypes.STONE, 0);
+		resourceCards.put(TileTypes.FOREST, 0);
 		resourceCards.put(TileTypes.WHEAT, 0);
 	}
 	
