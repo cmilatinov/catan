@@ -4,6 +4,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_DECORATED;
 import static org.lwjgl.glfw.GLFW.GLFW_DONT_CARE;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -16,13 +18,13 @@ import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowAttrib;
@@ -57,6 +59,8 @@ public class Window implements GameObject {
 	private String name;
 	private DisplayMode mode = DisplayMode.DEFAULT;
 
+	private int width, height;
+
 	private DisplayModeChangedCallback onDisplayModeChanged = null;
 
 	private final KeyboardInput keyboard = new KeyboardInput(this);
@@ -87,8 +91,10 @@ public class Window implements GameObject {
 	 * provided when creating the window object, this method will use a default
 	 * display mode. If creating the window fails, the engine is stopped and an
 	 * error is logged.
+	 * 
+	 * @return [{@link Window}] This same instance of the class.
 	 */
-	public void create() {
+	public Window create() {
 
 		// Init GLFW.
 		if (!glfwInit()) {
@@ -109,11 +115,11 @@ public class Window implements GameObject {
 
 		// Create window
 		GLFWVidMode vmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		int w = mode.getWidth() == DisplayMode.MAX_SIZE ? vmode.width() : mode.getWidth();
-		int h = mode.getHeight() == DisplayMode.MAX_SIZE ? vmode.height() : mode.getHeight();
+		width = mode.getWidth() == DisplayMode.MAX_SIZE ? vmode.width() : mode.getWidth();
+		height = mode.getHeight() == DisplayMode.MAX_SIZE ? vmode.height() : mode.getHeight();
 		window = glfwCreateWindow(
 				// Window size
-				w, h,
+				width, height,
 				// Window name
 				name,
 				// Fullscreen monitor
@@ -123,16 +129,15 @@ public class Window implements GameObject {
 
 		// Fullscreen / position
 		if (mode.isFullscreen())
-			glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, w, h, GLFW_DONT_CARE);
+			glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, width, height, GLFW_DONT_CARE);
 		else
-			glfwSetWindowPos(window, mode.getX() == DisplayMode.CENTER ? (vmode.width() / 2) - (w / 2) : mode.getX(),
-					mode.getY() == DisplayMode.CENTER ? (vmode.height() / 2) - (h / 2) : mode.getY());
+			glfwSetWindowPos(window,
+					mode.getX() == DisplayMode.CENTER ? (vmode.width() / 2) - (width / 2) : mode.getX(),
+					mode.getY() == DisplayMode.CENTER ? (vmode.height() / 2) - (height / 2) : mode.getY());
 
 		// Assign callbacks
 		glfwSetKeyCallback(window, keyboard);
-		glfwSetCursorPosCallback(window, mouse);
-
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		mouse.redirectWindowCallbacks();
 
 		// Set current context
 		glfwMakeContextCurrent(window);
@@ -145,13 +150,15 @@ public class Window implements GameObject {
 
 		// Create OpenGL capabilities
 		GL.createCapabilities();
-
+		
+		return this;
 	}
 
 	/**
 	 * Sets the callback to invoke when the display mode of the window has changed.
 	 * 
 	 * @param onDisplayModeChanged The new callback to invoke.
+	 * @return [{@link Window}] This same instance of the class.
 	 */
 	public Window setDisplayModeChangedCallback(DisplayModeChangedCallback onDisplayModeChanged) {
 		this.onDisplayModeChanged = onDisplayModeChanged;
@@ -163,6 +170,7 @@ public class Window implements GameObject {
 	 * created.
 	 * 
 	 * @param mode The new display mode to set.
+	 * @return [{@link Window}] This same instance of the class.
 	 */
 	public Window setDisplayMode(DisplayMode mode) {
 
@@ -203,6 +211,27 @@ public class Window implements GameObject {
 	}
 
 	/**
+	 * Sets the state of the mouse cursor.
+	 * 
+	 * @param state The desired state (e.g. {@link #GLFW_CURSOR_NORMAL}, {@link #GLFW_CURSOR_DISABLED}, or {@link #GLFW_CURSOR_HIDDEN})
+	 * @return [{@link Window}] This same instance of the class.
+	 */
+	public Window setCursorState(int state) {
+		glfwSetInputMode(window, GLFW_CURSOR, state);
+		return this;
+	}
+
+	/**
+	 * Brings this window to the foreground.
+	 * 
+	 * @return [{@link Window}] This same instance of the class.
+	 */
+	public Window requestFocus() {
+		glfwFocusWindow(window);
+		return this;
+	}
+
+	/**
 	 * Returns a vector representing the center point of this window in its own
 	 * coordinate space.
 	 * 
@@ -212,7 +241,7 @@ public class Window implements GameObject {
 		IntBuffer width = BufferUtils.createIntBuffer(1);
 		IntBuffer height = BufferUtils.createIntBuffer(1);
 		glfwGetWindowSize(window, width, height);
-		return new Vector2i(width.get(0), height.get(0));
+		return new Vector2i(width.get(0) / 2, height.get(0) / 2);
 	}
 
 	/**
@@ -225,19 +254,41 @@ public class Window implements GameObject {
 	}
 
 	/**
-	 * Returns this window's mouse input object. [{@link KeyboardInput}] The mouse
-	 * input object used to assign mouse actions.
+	 * Returns this window's mouse input object.
+	 * 
+	 * @return [{@link KeyboardInput}] The mouse input object used to assign mouse
+	 *         actions.
 	 */
 	public MouseInput mouse() {
 		return mouse;
 	}
 
 	/**
-	 * Returns this window's keyboard input object. [{@link KeyboardInput}] The
-	 * keyboard input object used to assign key actions.
+	 * Returns this window's keyboard input object.
+	 * 
+	 * @return [{@link KeyboardInput}] The keyboard input object used to assign key
+	 *         actions.
 	 */
 	public KeyboardInput keyboard() {
 		return keyboard;
+	}
+
+	/**
+	 * Returns this window's effective width.
+	 * 
+	 * @return [<b>int</b>] This window's framebuffer's width.
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * Returns this window's effective height.
+	 * 
+	 * @return [<b>int</b>] This window's framebuffer's height.
+	 */
+	public int getHeight() {
+		return height;
 	}
 
 	/**

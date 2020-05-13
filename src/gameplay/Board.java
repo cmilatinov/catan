@@ -1,20 +1,16 @@
 package gameplay;
 
 import java.util.*;
-
-import entities.Building;
-import objects.TexturedMesh;
 import resources.GameResources;
 import resources.Resource;
 
 public class Board {
-	private HashMap<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
+	private Map<TileTypes, Integer> tileQuantities = new HashMap<TileTypes, Integer>();
 	private ArrayList<Integer> tileNumbers = new ArrayList<Integer>();
 	private ArrayList<Tile> tiles;
 	
-	private int boardRadius;
-	
 	private int boardVertices = 0;
+	private int boardRadius;
 	private final int[] TILES_PER_ROW;
 	
 	/**
@@ -25,6 +21,7 @@ public class Board {
 	public Board(int boardRadius) {
 		// Sets up the amount of tiles per row that we want depending on the board radius.
 		this.boardRadius = boardRadius;
+		
 		TILES_PER_ROW = new int[boardRadius * 2 - 1];
 		boardVertices = 0;
 		for(int i = 0; i <= (int)TILES_PER_ROW.length/2; i ++) {

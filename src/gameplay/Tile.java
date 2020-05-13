@@ -66,5 +66,17 @@ public class Tile extends Entity{
 			}
 		});
 	}
+
+	public void update(double delta) {
+		
+	}
+
+	public boolean shouldUpdate() {
+		return false;
+	}
+
+	public boolean shouldRender() {
+		return true;
+	}
 	
 }

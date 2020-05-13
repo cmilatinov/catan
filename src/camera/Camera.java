@@ -9,31 +9,46 @@ import objects.GameObject;
 
 public abstract class Camera implements GameObject {
 
-	private float aspect, fov;
+	private float aspect, fovx, fovy;
 	
 	protected Vector3f pos, rot;
 	
-	private Matrix4f proj;
+	private Matrix4f proj, view;
 	
 	public Camera(float aspect, float fov) {
 		this.aspect = aspect;
-		this.fov = fov;
+		this.fovx = fov;
 		this.pos = new Vector3f();
 		this.rot = new Vector3f();
 		updateProjectionMatrix();
+		updateViewMatrix();
 	}
 	
 	private void updateProjectionMatrix() {
-		proj = new Matrix4f().perspective((float) (2 * Math.atan(Math.tan(Math.toRadians(fov) / 2) / aspect)), aspect, 0.1f, 1000f);
+		fovy = (float) (2 * Math.atan(Math.tan(Math.toRadians(fovx) / 2) / aspect));
+		proj = new Matrix4f().perspective(fovy, aspect, 0.1f, 1000f);
+		fovy = (float) Math.toDegrees(fovy);
+	}
+	
+	private void updateViewMatrix() {
+		view = new Matrix4f();
+
+		view.rotate((float) (rot.x * Math.PI / 180), new Vector3f(1, 0, 0));
+		view.rotate((float) (rot.y * Math.PI / 180), new Vector3f(0, 1, 0));
+		view.rotate((float) (rot.z * Math.PI / 180), new Vector3f(0, 0, 1));
+		
+		Vector3f invPos = new Vector3f();
+		pos.mul(-1.0f, invPos);
+		view.translate(invPos);
 	}
 	
 	public Camera setAspect(int n, int d) {
-		this.fov = (float) n / d;
+		this.fovx = (float) n / d;
 		return this;
 	}
 	
 	public Camera setFOV(float fov) {
-		this.fov = fov;
+		this.fovx = fov;
 		return this;
 	}
 	
@@ -49,6 +64,18 @@ public abstract class Camera implements GameObject {
 	
 	public Vector3f getPosition() {
 		return new Vector3f(pos);
+	}
+	
+	public float getFovX() {
+		return fovx;
+	}
+	
+	public float getFovY() {
+		return fovy;
+	}
+	
+	public float getAspect() {
+		return aspect;
 	}
 	
 	public Camera setRotation(Vector3f rot) {
@@ -83,6 +110,12 @@ public abstract class Camera implements GameObject {
 		return this;
 	}
 	
+	public Camera reset() {
+		this.rot = new Vector3f();
+		this.pos = new Vector3f();
+		return this;
+	}
+	
 	public Vector3f forward() {
 		Matrix4f transform = new Matrix4f();
 		
@@ -95,23 +128,22 @@ public abstract class Camera implements GameObject {
 	}
 	
 	public Vector3f right() {
-		return forward().cross(new Vector3f(0, 1, 0));
+		return forward().cross(new Vector3f(0, 1, 0)).normalize();
 	}
 	
 	public Matrix4f createProjectionViewMatrix() {
-		Matrix4f view = new Matrix4f();
-
-		view.rotate((float) (rot.x * Math.PI / 180), new Vector3f(1, 0, 0));
-		view.rotate((float) (rot.y * Math.PI / 180), new Vector3f(0, 1, 0));
-		view.rotate((float) (rot.z * Math.PI / 180), new Vector3f(0, 0, 1));
-		
-		Vector3f invPos = new Vector3f();
-		pos.mul(-1.0f, invPos);
-		view.translate(invPos);
-
+		updateViewMatrix();
 		Matrix4f result = new Matrix4f(proj);
 		result.mul(view);
 		return result;
+	}
+	
+	public Matrix4f getProjectionMatrix() {
+		return new Matrix4f(proj);
+	}
+	
+	public Matrix4f getViewMatrix() {
+		return new Matrix4f(view);
 	}
 	
 	public abstract void update(double delta);

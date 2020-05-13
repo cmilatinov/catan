@@ -19,7 +19,8 @@ uniform vec3 cameraPos;
 
 void main(void) {
 	
-	vec3 diffuseColor = texture(tex, pass_uv).xyz;
+	vec4 textureColor = texture(tex, pass_uv);
+	vec3 diffuseColor = textureColor.xyz;
 	vec3 lighting = diffuseColor * AMBIENT;
 	for(int i = 0; i < numLights; i++){
 		
@@ -30,6 +31,6 @@ void main(void) {
 
 	}
 
-	color = vec4(lighting, 1);
+	color = vec4(lighting, textureColor.w);
 	
 }

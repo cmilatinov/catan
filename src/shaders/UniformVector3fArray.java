@@ -32,7 +32,7 @@ public class UniformVector3fArray extends Uniform {
 	}
 	
 	public void set(Vector3f[] data) {
-		for(int i = 0; i < locations.length; i++) {
+		for(int i = 0; i < data.length; i++) {
 			FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
 			data[i].get(buffer);
 			glUniform3fv(locations[i], buffer);
