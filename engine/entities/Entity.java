@@ -75,7 +75,7 @@ public abstract class Entity {
 	/**
 	 * Sets the position of the entity to the specified vector.
 	 * 
-	 * @param rot The position to set.
+	 * @param pos The position to set.
 	 * @return [{@link Entity}] This same instance of the class.
 	 */
 	public Entity setPosition(Vector3f pos) {
