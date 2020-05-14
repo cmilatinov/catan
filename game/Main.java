@@ -1,11 +1,10 @@
-import display.Window;
 import entities.Entity;
 import entities.EntityStatic;
 import gameplay.PlayerHand;
 import gui.GUI;
 import lights.Light;
 import main.Engine;
-import main.GameController;
+import main.Scene;
 import objects.TexturedMesh;
 import org.joml.Vector3f;
 import resources.GameResources;
@@ -16,22 +15,39 @@ import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_FILL;
+
 public class Main {
     public static void main(String[] args) {
         var engine = new Engine();
-        UIManager uiManager = engine.getUiManager();
-        GameController controller = engine.getController();
-        Window window = engine.getWindow();
+        Scene scene = engine.getCurrentScene();
 
-        test(controller, uiManager, window);
+        // R to Reset Camera
+        scene.registerKeyUpAction(GLFW_KEY_R, (int mods) -> scene.getCamera().reset());
+        // Q to toggle wireframe
+        AtomicBoolean wireframe = new AtomicBoolean(false);
+        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_ESCAPE, (int mods) -> scene.getWindow().close());
+        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_Q, (int mods) -> {
+            if(!wireframe.get())
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            else
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            wireframe.set(!wireframe.get());
+        });
+
+        gameCode(scene);
 
         engine.run();
     }
 
     // Move This out later
-    protected static void test(GameController controller, UIManager uiManager, Window window) {
+    protected static void gameCode(Scene scene) {
         // Skybox
-        controller.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
+        scene.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
 
         // Cards
         GUI[] cards = new GUI[10];
@@ -45,9 +61,9 @@ public class Main {
                 case 4 -> cards[i] = new GUI(GameResources.get(Resource.TEXTURE_CARD_WHEAT));
             }
             cards[i].setSize(150);
-            controller.registerGUI(cards[i]);
+            scene.registerGUI(cards[i]);
         }
-        PlayerHand hand = new PlayerHand(window);
+        PlayerHand hand = new PlayerHand(scene.getWindow());
         for(GUI card : cards)
             hand.addCard(card);
         hand.update();
@@ -62,7 +78,7 @@ public class Main {
                 .setY(new PixelConstraint(20, UIDimensions.DIRECTION_TOP))
                 .setWidth(new RelativeConstraint(0.15f))
                 .setHeight(new AspectConstraint(1));
-        uiManager.getContainer().add(box, constraints);
+        scene.getUiManager().getContainer().add(box, constraints);
 
         UIQuad box2 = new UIQuad();
         box2.setColor(UIColor.RED);
@@ -95,17 +111,17 @@ public class Main {
         }).scale(0.01f);
         Entity table = new EntityStatic(GameResources.get(Resource.MODEL_TABLE)).scale(10).translate(new Vector3f(0, -0.07f, 0));
 
-        controller.registerEntity(road);
-        controller.registerEntity(settlement);
-        controller.registerEntity(city);
-        controller.registerEntity(robber);
-        controller.registerEntity(table);
+        scene.registerEntity(road);
+        scene.registerEntity(settlement);
+        scene.registerEntity(city);
+        scene.registerEntity(robber);
+        scene.registerEntity(table);
 
         Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
 
-        controller.registerLight(sun);
-        controller.registerLight(sun2);
+        scene.registerLight(sun);
+        scene.registerLight(sun2);
 
         // Tiles
         Entity[] tiles = new Entity[19];
@@ -119,7 +135,7 @@ public class Main {
                 case 3 -> tiles[i] = new EntityStatic(GameResources.get(Resource.MODEL_TILE_STONE)).scale(scale);
                 case 4 -> tiles[i] = new EntityStatic(GameResources.get(Resource.MODEL_TILE_WHEAT)).scale(scale);
             }
-            controller.registerEntity(tiles[i]);
+            scene.registerEntity(tiles[i]);
         }
         tiles[0].translate(new Vector3f(-1.732f, 0, 3));
         tiles[1].translate(new Vector3f(0, 0, 3));

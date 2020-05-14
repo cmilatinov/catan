@@ -55,14 +55,10 @@ public class Engine {
 
 	private final ArrayList<GameObject> cleanup = new ArrayList<GameObject>();
 
-	private static boolean wireframe = false;
-
-	/**
-	 * "God" Objects
-	 */
 	private final Window window;
-	private final GameController controller;
 	private final UIManager uiManager;
+
+	private Scene currentScene;
 
 	public Engine() {
 		DisplayMode mode = new DisplayMode(
@@ -81,20 +77,20 @@ public class Engine {
 		LOGGER.log("Loading assets ...");
 		GameResources.loadAll();
 
-		controller = new GameController(window);
 		uiManager = new UIManager(window);
+		currentScene = new Scene(window, uiManager);
 	}
 
-	public Window getWindow() {
-		return window;
+	public Scene getCurrentScene() {
+		return currentScene;
 	}
 
-	public GameController getController() {
-		return controller;
+	public void setCurrentScene(Scene currentScene) {
+		this.currentScene = currentScene;
 	}
 
-	public UIManager getUiManager () {
-		return uiManager;
+	public Scene newScene() {
+		return new Scene(window, uiManager);
 	}
 
 	public void run() {
@@ -104,20 +100,6 @@ public class Engine {
 		LOGGER.log("Creating window ...");
 		window.mouse().centerCursorInWindow();
 
-		// Camera
-		Camera cam = addToCleanup(new CameraFPS(70, window).translate(new Vector3f(0, 0, 1)));
-		
-		// Q to toggle wireframe
-		window.keyboard().registerKeyUp(GLFW_KEY_ESCAPE, (int mods) -> window.close());
-		window.keyboard().registerKeyUp(GLFW_KEY_Q, (int mods) -> {
-			if(!wireframe)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			else 
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			wireframe = !wireframe;
-		});
-		window.keyboard().registerKeyUp(GLFW_KEY_R, (int mods) -> cam.reset());
-		
 		// OpenGL stuff
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
@@ -141,8 +123,7 @@ public class Engine {
 			
 			// Update
 			window.update();
-			cam.update(delta);
-			controller.update(delta);
+			currentScene.update(delta);
 			uiManager.update(delta);
 			
 			fbo.bind();
@@ -152,7 +133,7 @@ public class Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			// Render scene
-			controller.renderScene(cam);
+			currentScene.renderScene();
 			
 			// Render UI
 			uiManager.render();
