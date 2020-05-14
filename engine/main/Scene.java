@@ -13,6 +13,7 @@ import gui.GUI;
 import input.KeyCallback;
 import lights.Light;
 import objects.FreeableObject;
+import objects.GameObject;
 import objects.Mesh;
 import objects.Texture;
 import org.joml.Vector3f;
@@ -25,9 +26,11 @@ import ui.UIManager;
 
 public class Scene {
 
-    private final List<GUI> guis = new ArrayList<GUI>();
-    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<Mesh, Map<Texture, List<Entity>>>();
-    private final List<Light> lights = new ArrayList<Light>();
+    private final List<GUI> guis = new ArrayList<>();
+    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();;
+    private final List<Light> lights = new ArrayList<>();
+
+    private final List<GameObject> gameObjects = new ArrayList<>();
 
     private final GUIRenderer guiRenderer;
     private final UIManager uiManager;
@@ -68,8 +71,27 @@ public class Scene {
         return this.camera;
     }
 
-    public void update(double delta) {
+    public void update(double delta) throws Exception {
         camera.update(delta);
+        for(GameObject gameObject: gameObjects) {
+            switch (gameObject.getCurrentState()) {
+                case TO_START -> {
+                    gameObject.start();
+                    gameObject.setState(GameObject.State.TO_UPDATE);
+                }
+                case TO_STOP -> {
+                    gameObject.stop();
+                    gameObject.setState(GameObject.State.STOPPED);
+                }
+                case TO_UPDATE -> {
+                    gameObject.update();
+                }
+                case TO_INITIALIZE -> {
+                    gameObject.initialize();
+                    gameObject.setState(GameObject.State.TO_UPDATE);
+                }
+            }
+        }
         for (Mesh m : entities.keySet())
             for (Texture t : entities.get(m).keySet())
                 for (Entity e : entities.get(m).get(t))
@@ -105,13 +127,18 @@ public class Scene {
                 t.destroy();
             }
         }
-
         entityRenderer.destroy();
         camera.destroy();
+        //NOTE: Scene shouldn't be responsible for the destruction of the window
     }
 
-    @SuppressWarnings("serial")
-    public void registerEntity(Entity ent) {
+    public void register(GameObject object)
+    {
+        object.setContext(this);
+        gameObjects.add(object);
+    }
+
+    public void register(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
 
@@ -131,15 +158,15 @@ public class Scene {
             entities.get(mesh).get(texture).add(ent);
     }
 
-    public void registerLight(Light light) {
+    public void register(Light light) {
         lights.add(light);
     }
 
-    public void removeGUI(GUI gui) {
+    public void remove(GUI gui) {
         guis.remove(gui);
     }
 
-    public void removeEntity(Entity ent) {
+    public void remove(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
 
@@ -152,7 +179,7 @@ public class Scene {
         entities.get(mesh).get(texture).remove(ent);
     }
 
-    public void removeLight(Light light) {
+    public void remove(Light light) {
         lights.remove(light);
     }
 

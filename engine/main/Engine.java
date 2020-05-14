@@ -1,9 +1,6 @@
 package main;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
@@ -12,10 +9,7 @@ import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
-import static org.lwjgl.opengl.GL11.GL_LINE;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_RGB;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -25,24 +19,16 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPolygonMode;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 
-import java.util.ArrayList;
-
-import objects.FreeableObject;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
-import camera.Camera;
-import camera.CameraFPS;
 import display.DisplayMode;
 import display.Window;
 import log.Logger;
 import objects.FBO;
-import objects.GameObject;
 import resources.GameResources;
 import ui.UIManager;
 
@@ -122,7 +108,13 @@ public class Engine {
 
             // Update
             window.update();
-            currentScene.update(delta);
+            try {
+                currentScene.update(delta);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.setLogLevel(Logger.ERROR);
+                LOGGER.log(e.getMessage());
+            }
             uiManager.update(delta);
 
             fbo.bind();

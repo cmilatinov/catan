@@ -10,7 +10,6 @@ import org.joml.Vector3f;
 import camera.Camera;
 import entities.Entity;
 import lights.Light;
-import objects.GameObject;
 import objects.Mesh;
 import objects.Texture;
 import shaders.entity.EntityShader;

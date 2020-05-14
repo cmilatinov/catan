@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-public class Texture implements GameObject {
+public class Texture implements GameResource {
 
 	private final int type;
 	private final int texID;

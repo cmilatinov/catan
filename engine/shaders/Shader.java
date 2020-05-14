@@ -33,7 +33,6 @@ import org.lwjgl.BufferUtils;
 
 import log.Logger;
 import main.Engine;
-import objects.GameObject;
 
 public abstract class Shader implements FreeableObject {
 
