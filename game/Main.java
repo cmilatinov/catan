@@ -1,3 +1,4 @@
+import entities.DynamicEntity;
 import entities.Entity;
 import entities.EntityStatic;
 import gameplay.PlayerHand;
@@ -98,17 +99,12 @@ public class Main {
         Entity road = new EntityStatic(blueRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0, -3.5f));
         Entity settlement = new EntityStatic(blueSettlement).scale(0.040f).translate(new Vector3f(0, 0, -3));
         Entity city = new EntityStatic(blueCity).scale(0.045f).translate(new Vector3f(0, 0, -4));
-        Entity robber = (new Entity(blueRobber) {
+        Entity robber = (new DynamicEntity(blueRobber) {
             public void update(double delta) {
                 rotate(new Vector3f(0, 200 * (float)delta, 0));
             }
-            public boolean shouldUpdate() {
-                return true;
-            }
-            public boolean shouldRender() {
-                return true;
-            }
         }).scale(0.01f);
+
         Entity table = new EntityStatic(GameResources.get(Resource.MODEL_TABLE)).scale(10).translate(new Vector3f(0, -0.07f, 0));
 
         scene.registerEntity(road);
