@@ -12,6 +12,7 @@ import entities.Entity;
 import gui.GUI;
 import input.KeyCallback;
 import lights.Light;
+import objects.FreeableObject;
 import objects.Mesh;
 import objects.Texture;
 import org.joml.Vector3f;
@@ -93,6 +94,20 @@ public class Scene {
 
     public void registerGUI(GUI gui) {
         guis.add(gui);
+    }
+
+    public void cleanup()
+    {
+        for (Mesh m : entities.keySet())
+        {
+            m.destroy();
+            for (Texture t : entities.get(m).keySet()) {
+                t.destroy();
+            }
+        }
+
+        entityRenderer.destroy();
+        camera.destroy();
     }
 
     @SuppressWarnings("serial")

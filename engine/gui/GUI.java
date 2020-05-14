@@ -1,11 +1,12 @@
 package gui;
 
+import objects.FreeableObject;
 import org.joml.Vector2f;
 
 import objects.GameObject;
 import objects.Texture;
 
-public class GUI implements GameObject {
+public class GUI implements FreeableObject {
 	
 	private final Texture texture;
 	

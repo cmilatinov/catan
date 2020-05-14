@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Represents a Vertex Array Object (VAO).
  */
-public class VAO implements GameObject {
+public class VAO implements FreeableObject {
 
 	/**
 	 * The VAO's ID.

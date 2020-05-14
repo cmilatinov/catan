@@ -3,6 +3,7 @@ package render;
 import java.util.List;
 import java.util.Map;
 
+import objects.FreeableObject;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -14,7 +15,7 @@ import objects.Mesh;
 import objects.Texture;
 import shaders.entity.EntityShader;
 
-public class EntityRenderer implements GameObject {
+public class EntityRenderer implements FreeableObject {
 	
 	private final EntityShader shader;
 	

@@ -31,9 +31,9 @@ import static org.lwjgl.opengl.GL32.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-public class FBO implements GameObject {
+public class FBO implements FreeableObject {
 
-	private static class Attachment implements GameObject {
+	private static class Attachment implements FreeableObject {
 
 		public final int id;
 		public final int glAttachment;

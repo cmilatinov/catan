@@ -39,7 +39,7 @@ import org.lwjgl.assimp.Assimp;
 
 public class GameObjectFactory implements GameObject {
 
-	private final ArrayList<GameObject> cleanup = new ArrayList<GameObject>();
+	private final ArrayList<GameObject> cleanup = new ArrayList<>();
 
 	/**
 	 * Loads a mesh from an OBJ file.

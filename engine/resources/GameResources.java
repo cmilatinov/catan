@@ -5,13 +5,14 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
 
 import java.util.HashMap;
 
+import objects.FreeableObject;
 import objects.GameObject;
 import objects.GameObjectFactory;
 import objects.TexturedMesh;
 
 public class GameResources {
 	
-	private static final HashMap<Resource, GameObject> resources = new HashMap<Resource, GameObject>();
+	private static final HashMap<Resource, GameObject> resources = new HashMap<>();
 	
 	private static final String MESH_PATH = "./models/";
 	private static final String TEXTURE_PATH = "./textures/";

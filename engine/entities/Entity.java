@@ -1,5 +1,6 @@
 package entities;
 
+import objects.GameObject;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -8,7 +9,7 @@ import objects.TexturedMesh;
 /**
  * Represents an in-game entity with a position, rotation, and scale.
  */
-public abstract class Entity {
+public abstract class Entity implements GameObject {
 
 	/**
 	 * Rotation, velocity and position of the entity.

@@ -39,6 +39,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
 import java.nio.IntBuffer;
 
+import objects.FreeableObject;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.BufferUtils;
@@ -51,7 +52,7 @@ import log.Logger;
 import main.Engine;
 import objects.GameObject;
 
-public class Window implements GameObject {
+public class Window implements FreeableObject {
 
 	private static final int NULL = 0;
 

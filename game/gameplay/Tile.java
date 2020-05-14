@@ -10,8 +10,8 @@ public class Tile extends Entity{
 	private double[] hexagonalCoords;
 	private double[] pixelCoords;
 	
-	private TileTypes type;
-	private ArrayList<Vertex> vertices;
+	private final TileTypes type;
+	private final ArrayList<Vertex> vertices;
 	private int value;
 	
 	public Tile(TexturedMesh model, TileTypes type) {
@@ -78,5 +78,9 @@ public class Tile extends Entity{
 	public boolean shouldRender() {
 		return true;
 	}
-	
+
+	@Override
+	public void destroy() {
+		this.getModel().destroy();
+	}
 }
