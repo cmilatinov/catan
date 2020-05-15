@@ -8,13 +8,6 @@ public class EntityStatic extends Entity {
         super(model);
     }
 
-    public void update(double delta) {
-    }
-
-    public boolean shouldUpdate() {
-        return false;
-    }
-
     public boolean shouldRender() {
         return true;
     }

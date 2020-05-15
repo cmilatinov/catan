@@ -24,7 +24,7 @@ public abstract class Entity implements GameResource {
 	/**
 	 * Textured mesh to be rendered.
 	 */
-	private TexturedMesh model;
+	private final TexturedMesh model;
 
 	/**
 	 * Creates an entity using the specified mesh.
@@ -228,9 +228,6 @@ public abstract class Entity implements GameResource {
 
 	}
 
-	public abstract void update(double delta);
-	
-	public abstract boolean shouldUpdate();
 	public abstract boolean shouldRender();
 
 }

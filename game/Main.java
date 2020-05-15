@@ -1,6 +1,6 @@
-import gameobjects.Cards;
-import gameobjects.Models;
-import gameobjects.UI;
+import scripts.Cards;
+import scripts.Board;
+import scripts.UI;
 import main.Engine;
 import main.Scene;
 import resources.GameResources;
@@ -31,7 +31,7 @@ public class Main {
             wireframe.set(!wireframe.get());
         });
 
-        scene.register(new Models());
+        scene.register(new Board());
         scene.register(new UI());
         scene.register(new Cards());
 

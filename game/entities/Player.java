@@ -5,7 +5,7 @@ import java.util.HashMap;
 import gameplay.TileTypes;
 
 public class Player {
-	private HashMap<TileTypes, Integer> resourceCards;
+	private final HashMap<TileTypes, Integer> resourceCards;
 	
 	public Player() {
 		resourceCards = new HashMap<TileTypes, Integer>();

@@ -1,10 +1,5 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import camera.Camera;
 import camera.CameraFPS;
 import display.Window;
@@ -12,7 +7,6 @@ import entities.Entity;
 import gui.GUI;
 import input.KeyCallback;
 import lights.Light;
-import objects.FreeableObject;
 import objects.GameObject;
 import objects.Mesh;
 import objects.Texture;
@@ -24,10 +18,16 @@ import resources.GameResources;
 import resources.Resource;
 import ui.UIManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Scene {
 
     private final List<GUI> guis = new ArrayList<>();
-    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();;
+    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
+    ;
     private final List<Light> lights = new ArrayList<>();
 
     private final List<GameObject> gameObjects = new ArrayList<>();
@@ -61,19 +61,17 @@ public class Scene {
         return uiManager;
     }
 
-    public void setCamera(Camera camera)
-    {
+    public void setCamera(Camera camera) {
         this.camera = camera;
     }
 
-    public Camera getCamera()
-    {
+    public Camera getCamera() {
         return this.camera;
     }
 
     public void update(double delta) throws Exception {
         camera.update(delta);
-        for(GameObject gameObject: gameObjects) {
+        for (GameObject gameObject : gameObjects) {
             switch (gameObject.getCurrentState()) {
                 case TO_START -> {
                     gameObject.start();
@@ -92,11 +90,6 @@ public class Scene {
                 }
             }
         }
-        for (Mesh m : entities.keySet())
-            for (Texture t : entities.get(m).keySet())
-                for (Entity e : entities.get(m).get(t))
-                    if (e.shouldUpdate())
-                        e.update(delta);
     }
 
     public void renderScene() {
@@ -118,10 +111,8 @@ public class Scene {
         guis.add(gui);
     }
 
-    public void cleanup()
-    {
-        for (Mesh m : entities.keySet())
-        {
+    public void cleanup() {
+        for (Mesh m : entities.keySet()) {
             m.destroy();
             for (Texture t : entities.get(m).keySet()) {
                 t.destroy();
@@ -132,8 +123,7 @@ public class Scene {
         //NOTE: Scene shouldn't be responsible for the destruction of the window
     }
 
-    public void register(GameObject object)
-    {
+    public void register(GameObject object) {
         object.setContext(this);
         gameObjects.add(object);
     }

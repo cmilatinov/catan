@@ -1,4 +1,4 @@
-package gameobjects;
+package scripts;
 
 import objects.GameObject;
 import ui.UIColor;

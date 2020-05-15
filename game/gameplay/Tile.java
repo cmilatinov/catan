@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import entities.Entity;
 import objects.TexturedMesh;
 
-public class Tile extends Entity{
+public class Tile extends Entity {
 	
 	private double[] hexagonalCoords;
 	private double[] pixelCoords;
@@ -65,10 +65,6 @@ public class Tile extends Entity{
 				v.getBuilding().rewardOwner(type);
 			}
 		});
-	}
-
-	public void update(double delta) {
-		
 	}
 
 	public boolean shouldUpdate() {

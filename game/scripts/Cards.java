@@ -1,8 +1,7 @@
-package gameobjects;
+package scripts;
 
 import gameplay.PlayerHand;
 import gui.GUI;
-import main.Scene;
 import objects.GameObject;
 import resources.GameResources;
 import resources.Resource;

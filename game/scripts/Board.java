@@ -1,8 +1,6 @@
-package gameobjects;
+package scripts;
 
-import entities.DynamicEntity;
-import entities.Entity;
-import entities.EntityStatic;
+import entities.*;
 import lights.Light;
 import objects.GameObject;
 import objects.TexturedMesh;
@@ -10,7 +8,7 @@ import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 
-public class Models extends GameObject {
+public class Board extends GameObject {
     @Override
     public void stop() {
 
@@ -23,31 +21,35 @@ public class Models extends GameObject {
 
     @Override
     public void initialize() {
-        TexturedMesh blueRoad = new TexturedMesh(GameResources.get(Resource.MESH_ROAD), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
-        TexturedMesh blueSettlement = new TexturedMesh(GameResources.get(Resource.MESH_SETTLEMENT), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
-        TexturedMesh blueCity = new TexturedMesh(GameResources.get(Resource.MESH_CITY), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
-        TexturedMesh blueRobber = new TexturedMesh(GameResources.get(Resource.MESH_ROBBER), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
-
-        Entity road = new EntityStatic(blueRoad).scale(0.45f).rotate(new Vector3f(0, 90, 0)).translate(new Vector3f(0, 0, -3.5f));
-        Entity settlement = new EntityStatic(blueSettlement).scale(0.040f).translate(new Vector3f(0, 0, -3));
-        Entity city = new EntityStatic(blueCity).scale(0.045f).translate(new Vector3f(0, 0, -4));
-        Entity robber = (new DynamicEntity(blueRobber) {
-            public void update(double delta) {
-                rotate(new Vector3f(0, 200 * (float)delta, 0));
-            }
-        }).scale(0.01f);
-
-        Entity table = new EntityStatic(GameResources.get(Resource.MODEL_TABLE)).scale(10).translate(new Vector3f(0, -0.07f, 0));
-
+        Entity road = Road
+                .create(Resource.TEXTURE_COLOR_BLUE)
+                .scale(0.45f)
+                .rotate(new Vector3f(0, 90, 0))
+                .translate(new Vector3f(0, 0, -3.5f));
         getScene().register(road);
+
+        Entity settlement = Settlement
+                .create(Resource.TEXTURE_COLOR_BLUE)
+                .scale(0.040f)
+                .translate(new Vector3f(0, 0, -3));
         getScene().register(settlement);
-        getScene().register(city);
+
+        Entity city = City
+                .create(Resource.TEXTURE_COLOR_BLUE)
+                .scale(0.045f)
+                .translate(new Vector3f(0, 0, -4));
+
+        Entity robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
         getScene().register(robber);
+
+        Entity table = Table.create()
+                .scale(10)
+                .translate(new Vector3f(0, -0.07f, 0));
+
         getScene().register(table);
 
         Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
-
         getScene().register(sun);
         getScene().register(sun2);
 
