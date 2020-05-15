@@ -34,7 +34,7 @@ public class CameraFPS extends Camera {
 	
 	public void update(double delta) {
 		if (window.keyboard().isKeyDown(GLFW_KEY_W))
-			pos = pos.add(forward().mul((float)delta * speed));
+			pos.add(forward().mul((float)delta * speed));
 
 		if (window.keyboard().isKeyDown(GLFW_KEY_S))
 			pos.sub(forward().mul((float)delta * speed));
@@ -43,13 +43,13 @@ public class CameraFPS extends Camera {
 			pos.sub(right().mul((float)delta * speed));
 
 		if (window.keyboard().isKeyDown(GLFW_KEY_D))
-			pos = pos.add(right().mul((float)delta * speed));
+			pos.add(right().mul((float)delta * speed));
 
 		if (window.keyboard().isKeyDown(GLFW_KEY_LEFT_SHIFT))
 			pos.sub(new Vector3f(0, (float)delta * speed, 0));
 
 		if (window.keyboard().isKeyDown(GLFW_KEY_SPACE))
-			pos = pos.add(new Vector3f(0, (float)delta * speed, 0));
+			pos.add(new Vector3f(0, (float)delta * speed, 0));
 	}
 	
 	public CameraFPS setSpeed(float speed) {

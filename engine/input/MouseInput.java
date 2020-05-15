@@ -103,7 +103,7 @@ public class MouseInput {
 	public MouseInput centerCursorInWindow() {
 		ignoreNext = true;
 		Vector2i center = window.getCenter();
-		glfwSetCursorPos(window.getHandle(), (double) center.x / 2, (double) center.y / 2);
+		glfwSetCursorPos(window.getHandle(), center.x, center.y);
 		return this;
 	}
 

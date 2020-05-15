@@ -1,5 +1,6 @@
 package render;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.joml.Matrix4f;
@@ -34,7 +35,7 @@ public class GUIRenderer {
 		
 		guiMesh.getVAO().bind(0, 1);
 		
-		guis.sort((GUI a, GUI b) -> a.getElevation() - b.getElevation());
+		guis.sort(Comparator.comparingInt(GUI::getElevation));
 		
 		for(GUI gui : guis) {
 				

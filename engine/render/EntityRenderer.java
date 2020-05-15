@@ -26,32 +26,7 @@ public class EntityRenderer implements FreeableObject {
 		shader.textureSampler.set(0);
 		shader.stop();
 	}
-	
-	
-	public void render(Camera cam, Entity e, Light l) {
-		
-		Mesh mesh = e.getModel().getMesh();
-		Texture texture = e.getModel().getTexture();
-		
-		shader.use();
-		shader.projectionViewMatrix.set(cam.createProjectionViewMatrix());
-		shader.modelMatrix.set(e.getTransform());
-		
-		shader.numLights.set(1);
-		shader.lightPositions.set(0, l.getPosition());
-		shader.lightColors.set(0, l.getColor());
-		
-		shader.cameraPos.set(cam.getPosition());
-		
-		mesh.getVAO().bind(0, 1, 2);
-		texture.bindToUnit(0);
-		mesh.draw();
-		mesh.getVAO().unbind(0, 1, 2);
-		
-		shader.stop();
-		
-	}
-	
+
 	public void render(Camera cam, Map<Mesh, Map<Texture, List<Entity>>> entities, List<Light> lights) {
 		
 		shader.use();
