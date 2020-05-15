@@ -47,6 +47,7 @@ import input.MouseInput;
 import log.Logger;
 import main.Engine;
 
+@SuppressWarnings("DuplicatedCode")
 public class Window implements FreeableObject {
 
 	private static final int NULL = 0;
@@ -111,6 +112,11 @@ public class Window implements FreeableObject {
 
 		// Create window
 		GLFWVidMode vmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		if (vmode == null) {
+			Engine.log(Logger.ERROR, "Unable to retrieve default monitor display mode.");
+			Engine.stop(Engine.ERR_MONITOR_MODE);
+			return null;
+		}
 		width = mode.getWidth() == DisplayMode.MAX_SIZE ? vmode.width() : mode.getWidth();
 		height = mode.getHeight() == DisplayMode.MAX_SIZE ? vmode.height() : mode.getHeight();
 		window = glfwCreateWindow(
@@ -137,6 +143,9 @@ public class Window implements FreeableObject {
 
 		// Set current context
 		glfwMakeContextCurrent(window);
+
+		// Cursor mode
+		glfwSetInputMode(window, GLFW_CURSOR, mode.getCursorMode());
 
 		// VSYNC
 		glfwSwapInterval(mode.isVSYNC() ? 1 : 0);
@@ -177,8 +186,16 @@ public class Window implements FreeableObject {
 		glfwSetWindowAttrib(window, GLFW_DECORATED, mode.isDecorated() ? GLFW_TRUE : GLFW_FALSE);
 		glfwSetWindowAttrib(window, GLFW_FLOATING, mode.isAlwaysOnTop() ? GLFW_TRUE : GLFW_FALSE);
 
+		// Cursor mode
+		glfwSetInputMode(window, GLFW_CURSOR, mode.getCursorMode());
+
 		// Change window size and undo fullscreen
 		GLFWVidMode vmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		if (vmode == null) {
+			Engine.log(Logger.ERROR, "Unable to retrieve default monitor display mode.");
+			Engine.stop(Engine.ERR_MONITOR_MODE);
+			return null;
+		}
 		int w = mode.getWidth() == DisplayMode.MAX_SIZE ? vmode.width() : mode.getWidth();
 		int h = mode.getHeight() == DisplayMode.MAX_SIZE ? vmode.height() : mode.getHeight();
 		glfwSetWindowMonitor(window, NULL, 0, 0, w, h, GLFW_DONT_CARE);

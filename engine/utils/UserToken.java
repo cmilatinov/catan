@@ -25,7 +25,7 @@ public class UserToken {
 	 * @param bytes The token data.
 	 */
 	public UserToken(byte[] bytes) {
-		this.bytes = bytes;
+		this.bytes = Arrays.copyOf(bytes, TOKEN_SIZE);
 	}
 	
 	/**
