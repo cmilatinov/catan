@@ -45,7 +45,7 @@ public class UI extends GameObject {
     }
 
     @Override
-    public void update() {
+    public void update(double delta) {
 
     }
 

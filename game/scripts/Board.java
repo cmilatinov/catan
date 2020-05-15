@@ -3,12 +3,13 @@ package scripts;
 import entities.*;
 import lights.Light;
 import objects.GameObject;
-import objects.TexturedMesh;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 
 public class Board extends GameObject {
+    Entity robber;
+
     @Override
     public void stop() {
 
@@ -21,6 +22,15 @@ public class Board extends GameObject {
 
     @Override
     public void initialize() {
+        Entity table = Table.create()
+                .scale(10)
+                .translate(new Vector3f(0, -0.07f, 0));
+        getScene().register(table);
+
+        robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
+        getScene().register(robber);
+
+        //<editor-fold defaultstate="collapsed" desc="Model Creations">
         Entity road = Road
                 .create(Resource.TEXTURE_COLOR_BLUE)
                 .scale(0.45f)
@@ -38,15 +48,7 @@ public class Board extends GameObject {
                 .create(Resource.TEXTURE_COLOR_BLUE)
                 .scale(0.045f)
                 .translate(new Vector3f(0, 0, -4));
-
-        Entity robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
-        getScene().register(robber);
-
-        Entity table = Table.create()
-                .scale(10)
-                .translate(new Vector3f(0, -0.07f, 0));
-
-        getScene().register(table);
+        getScene().register(city);
 
         Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
@@ -90,11 +92,13 @@ public class Board extends GameObject {
         tiles[16].translate(new Vector3f(-1.732f, 0, -3));
         tiles[17].translate(new Vector3f(0, 0, -3));
         tiles[18].translate(new Vector3f(1.732f, 0, -3));
+        //</editor-fold>
+
     }
 
     @Override
-    public void update() {
-
+    public void update(double delta) {
+        robber.rotate((new Vector3f(0, 200 * (float)delta, 0)));
     }
 
     @Override

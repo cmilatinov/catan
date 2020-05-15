@@ -43,7 +43,7 @@ public class Cards extends GameObject {
     }
 
     @Override
-    public void update() {
+    public void update(double delta) {
 
     }
 

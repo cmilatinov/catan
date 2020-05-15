@@ -41,5 +41,5 @@ public abstract class GameObject implements GameResource {
     public abstract void stop();
     public abstract void start();
     public abstract void initialize();
-    public abstract void update();
+    public abstract void update(double delta);
 }
