@@ -82,7 +82,7 @@ public class Scene {
                     gameObject.setState(GameObject.State.STOPPED);
                 }
                 case TO_UPDATE -> {
-                    gameObject.update();
+                    gameObject.update(delta);
                 }
                 case TO_INITIALIZE -> {
                     gameObject.initialize();
