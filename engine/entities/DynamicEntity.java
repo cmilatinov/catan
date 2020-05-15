@@ -2,9 +2,9 @@ package entities;
 
 import objects.TexturedMesh;
 
-public class EntityStatic extends Entity {
+public class DynamicEntity extends Entity {
 
-    public EntityStatic(TexturedMesh model) {
+    public DynamicEntity(TexturedMesh model) {
         super(model);
     }
 
@@ -12,7 +12,7 @@ public class EntityStatic extends Entity {
     }
 
     public boolean shouldUpdate() {
-        return false;
+        return true;
     }
 
     public boolean shouldRender() {

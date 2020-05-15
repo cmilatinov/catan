@@ -3,18 +3,18 @@ package render;
 import java.util.List;
 import java.util.Map;
 
+import objects.FreeableObject;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import camera.Camera;
 import entities.Entity;
 import lights.Light;
-import objects.GameObject;
 import objects.Mesh;
 import objects.Texture;
 import shaders.entity.EntityShader;
 
-public class EntityRenderer implements GameObject {
+public class EntityRenderer implements FreeableObject {
 	
 	private final EntityShader shader;
 	

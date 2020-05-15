@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
-public class Mesh implements GameObject {
+public class Mesh implements GameResource {
 
 	private final VAO vao;
 	private final int vertexCount;

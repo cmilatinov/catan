@@ -3,9 +3,6 @@ package display;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_DECORATED;
 import static org.lwjgl.glfw.GLFW.GLFW_DONT_CARE;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -39,7 +36,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
 import java.nio.IntBuffer;
 
-import org.joml.Vector2f;
+import objects.FreeableObject;
 import org.joml.Vector2i;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -49,9 +46,8 @@ import input.KeyboardInput;
 import input.MouseInput;
 import log.Logger;
 import main.Engine;
-import objects.GameObject;
 
-public class Window implements GameObject {
+public class Window implements FreeableObject {
 
 	private static final int NULL = 0;
 

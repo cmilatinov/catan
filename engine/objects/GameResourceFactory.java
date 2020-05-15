@@ -37,9 +37,9 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
-public class GameObjectFactory implements GameObject {
+public class GameResourceFactory implements GameResource {
 
-	private final ArrayList<GameObject> cleanup = new ArrayList<GameObject>();
+	private final ArrayList<GameResource> cleanup = new ArrayList<>();
 
 	/**
 	 * Loads a mesh from an OBJ file.
@@ -374,12 +374,12 @@ public class GameObjectFactory implements GameObject {
 	 * {@inheritDoc}
 	 */
 	public void destroy() {
-		for (GameObject g : cleanup)
+		for (GameResource g : cleanup)
 			g.destroy();
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends GameObject> T addToCleanup(GameObject g) {
+	private <T extends GameResource> T addToCleanup(GameResource g) {
 		cleanup.add(g);
 		return (T) g;
 	}

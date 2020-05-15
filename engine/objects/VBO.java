@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL15.glGenBuffers;
 /**
  * Represents a Vertex Buffer Object (VBO).
  */
-public class VBO implements GameObject {
+public class VBO implements FreeableObject {
 
 	/**
 	 * The VBO's ID.

@@ -35,7 +35,9 @@ public class UniformVector3fArray extends Uniform {
 		for(int i = 0; i < data.length; i++) {
 			FloatBuffer buffer = BufferUtils.createFloatBuffer(3);
 			data[i].get(buffer);
-			glUniform3fv(locations[i], buffer);
+			if(i < locations.length) {
+				glUniform3fv(locations[i], buffer);
+			}
 		}
 	}
 	

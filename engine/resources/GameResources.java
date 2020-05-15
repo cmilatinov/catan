@@ -5,13 +5,13 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
 
 import java.util.HashMap;
 
-import objects.GameObject;
-import objects.GameObjectFactory;
+import objects.GameResource;
+import objects.GameResourceFactory;
 import objects.TexturedMesh;
 
 public class GameResources {
 	
-	private static final HashMap<Resource, GameObject> resources = new HashMap<Resource, GameObject>();
+	private static final HashMap<Resource, GameResource> resources = new HashMap<>();
 	
 	private static final String MESH_PATH = "./models/";
 	private static final String TEXTURE_PATH = "./textures/";
@@ -63,7 +63,7 @@ public class GameResources {
 		SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE	
 	};
 	
-	private static final GameObjectFactory loader = new GameObjectFactory();
+	private static final GameResourceFactory loader = new GameResourceFactory();
 	
 	public static void loadAll() {
 		
@@ -137,7 +137,7 @@ public class GameResources {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends GameObject> T get(Resource id) {
+	public static <T extends GameResource> T get(Resource id) {
 		return (T) resources.get(id);
 	}
 	

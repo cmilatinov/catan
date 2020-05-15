@@ -16,7 +16,7 @@ public class Board {
 	/**
 	 * Constructor to create a board.
 	 * 
-	 * @param mapRadius - Radius of the board.
+	 * @param boardRadius - Radius of the board.
 	 */
 	public Board(int boardRadius) {
 		// Sets up the amount of tiles per row that we want depending on the board radius.

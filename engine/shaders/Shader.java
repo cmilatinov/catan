@@ -28,13 +28,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.IntBuffer;
 
+import objects.FreeableObject;
 import org.lwjgl.BufferUtils;
 
 import log.Logger;
 import main.Engine;
-import objects.GameObject;
 
-public abstract class Shader implements GameObject {
+public abstract class Shader implements FreeableObject {
 
 	// Shader types
 	private static final int SHADER_VERTEX = 0b1;

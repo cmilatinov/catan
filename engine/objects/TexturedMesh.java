@@ -1,6 +1,6 @@
 package objects;
 
-public class TexturedMesh implements GameObject {
+public class TexturedMesh implements GameResource {
 
 	private final Mesh mesh;
 	private final Texture texture;
