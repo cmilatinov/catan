@@ -2,6 +2,7 @@ package entities;
 
 import objects.GameResource;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import objects.TexturedMesh;
@@ -103,6 +104,26 @@ public abstract class Entity implements GameResource {
 	 */
 	public Entity rotate(Vector3f rotation) {
 		rot.add(rotation);
+		return this;
+	}
+
+	/**
+	 * Rotates the entity towards a position
+	 *
+	 * @param other the position to look towards
+	 * @return [{@link Entity}] This same instance of the class
+	 */
+	public Entity lookAt(Vector3f other) {
+		Vector3f dir = new Vector3f();
+		other.sub(this.pos, dir);
+
+		float pitch = (float) (Math.atan(dir.y / new Vector2f(dir.x, dir.z).length()) * 180 / Math.PI);
+		float yaw = dir.z < 0 ?
+				(float) (Math.atan(dir.x / dir.z) * 180 / Math.PI) :
+				(float) (Math.atan(dir.x / dir.z) * 180 / Math.PI + 180);
+
+		rot = new Vector3f(-pitch, -yaw, 0);
+
 		return this;
 	}
 

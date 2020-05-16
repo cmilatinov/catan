@@ -101,10 +101,20 @@ public final class Engine {
                 .unbind();
 
         long lastTime = System.nanoTime();
+        long lastSecond = 0;
+        int frameCount = 0;
         while (!window.shouldClose()) {
-
             // Time elapsed since last frame
             long currentTime = System.nanoTime();
+
+            if(((currentTime - lastSecond) / 1e9) >= 1) {
+                log(Logger.INFO, "Framerate : " + frameCount);
+                frameCount = 0;
+                lastSecond = currentTime;
+            }
+
+            frameCount += 1;
+
             double delta = (currentTime - lastTime) * 1e-9;
 
             // Update

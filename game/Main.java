@@ -1,3 +1,6 @@
+import camera.Camera;
+import camera.PanCamera;
+import org.joml.Vector3f;
 import scripts.Cards;
 import scripts.Board;
 import scripts.UI;
@@ -16,6 +19,11 @@ public class Main {
         var engine = new Engine();
 
         Scene scene = engine.getCurrentScene();
+        Camera orbitCamera = new PanCamera(70, scene.getWindow())
+                .rotate(new Vector3f(60, 0, 0))
+                .translate(new Vector3f(0, 5, -5));
+        scene.setCamera(orbitCamera);
+
         // Skybox
         scene.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
         // R to Reset Camera
