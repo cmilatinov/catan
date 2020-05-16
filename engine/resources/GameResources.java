@@ -2,6 +2,7 @@ package resources;
 
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static resources.ProxyGameResource.*;
 
 import java.util.HashMap;
 
@@ -23,10 +24,10 @@ public class GameResources {
 	};
 	
 	private static final float[] GUI_MESH_VERTICES = {
-		-1, -1, 1,
-		1, -1, 1,
-		1, 1, 1,
-		-1, 1, 1
+		-1, -1,  1,
+		 1, -1,  1,
+		 1,  1,  1,
+		-1,  1,  1
 	};
 	
 	private static final float[] GUI_MESH_UVS = {
@@ -68,77 +69,102 @@ public class GameResources {
 	public static void loadAll() {
 		
 		// Meshes
-		loadMesh(Resource.MESH_CITY, MESH_PATH + "city.obj");
-		loadMesh(Resource.MESH_ROAD, MESH_PATH + "road.obj");
-		loadMesh(Resource.MESH_ROBBER, MESH_PATH + "robber.obj");
-		loadMesh(Resource.MESH_SETTLEMENT, MESH_PATH + "settlement.obj");
-		loadMesh(Resource.MESH_TILE, MESH_PATH + "tile.obj");
-		loadMesh(Resource.MESH_BOARD, MESH_PATH + "board.obj");
-		loadMesh(Resource.MESH_TABLE, MESH_PATH + "table.obj");
+		proxyMesh(Resource.MESH_CITY, MESH_PATH + "city.obj");
+		proxyMesh(Resource.MESH_ROAD, MESH_PATH + "road.obj");
+		proxyMesh(Resource.MESH_ROBBER, MESH_PATH + "robber.obj");
+		proxyMesh(Resource.MESH_SETTLEMENT, MESH_PATH + "settlement.obj");
+		proxyMesh(Resource.MESH_TILE, MESH_PATH + "tile.obj");
+		proxyMesh(Resource.MESH_BOARD, MESH_PATH + "board.obj");
+		proxyMesh(Resource.MESH_TABLE, MESH_PATH + "table.obj");
 		resources.put(Resource.MESH_GUI, loader.loadMesh(GUI_MESH_INDICES, GUI_MESH_VERTICES, GUI_MESH_UVS));
 		resources.put(Resource.MESH_SKYBOX, loader.loadMesh(SKYBOX_MESH_INDICES, SKYBOX_MESH_VERTICES));
 		
 		// Textures
-		loadTexture2D(Resource.TEXTURE_TILE_BRICK, TEXTURE_PATH + "tile_brick.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_TILE_DESERT, TEXTURE_PATH + "tile_desert.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_TILE_FOREST, TEXTURE_PATH + "tile_forest.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_TILE_SHEEP, TEXTURE_PATH + "tile_sheep.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_TILE_STONE, TEXTURE_PATH + "tile_stone.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_TILE_WHEAT, TEXTURE_PATH + "tile_wheat.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TILE_BRICK, TEXTURE_PATH + "tile_brick.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TILE_DESERT, TEXTURE_PATH + "tile_desert.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TILE_FOREST, TEXTURE_PATH + "tile_forest.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TILE_SHEEP, TEXTURE_PATH + "tile_sheep.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TILE_STONE, TEXTURE_PATH + "tile_stone.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TILE_WHEAT, TEXTURE_PATH + "tile_wheat.png", GL_LINEAR, true);
 		
-		loadTexture2D(Resource.TEXTURE_CARD_BRICK, TEXTURE_PATH + "card_brick.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_CARD_FOREST, TEXTURE_PATH + "card_forest.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_CARD_SHEEP, TEXTURE_PATH + "card_sheep.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_CARD_STONE, TEXTURE_PATH + "card_stone.png", GL_LINEAR, true);
-		loadTexture2D(Resource.TEXTURE_CARD_WHEAT, TEXTURE_PATH + "card_wheat.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_CARD_BRICK, TEXTURE_PATH + "card_brick.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_CARD_FOREST, TEXTURE_PATH + "card_forest.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_CARD_SHEEP, TEXTURE_PATH + "card_sheep.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_CARD_STONE, TEXTURE_PATH + "card_stone.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_CARD_WHEAT, TEXTURE_PATH + "card_wheat.png", GL_LINEAR, true);
 		
-		loadTexture2D(Resource.TEXTURE_BOARD, TEXTURE_PATH + "board.png", GL_LINEAR, true);
-		
-		loadTexture2D(Resource.TEXTURE_CARD_KNIGHT, TEXTURE_PATH + "card_knight.png", GL_LINEAR, true);
-		
-		loadTexture2D(Resource.TEXTURE_TABLE, TEXTURE_PATH + "wood.jpg", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_BOARD, TEXTURE_PATH + "board.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_CARD_KNIGHT, TEXTURE_PATH + "card_knight.png", GL_LINEAR, true);
+		proxyTexture2D(Resource.TEXTURE_TABLE, TEXTURE_PATH + "wood.jpg", GL_LINEAR, true);
 		
 		// Color textures
-		loadTexture2D(Resource.TEXTURE_COLOR_BLUE, TEXTURE_PATH + "blue.png", GL_NEAREST, false);
+		proxyTexture2D(Resource.TEXTURE_COLOR_BLUE, TEXTURE_PATH + "blue.png", GL_NEAREST, false);
 		
 		// Skybox
-		loadTextureCubeMap(Resource.TEXTURE_SKYBOX, TEXTURE_PATH + "skybox/");
+		proxyTextureCubeMap(Resource.TEXTURE_SKYBOX, TEXTURE_PATH + "skybox/");
 		
 		// Models
-		loadModel(Resource.MODEL_TILE_BRICK, Resource.MESH_TILE, Resource.TEXTURE_TILE_BRICK);
-		loadModel(Resource.MODEL_TILE_DESERT, Resource.MESH_TILE, Resource.TEXTURE_TILE_DESERT);
-		loadModel(Resource.MODEL_TILE_FOREST, Resource.MESH_TILE, Resource.TEXTURE_TILE_FOREST);
-		loadModel(Resource.MODEL_TILE_SHEEP, Resource.MESH_TILE, Resource.TEXTURE_TILE_SHEEP);
-		loadModel(Resource.MODEL_TILE_STONE, Resource.MESH_TILE, Resource.TEXTURE_TILE_STONE);
-		loadModel(Resource.MODEL_TILE_WHEAT, Resource.MESH_TILE, Resource.TEXTURE_TILE_WHEAT);
-		loadModel(Resource.MODEL_BOARD, Resource.MESH_BOARD, Resource.TEXTURE_BOARD);
-		loadModel(Resource.MODEL_TABLE, Resource.MESH_TABLE, Resource.TEXTURE_TABLE);
+		proxyModel(Resource.MODEL_TILE_BRICK, Resource.MESH_TILE, Resource.TEXTURE_TILE_BRICK);
+		proxyModel(Resource.MODEL_TILE_DESERT, Resource.MESH_TILE, Resource.TEXTURE_TILE_DESERT);
+		proxyModel(Resource.MODEL_TILE_FOREST, Resource.MESH_TILE, Resource.TEXTURE_TILE_FOREST);
+		proxyModel(Resource.MODEL_TILE_SHEEP, Resource.MESH_TILE, Resource.TEXTURE_TILE_SHEEP);
+		proxyModel(Resource.MODEL_TILE_STONE, Resource.MESH_TILE, Resource.TEXTURE_TILE_STONE);
+		proxyModel(Resource.MODEL_TILE_WHEAT, Resource.MESH_TILE, Resource.TEXTURE_TILE_WHEAT);
+		proxyModel(Resource.MODEL_BOARD, Resource.MESH_BOARD, Resource.TEXTURE_BOARD);
+		proxyModel(Resource.MODEL_TABLE, Resource.MESH_TABLE, Resource.TEXTURE_TABLE);
 		
 	}
 
 	public static void cleanAll() {
 		loader.destroy();
 	}
-	
+
 	private static void loadMesh(Resource id, String filepath) {
 		resources.put(id, loader.loadOBJ(filepath));
 	}
-	
+
+	private static void proxyMesh(Resource id, String filepath) {
+		var proxy = new ProxyGameResource(loader, ResourceType.MESH, filepath);
+		resources.put(id, proxy);
+	}
+
 	private static void loadTexture2D(Resource id, String filepath, int filtering, boolean mipmap) {
 		resources.put(id, loader.loadTexture2D(filepath, filtering, mipmap));
 	}
-	
+
+
+	private static void proxyTexture2D(Resource id, String filepath, int filtering, boolean mipmap) {
+		var proxy = new ProxyGameResource(loader, ResourceType.TEXTURE_2D, filepath, filtering, mipmap);
+		resources.put(id, proxy);
+	}
+
 	private static void loadTextureCubeMap(Resource id, String filepath) {
 		resources.put(id, loader.loadTextureCubeMap(filepath));
 	}
-	
+
+	private static void proxyTextureCubeMap(Resource id, String filepath) {
+		var proxy = new ProxyGameResource(loader, ResourceType.TEXTURE_CUBE_MAP, filepath);
+		resources.put(id, proxy);
+	}
+
 	private static void loadModel(Resource id, Resource mesh, Resource texture) {
 		resources.put(id, new TexturedMesh(get(mesh), get(texture)));
 	}
-	
+
+	private static void proxyModel(Resource id, Resource mesh, Resource texture) {
+		var proxy = new ProxyGameResource(loader, ResourceType.MODEL, mesh, texture);
+		resources.put(id, proxy);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T extends GameResource> T get(Resource id) {
-		return (T) resources.get(id);
+		var resource = resources.get(id);
+		if (resource instanceof ProxyGameResource) {
+			var resolvedResource = ((ProxyGameResource) resource).resolve();
+			resources.put(id, resolvedResource);
+			return (T) resolvedResource;
+		}
+		return (T) resource;
 	}
 	
 }
