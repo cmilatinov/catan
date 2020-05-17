@@ -36,9 +36,9 @@ public class Scene {
 
     private Camera camera;
 
-    public Scene(Window window, UIManager uiManager) {
+    public Scene(Window window) {
         this.attachedWindow = window;
-        this.uiManager = uiManager;
+        this.uiManager = new UIManager(window);
 
         camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
 

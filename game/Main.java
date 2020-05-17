@@ -39,6 +39,15 @@ public class Main {
             wireframe.set(!wireframe.get());
         });
 
+        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_1, (int mods) -> {
+            var test = engine.newScene();
+            test.register(new PlayerHand());
+            engine.setCurrentScene(test);
+        });
+        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_2, (int mods) -> {
+            engine.setCurrentScene(scene);
+        });
+
         scene.register(new Board());
         scene.register(new UI());
         scene.register(new PlayerHand());

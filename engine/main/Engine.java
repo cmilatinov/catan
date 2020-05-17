@@ -41,7 +41,6 @@ public final class Engine {
     public static final Logger LOGGER = new Logger();
 
     private final Window window;
-    private final UIManager uiManager;
 
     private Scene currentScene;
 
@@ -63,8 +62,7 @@ public final class Engine {
         log("Loading assets ...");
         GameResources.loadAll();
 
-        uiManager = new UIManager(window);
-        currentScene = new Scene(window, uiManager);
+        currentScene = new Scene(window);
     }
 
     public Scene getCurrentScene() {
@@ -76,7 +74,7 @@ public final class Engine {
     }
 
     public Scene newScene() {
-        return new Scene(window, uiManager);
+        return new Scene(window);
     }
 
     public void run() {
@@ -125,7 +123,7 @@ public final class Engine {
                 e.printStackTrace();
                 log(Logger.WARN, e.getMessage());
             }
-            uiManager.update(delta);
+            currentScene.getUiManager().update(delta);
 
             fbo.bind();
 
@@ -137,7 +135,7 @@ public final class Engine {
             currentScene.renderScene();
 
             // Render UI
-            uiManager.render();
+            currentScene.getUiManager().render();
 
             fbo.unbind();
 
