@@ -1,7 +1,6 @@
 package scripts;
 
-import objects.GameObject;
-import org.joml.Vector2f;
+import objects.GameScript;
 import resources.GameResources;
 import resources.Resource;
 import ui.UIConstraints;
@@ -9,7 +8,7 @@ import ui.UISprite;
 import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 
-public class PlayerHand extends GameObject {
+public class PlayerHand extends GameScript {
     private static final int FACTOR_RADIUS = 1;
     private static final int FACTOR_ELEVATION = 1 / 12;
     // Cards

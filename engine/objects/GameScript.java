@@ -3,7 +3,7 @@ package objects;
 import display.Window;
 import main.Scene;
 
-public abstract class GameObject implements GameResource {
+public abstract class GameScript implements GameResource {
 
     Scene assignedScene;
 

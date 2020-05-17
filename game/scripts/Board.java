@@ -2,12 +2,12 @@ package scripts;
 
 import entities.*;
 import lights.Light;
-import objects.GameObject;
+import objects.GameScript;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 
-public class Board extends GameObject {
+public class Board extends GameScript {
     Entity robber;
 
     @Override

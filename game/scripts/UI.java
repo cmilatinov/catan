@@ -1,6 +1,6 @@
 package scripts;
 
-import objects.GameObject;
+import objects.GameScript;
 import ui.UIColor;
 import ui.UIConstraints;
 import ui.UIDimensions;
@@ -10,7 +10,7 @@ import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
 
-public class UI extends GameObject {
+public class UI extends GameScript {
 
     @Override
     public void stop() {
