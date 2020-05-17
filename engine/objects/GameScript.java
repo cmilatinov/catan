@@ -11,17 +11,12 @@ public abstract class GameScript implements GameResource {
 
     public enum State {
         TO_START,
-        TO_STOP,
         TO_UPDATE,
         TO_INITIALIZE,
         STOPPED
     }
 
-    public void setState(State newState) throws Exception {
-        // Can't move backwards into an uninitialized state
-        if(newState == State.TO_INITIALIZE) {
-            throw new Exception("Can't move into an uninitialized state");
-        }
+    public void setState(State newState) {
         this.currentState = newState;
     }
 

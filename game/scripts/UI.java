@@ -10,17 +10,6 @@ import ui.constraints.RelativeConstraint;
 import java.awt.*;
 
 public class UI extends GameScript {
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void start() {
-
-    }
-
     @Override
     public void initialize() {
         UIQuad box = new UIQuad();
@@ -41,11 +30,6 @@ public class UI extends GameScript {
                 .setWidth(new RelativeConstraint(0.6f))
                 .setHeight(new RelativeConstraint(0.6f));
         box.add(text, constraints2);
-    }
-
-    @Override
-    public void update(double delta) {
-
     }
 
     @Override
