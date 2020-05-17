@@ -1,14 +1,13 @@
 package scripts;
 
 import objects.GameScript;
-import ui.UIColor;
-import ui.UIConstraints;
-import ui.UIDimensions;
-import ui.UIQuad;
+import ui.*;
 import ui.constraints.AspectConstraint;
 import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
+
+import java.awt.*;
 
 public class UI extends GameScript {
 
@@ -30,18 +29,18 @@ public class UI extends GameScript {
         UIConstraints constraints = new UIConstraints()
                 .setX(new PixelConstraint(20, UIDimensions.DIRECTION_LEFT))
                 .setY(new PixelConstraint(20, UIDimensions.DIRECTION_TOP))
-                .setWidth(new RelativeConstraint(0.15f))
+                .setWidth(new RelativeConstraint(0.2f))
                 .setHeight(new AspectConstraint(1));
         getScene().getUiManager().getContainer().add(box, constraints);
 
-        UIQuad box2 = new UIQuad();
-        box2.setColor(UIColor.RED);
+        UIText text = new UIText(new Font("Verdana", Font.BOLD, 30), "Hello");
+        text.setColor(UIColor.CYAN);
         UIConstraints constraints2 = new UIConstraints()
                 .setX(new CenterConstraint())
                 .setY(new CenterConstraint())
-                .setWidth(new PixelConstraint(30))
-                .setHeight(new PixelConstraint(30));
-        box.add(box2, constraints2);
+                .setWidth(new RelativeConstraint(0.6f))
+                .setHeight(new RelativeConstraint(0.6f));
+        box.add(text, constraints2);
     }
 
     @Override

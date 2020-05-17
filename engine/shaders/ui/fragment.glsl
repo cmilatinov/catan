@@ -2,17 +2,11 @@
 
 layout(origin_upper_left) in vec4 gl_FragCoord;
 
-in vec2 pass_uv;
 in vec4 pass_dimensions;
 in vec4 pass_color;
 in float pass_borderRadius;
 
 out vec4 finalColor;
-
-uniform vec2 screenSize;
-uniform sampler2D tex;
-uniform int hasTex;
-uniform int ignoreAlpha;
 
 bool isInRange(vec2 pixel, vec4 range) {
 	if (pixel.x >= range.x && 
@@ -24,6 +18,7 @@ bool isInRange(vec2 pixel, vec4 range) {
 }
 
 void main(void) {
+    
 	vec2 border = vec2(pass_borderRadius, pass_borderRadius);
 
 	vec4 topLeft = vec4(pass_dimensions.xy, border);
@@ -45,12 +40,6 @@ void main(void) {
 			discard;
 	}
 
-	if(hasTex == 1) {
-		finalColor = texture(tex, pass_uv);
-		if(ignoreAlpha == 1 && finalColor.a < 0.1) {
-			discard;
-		}
-	} else {
-		finalColor = pass_color;
-	}
+	finalColor = pass_color;
+    
 }

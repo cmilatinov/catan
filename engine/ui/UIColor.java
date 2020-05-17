@@ -5,6 +5,11 @@ public class UIColor {
 	public static final UIColor RED = new UIColor(1.0f, 0, 0, 1.0f);
 	public static final UIColor GREEN = new UIColor(0, 1.0f, 0, 1.0f);
 	public static final UIColor BLUE = new UIColor(0, 0, 1.0f, 1.0f);
+
+	public static final UIColor CYAN = new UIColor(0, 1.0f, 1.0f, 1.0f);
+	public static final UIColor MAGENTA = new UIColor(1.0f, 0, 1.0f, 1.0f);
+	public static final UIColor YELLOW = new UIColor(1.0f, 1.0f, 0, 1.0f);
+
 	
 	public static final UIColor LIGHT_GRAY = new UIColor(0.8f, 0.8f, 0.8f, 1.0f);
 	public static final UIColor DARK_GRAY = new UIColor(0.4f, 0.4f, 0.4f, 1.0f);
@@ -16,6 +21,17 @@ public class UIColor {
 		this.g = g;
 		this.b = b;
 		this.a = a;
+	}
+
+	public UIColor(UIColor from) {
+		if (from == null) {
+			r = g = b = a = 1.0f;
+			return;
+		}
+		this.r = from.r;
+		this.g = from.g;
+		this.b = from.b;
+		this.a = from.a;
 	}
 	
 	public float getR() {

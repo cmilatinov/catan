@@ -16,4 +16,5 @@ public interface Sprite {
      * @return Reference to the Sprite
      */
     public Sprite setTexture(Texture texture);
+
 }

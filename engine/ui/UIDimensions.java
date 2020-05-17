@@ -127,8 +127,11 @@ public class UIDimensions {
 
 	public Matrix4f computeModelMatrix(int screenWidth, int screenHeight) {
 		Matrix4f result = new Matrix4f();
-
-		result.translate(new Vector3f(2.0f * getCenterX() / screenWidth - 1.0f, 1.0f - 2.0f * getCenterY() / screenHeight, -ELEVATION_DISTANCE * elevation));
+		
+		result.translate(new Vector3f(
+				2.0f * getCenterX() / screenWidth - 1.0f,
+				1.0f - 2.0f * getCenterY() / screenHeight,
+				-ELEVATION_DISTANCE * elevation));
 		result.scale(new Vector3f((float) width / screenWidth, (float) height / screenHeight, 1));
 		result.rotate((float)(Math.toRadians(rotation)), new Vector3f(0, 0, 1));
 		return result;

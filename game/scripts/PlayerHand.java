@@ -9,12 +9,13 @@ import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 
 public class PlayerHand extends GameScript {
+
     private static final int FACTOR_RADIUS = 1;
     private static final int FACTOR_ELEVATION = 1 / 12;
+
     // Cards
     UISprite[] cards = new UISprite[10];
 
-    @Override
     public void initialize() {
         for (int i = 0; i < cards.length; i++) {
             int r = (int) Math.floor(Math.random() * 5);
@@ -35,8 +36,8 @@ public class PlayerHand extends GameScript {
         }
     }
 
-    @Override
     public void destroy() {
 
     }
+
 }
