@@ -1,6 +1,7 @@
 package shaders.ui;
 
 import shaders.Shader;
+import shaders.Uniform;
 import shaders.UniformInt;
 import shaders.UniformVector2f;
 
@@ -20,11 +21,17 @@ public class UIShader extends Shader {
 	
 	public final UniformInt textureSampler = new UniformInt("tex");
 
+	public final UniformInt hasTexture = new UniformInt("hasTex");
+
+	public final UniformInt ignoreAlpha = new UniformInt("ignoreAlpha");
+
 	public UIShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		registerUniforms(
 				screenSize,
-				textureSampler
+				textureSampler,
+				hasTexture,
+				ignoreAlpha
 			);
 	}
 

@@ -4,7 +4,6 @@ import camera.Camera;
 import camera.CameraFPS;
 import display.Window;
 import entities.Entity;
-import gui.GUI;
 import input.KeyCallback;
 import lights.Light;
 import objects.GameObject;
@@ -12,7 +11,6 @@ import objects.Mesh;
 import objects.Texture;
 import org.joml.Vector3f;
 import render.EntityRenderer;
-import render.GUIRenderer;
 import render.SkyboxRenderer;
 import resources.GameResources;
 import resources.Resource;
@@ -25,14 +23,10 @@ import java.util.Map;
 
 public class Scene {
 
-    private final List<GUI> guis = new ArrayList<>();
     private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
-    ;
     private final List<Light> lights = new ArrayList<>();
-
     private final List<GameObject> gameObjects = new ArrayList<>();
 
-    private final GUIRenderer guiRenderer;
     private final UIManager uiManager;
     private final EntityRenderer entityRenderer;
     private final SkyboxRenderer skyboxRenderer;
@@ -48,7 +42,6 @@ public class Scene {
 
         camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
 
-        guiRenderer = new GUIRenderer(window);
         entityRenderer = new EntityRenderer();
         skyboxRenderer = new SkyboxRenderer(GameResources.get(Resource.MESH_SKYBOX));
     }
@@ -96,7 +89,6 @@ public class Scene {
         if (skybox != null)
             skyboxRenderer.render(this.camera, skybox);
         entityRenderer.render(this.camera, entities, lights);
-        guiRenderer.render(this.camera, guis);
     }
 
     public void registerKeyUpAction(int code, KeyCallback callback) {
@@ -105,10 +97,6 @@ public class Scene {
 
     public void registerKeyDownAction(int code, KeyCallback callback) {
         this.getWindow().keyboard().registerKeyDown(code, callback);
-    }
-
-    public void registerGUI(GUI gui) {
-        guis.add(gui);
     }
 
     public void cleanup() {
@@ -150,10 +138,6 @@ public class Scene {
 
     public void register(Light light) {
         lights.add(light);
-    }
-
-    public void remove(GUI gui) {
-        guis.remove(gui);
     }
 
     public void remove(Entity ent) {

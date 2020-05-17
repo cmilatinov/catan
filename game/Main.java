@@ -1,7 +1,7 @@
 import camera.Camera;
 import camera.PanCamera;
 import org.joml.Vector3f;
-import scripts.Cards;
+import scripts.PlayerHand;
 import scripts.Board;
 import scripts.UI;
 import main.Engine;
@@ -41,7 +41,7 @@ public class Main {
 
         scene.register(new Board());
         scene.register(new UI());
-        scene.register(new Cards());
+        scene.register(new PlayerHand());
 
         engine.run();
     }

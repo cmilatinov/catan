@@ -26,10 +26,7 @@ public class PanCamera extends Camera {
     public MouseMoveCallback onMouseMove() {
         return (double x, double y, double dx, double dy) -> {
             if (window.mouse().isMouseDown(GLFW_MOUSE_BUTTON_RIGHT)) {
-                System.out.println("dx: " + dx);
-                System.out.println("dy: " + dy);
                 rotate(new Vector3f((float) dy, (float) dx, 0));
-                System.out.println("rot.x: " + rot.x);
                 rot.x = clamp(rot.x, 20, 60);
             }
         };

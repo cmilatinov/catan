@@ -1,5 +1,7 @@
 package objects;
 
+import org.w3c.dom.Text;
+
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -50,6 +52,12 @@ public class Texture implements GameResource {
 	public Texture bindToUnit(int unit) {
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(type, texID);
+		return this;
+	}
+
+	public Texture unbindToUnit(int unit) {
+		glDeleteTextures(GL_TEXTURE0 + unit);
+		glBindTexture(type, 0);
 		return this;
 	}
 
