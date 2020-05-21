@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UIComponent {
 	
-	private final UIDimensions dimensions;
+	final UIDimensions dimensions;
 	private UIConstraints constraints = null;
 	
 	protected List<UIComponent> children = new ArrayList<UIComponent>();
@@ -43,6 +43,9 @@ public class UIComponent {
 	public void computeChildrenDimensions() {
 		
 		for(UIComponent child : children) {
+
+			int lastWidth = child.dimensions.getWidth();
+			int lastHeight = child.dimensions.getHeight();
 			
 			if(child.getConstraints() != null) 
 				child.getConstraints().computeDimensions(dimensions, child.dimensions);
@@ -50,7 +53,10 @@ public class UIComponent {
 				child.dimensions.set(dimensions);
 				child.dimensions.setElevation(dimensions.getElevation() + 1);
 			}
-			
+
+			if (child instanceof UIText && (lastWidth != child.dimensions.getWidth() || lastHeight != child.dimensions.getHeight()))
+				((UIText) child).shouldUpdateImage = true;
+
 			child.computeChildrenDimensions();
 			
 		}

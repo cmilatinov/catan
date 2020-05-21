@@ -52,29 +52,13 @@ public enum Resource {
 	MODEL_TILE_WHEAT;
 	
 	public static Resource getTileModel(TileTypes t) {
-		Resource r = null;
-		
-		switch(t) {
-		case BRICK:
-			r = MODEL_TILE_BRICK;
-			break;
-		case DESERT:
-			r = MODEL_TILE_DESERT;
-			break;
-		case FOREST:
-			r = MODEL_TILE_FOREST;
-			break;
-		case STONE:
-			r = MODEL_TILE_STONE;
-			break;
-		case WHEAT:
-			r = MODEL_TILE_WHEAT;
-			break;
-		case SHEEP:
-			r = MODEL_TILE_SHEEP;
-			break;
-		}
-		
-		return r;
+		return switch (t) {
+			case BRICK -> MODEL_TILE_BRICK;
+			case DESERT -> MODEL_TILE_DESERT;
+			case FOREST -> MODEL_TILE_FOREST;
+			case STONE -> MODEL_TILE_STONE;
+			case WHEAT -> MODEL_TILE_WHEAT;
+			case SHEEP -> MODEL_TILE_SHEEP;
+		};
 	}
 }

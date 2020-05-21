@@ -2,6 +2,7 @@ package entities;
 
 import objects.GameResource;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import objects.TexturedMesh;
@@ -24,7 +25,7 @@ public abstract class Entity implements GameResource {
 	/**
 	 * Textured mesh to be rendered.
 	 */
-	private TexturedMesh model;
+	private final TexturedMesh model;
 
 	/**
 	 * Creates an entity using the specified mesh.
@@ -69,7 +70,8 @@ public abstract class Entity implements GameResource {
 	 * @return [{@link Entity}] This same instance of the class.
 	 */
 	public Entity setRotation(Vector3f rot) {
-		this.rot = new Vector3f(rot);
+		if(rot != null)
+			this.rot = new Vector3f(rot);
 		return this;
 	}
 
@@ -80,7 +82,8 @@ public abstract class Entity implements GameResource {
 	 * @return [{@link Entity}] This same instance of the class.
 	 */
 	public Entity setPosition(Vector3f pos) {
-		this.pos = new Vector3f(pos);
+		if(pos != null)
+			this.pos = new Vector3f(pos);
 		return this;
 	}
 
@@ -102,7 +105,28 @@ public abstract class Entity implements GameResource {
 	 * @return [{@link Entity}] This same instance of the class.
 	 */
 	public Entity rotate(Vector3f rotation) {
-		rot.add(rotation);
+		if(rotation != null)
+			rot.add(rotation);
+		return this;
+	}
+
+	/**
+	 * Rotates the entity towards a position
+	 *
+	 * @param other the position to look towards
+	 * @return [{@link Entity}] This same instance of the class
+	 */
+	public Entity lookAt(Vector3f other) {
+		Vector3f dir = new Vector3f();
+		other.sub(this.pos, dir);
+
+		float pitch = (float) (Math.atan(dir.y / new Vector2f(dir.x, dir.z).length()) * 180 / Math.PI);
+		float yaw = dir.z < 0 ?
+				(float) (Math.atan(dir.x / dir.z) * 180 / Math.PI) :
+				(float) (Math.atan(dir.x / dir.z) * 180 / Math.PI + 180);
+
+		rot = new Vector3f(-pitch, -yaw, 0);
+
 		return this;
 	}
 
@@ -113,7 +137,8 @@ public abstract class Entity implements GameResource {
 	 * @return [{@link Entity}] This same instance of the class.
 	 */
 	public Entity translate(Vector3f translation) {
-		pos.add(translation);
+		if(translation != null)
+			pos.add(translation);
 		return this;
 	}
 
@@ -129,12 +154,12 @@ public abstract class Entity implements GameResource {
 	}
 
 	/**
-	 * A method to get the position of an object as a vector
+	 * Returns the position vector of this entity.
 	 * 
-	 * @return [{@link Vector3f}] A vector representing the position of the object
+	 * @return [{@link Vector3f}] A vector representing the world position of the entity.
 	 */
 	public Vector3f getPosition() {
-		return pos;
+		return new Vector3f(pos);
 	}
 
 	/**
@@ -167,11 +192,10 @@ public abstract class Entity implements GameResource {
 	/**
 	 * Returns the Euler rotation of the entity.
 	 * 
-	 * @return [{@link Vector3f}] A vector containing the Euler rotation of the
-	 *         entity;
+	 * @return [{@link Vector3f}] A vector containing the Euler rotation of the entity.
 	 */
 	public Vector3f getRotation() {
-		return rot;
+		return new Vector3f(rot);
 	}
 
 	/**
@@ -228,9 +252,10 @@ public abstract class Entity implements GameResource {
 
 	}
 
-	public abstract void update(double delta);
-	
-	public abstract boolean shouldUpdate();
+	/**
+	 * Specifies whether or not the entity should be rendered on the next frame.
+	 * @return [<b>boolean</b>] True to render the entity on the next game frame, false otherwise.
+	 */
 	public abstract boolean shouldRender();
 
 }

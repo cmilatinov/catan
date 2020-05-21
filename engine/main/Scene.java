@@ -1,38 +1,32 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import camera.Camera;
 import camera.CameraFPS;
 import display.Window;
 import entities.Entity;
-import gui.GUI;
 import input.KeyCallback;
 import lights.Light;
-import objects.FreeableObject;
-import objects.GameObject;
+import objects.GameScript;
 import objects.Mesh;
 import objects.Texture;
 import org.joml.Vector3f;
 import render.EntityRenderer;
-import render.GUIRenderer;
 import render.SkyboxRenderer;
 import resources.GameResources;
 import resources.Resource;
 import ui.UIManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Scene {
 
-    private final List<GUI> guis = new ArrayList<>();
-    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();;
+    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
     private final List<Light> lights = new ArrayList<>();
+    private final List<GameScript> gameScripts = new ArrayList<>();
 
-    private final List<GameObject> gameObjects = new ArrayList<>();
-
-    private final GUIRenderer guiRenderer;
     private final UIManager uiManager;
     private final EntityRenderer entityRenderer;
     private final SkyboxRenderer skyboxRenderer;
@@ -42,13 +36,12 @@ public class Scene {
 
     private Camera camera;
 
-    public Scene(Window window, UIManager uiManager) {
+    public Scene(Window window) {
         this.attachedWindow = window;
-        this.uiManager = uiManager;
+        this.uiManager = new UIManager(window);
 
         camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
 
-        guiRenderer = new GUIRenderer(window);
         entityRenderer = new EntityRenderer();
         skyboxRenderer = new SkyboxRenderer(GameResources.get(Resource.MESH_SKYBOX));
     }
@@ -61,49 +54,41 @@ public class Scene {
         return uiManager;
     }
 
-    public void setCamera(Camera camera)
-    {
+    public void setCamera(Camera camera) {
         this.camera = camera;
     }
 
-    public Camera getCamera()
-    {
+    public Camera getCamera() {
         return this.camera;
     }
 
     public void update(double delta) throws Exception {
         camera.update(delta);
-        for(GameObject gameObject: gameObjects) {
-            switch (gameObject.getCurrentState()) {
+        for (GameScript gameScript : gameScripts) {
+            switch (gameScript.getCurrentState()) {
                 case TO_START -> {
-                    gameObject.start();
-                    gameObject.setState(GameObject.State.TO_UPDATE);
+                    gameScript.start();
+                    gameScript.setState(GameScript.State.TO_UPDATE);
                 }
                 case TO_STOP -> {
-                    gameObject.stop();
-                    gameObject.setState(GameObject.State.STOPPED);
+                    gameScript.stop();
+                    gameScript.setState(GameScript.State.STOPPED);
                 }
                 case TO_UPDATE -> {
-                    gameObject.update();
+                    gameScript.update(delta);
                 }
                 case TO_INITIALIZE -> {
-                    gameObject.initialize();
-                    gameObject.setState(GameObject.State.TO_UPDATE);
+                    gameScript.initialize();
+                    gameScript.setState(GameScript.State.TO_UPDATE);
                 }
             }
         }
-        for (Mesh m : entities.keySet())
-            for (Texture t : entities.get(m).keySet())
-                for (Entity e : entities.get(m).get(t))
-                    if (e.shouldUpdate())
-                        e.update(delta);
     }
 
     public void renderScene() {
         if (skybox != null)
             skyboxRenderer.render(this.camera, skybox);
         entityRenderer.render(this.camera, entities, lights);
-        guiRenderer.render(this.camera, guis);
     }
 
     public void registerKeyUpAction(int code, KeyCallback callback) {
@@ -114,14 +99,8 @@ public class Scene {
         this.getWindow().keyboard().registerKeyDown(code, callback);
     }
 
-    public void registerGUI(GUI gui) {
-        guis.add(gui);
-    }
-
-    public void cleanup()
-    {
-        for (Mesh m : entities.keySet())
-        {
+    public void cleanup() {
+        for (Mesh m : entities.keySet()) {
             m.destroy();
             for (Texture t : entities.get(m).keySet()) {
                 t.destroy();
@@ -132,10 +111,9 @@ public class Scene {
         //NOTE: Scene shouldn't be responsible for the destruction of the window
     }
 
-    public void register(GameObject object)
-    {
+    public void register(GameScript object) {
         object.setContext(this);
-        gameObjects.add(object);
+        gameScripts.add(object);
     }
 
     public void register(Entity ent) {
@@ -160,10 +138,6 @@ public class Scene {
 
     public void register(Light light) {
         lights.add(light);
-    }
-
-    public void remove(GUI gui) {
-        guis.remove(gui);
     }
 
     public void remove(Entity ent) {

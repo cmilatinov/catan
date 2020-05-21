@@ -3,20 +3,30 @@ package entities;
 import gameplay.TileTypes;
 import log.Logger;
 import main.Engine;
+import objects.TexturedMesh;
+import resources.GameResources;
+import resources.Resource;
 
-public class Building {
+public class Building extends EntityStatic {
 
 	private enum Type {
 		SETTLEMENT,
 		CITY;
+
 	}
-	
+
 	private Type type;
-	private Player owner;
-	
-	public Building(Player owner) {
+	private final Player owner;
+
+	private Building(TexturedMesh model, Player owner) {
+		super(model);
 		type = Type.SETTLEMENT;
 		this.owner = owner;
+	}
+
+	public static Building create(Player owner, Resource type) {
+		var model = new TexturedMesh(GameResources.get(Resource.MESH_SETTLEMENT), GameResources.get(type));
+		return new Building(model, owner);
 	}
 	
 	public void upgrade() {

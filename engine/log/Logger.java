@@ -23,7 +23,7 @@ public class Logger {
 	};
 
 	// Number of characters to add to new lines.
-	private static final int NEWLINE_NUM_CHARS[] = { 15, 23, 24, 23 };
+	private static final int[] NEWLINE_NUM_CHARS = { 15, 23, 24, 23 };
 
 	// The date format of the logger.
 	private final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
@@ -167,4 +167,5 @@ public class Logger {
 		writer.close();
 		closed = true;
 	}
+
 }

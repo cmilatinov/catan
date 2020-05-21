@@ -6,7 +6,7 @@ import entities.Entity;
 import objects.TexturedMesh;
 import org.joml.Vector3f;
 
-public class Tile extends Entity{
+public class Tile extends Entity {
 	
 	private float[] hexagonalCoords;
 	
@@ -64,10 +64,6 @@ public class Tile extends Entity{
 				v.getBuilding().rewardOwner(type);
 			}
 		});
-	}
-
-	public void update(double delta) {
-		
 	}
 
 	public boolean shouldUpdate() {

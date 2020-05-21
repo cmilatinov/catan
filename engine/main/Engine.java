@@ -1,7 +1,6 @@
 package main;
 
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
-import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -32,16 +31,16 @@ import objects.FBO;
 import resources.GameResources;
 import ui.UIManager;
 
-public class Engine {
+public final class Engine {
 
     public static final int ERR_GLFW_INIT = 1;
-    public static final int ERR_SHADER_COMPILATION = 2;
-    public static final int ERR_SHADER_LINKING = 3;
+    public static final int ERR_MONITOR_MODE = 2;
+    public static final int ERR_SHADER_COMPILATION = 3;
+    public static final int ERR_SHADER_LINKING = 4;
 
     public static final Logger LOGGER = new Logger();
 
     private final Window window;
-    private final UIManager uiManager;
 
     private Scene currentScene;
 
@@ -51,19 +50,19 @@ public class Engine {
                 DisplayMode.CENTER,            // Center Y
                 1280,                    // Width
                 720,                     // Height
-                GLFW_CURSOR_DISABLED,          // Disable cursor
+                GLFW_CURSOR_NORMAL,            // Normal cursor
                 true,                 // Decorated
                 true,                    // Use VSYNC
                 false,              // Not always on top
                 false                 // Not fullscreen
         );
         window = new Window("Hello", mode).create().requestFocus();
+
         // Load resources
-        LOGGER.log("Loading assets ...");
+        log("Loading assets ...");
         GameResources.loadAll();
 
-        uiManager = new UIManager(window);
-        currentScene = new Scene(window, uiManager);
+        currentScene = new Scene(window);
     }
 
     public Scene getCurrentScene() {
@@ -75,14 +74,14 @@ public class Engine {
     }
 
     public Scene newScene() {
-        return new Scene(window, uiManager);
+        return new Scene(window);
     }
 
     public void run() {
         init();
 
         // Create window
-        LOGGER.log("Creating window ...");
+        log("Creating window ...");
         window.mouse().centerCursorInWindow();
 
         // OpenGL stuff
@@ -100,10 +99,20 @@ public class Engine {
                 .unbind();
 
         long lastTime = System.nanoTime();
+        long lastSecond = 0;
+        int frameCount = 0;
         while (!window.shouldClose()) {
-
             // Time elapsed since last frame
             long currentTime = System.nanoTime();
+
+            if(((currentTime - lastSecond) / 1e9) >= 1) {
+                log(Logger.INFO, "Framerate : " + frameCount);
+                frameCount = 0;
+                lastSecond = currentTime;
+            }
+
+            frameCount += 1;
+
             double delta = (currentTime - lastTime) * 1e-9;
 
             // Update
@@ -112,10 +121,9 @@ public class Engine {
                 currentScene.update(delta);
             } catch (Exception e) {
                 e.printStackTrace();
-                LOGGER.setLogLevel(Logger.ERROR);
-                LOGGER.log(e.getMessage());
+                log(Logger.WARN, e.getMessage());
             }
-            uiManager.update(delta);
+            currentScene.getUiManager().update(delta);
 
             fbo.bind();
 
@@ -127,46 +135,57 @@ public class Engine {
             currentScene.renderScene();
 
             // Render UI
-            uiManager.render();
+            currentScene.getUiManager().render();
 
             fbo.unbind();
 
             // Resolve to display
             fbo.resolve(null, GL_COLOR_ATTACHMENT0, GL_BACK);
 
-
             lastTime = currentTime;
         }
 
-        LOGGER.log("Destroying object(s) ...");
+        log("Destroying object(s) ...");
         currentScene.cleanup();
         window.destroy();
         fbo.destroy();
 
-        LOGGER.log("Unloading all assets ...");
+        log("Unloading all assets ...");
         GameResources.cleanAll();
 
         LOGGER.close();
     }
 
-    public static final void init() {
+    public static void init() {
 
-        LOGGER.setLogLevel(Logger.DEBUG);
-        LOGGER.log("Initializing GLFW ...");
+        log("Initializing GLFW ...");
 
         // Set glfw error callback.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Init GLFW.
         if (!glfwInit()) {
-            Engine.LOGGER.log(Logger.ERROR, "Unable to initialize GLFW.");
-            Engine.stop(Engine.ERR_GLFW_INIT);
+            log(Logger.ERROR, "Unable to initialize GLFW.");
+            stop(Engine.ERR_GLFW_INIT);
         }
 
     }
 
-    public static final void stop(int err) {
+    public static void stop(int err) {
         LOGGER.close();
         System.exit(err);
     }
+
+    public static void setLogLevel(int logLevel) {
+        LOGGER.setLogLevel(logLevel);
+    }
+
+    public static void log(String msg) {
+        LOGGER.log(msg);
+    }
+
+    public static void log(int logLevel, String msg) {
+        LOGGER.log(logLevel, msg);
+    }
+
 }

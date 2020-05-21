@@ -2,17 +2,10 @@ package entities;
 
 import objects.TexturedMesh;
 
-public class DynamicEntity extends Entity {
+public class EntityDynamic extends Entity {
 
-    public DynamicEntity(TexturedMesh model) {
+    public EntityDynamic(TexturedMesh model) {
         super(model);
-    }
-
-    public void update(double delta) {
-    }
-
-    public boolean shouldUpdate() {
-        return true;
     }
 
     public boolean shouldRender() {

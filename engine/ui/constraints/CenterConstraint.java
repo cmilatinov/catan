@@ -8,23 +8,28 @@ import ui.UIConstraints;
 import ui.UIDimensions;
 
 public class CenterConstraint extends UIConstraint {
-	
+
+	private final int offset;
+
 	public CenterConstraint() {
 		super(UIConstraints.PRIORITY_FIRST);
+		offset = 0;
+	}
+
+	public CenterConstraint(int offset) {
+		super(UIConstraints.PRIORITY_FIRST);
+		this.offset = offset;
 	}
 
 	@Override
 	public int compute(UIDimensions parent, UIDimensions computed, int dimension) {
+		int computedValue = 0;
 		switch(dimension) {
-			case DIMENSION_X:
-				return parent.getCenterX() - computed.getWidth() / 2;
-				
-			case DIMENSION_Y:
-				return parent.getCenterY() - computed.getHeight() / 2;
-				
-			default:
-				return 0;
+			case DIMENSION_X -> computedValue = parent.getCenterX() - computed.getWidth() / 2;
+			case DIMENSION_Y-> computedValue = parent.getCenterY() - computed.getHeight() / 2;
 		}
+		computedValue += offset;
+		return computedValue;
 	}
 	
 }

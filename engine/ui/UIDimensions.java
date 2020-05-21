@@ -1,6 +1,8 @@
 package ui;
 
+import org.joml.Matrix2f;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class UIDimensions {
@@ -26,7 +28,8 @@ public class UIDimensions {
 	private int width = -1, height = -1;
 	private int x = -1, y = -1;
 	private int elevation = -1;
-	
+	private float rotation;
+
 	UIDimensions setWidth(int width) {
 		this.width = width;
 		return this;
@@ -51,6 +54,12 @@ public class UIDimensions {
 		this.elevation = elevation;
 		return this;
 	}
+
+	UIDimensions setRotation(float rotation)
+	{
+		this.rotation = rotation;
+		return this;
+	}
 	
 	UIDimensions set(UIDimensions dimensions) {
 		this.width = dimensions.width;
@@ -58,6 +67,7 @@ public class UIDimensions {
 		this.x = dimensions.x;
 		this.y = dimensions.y;
 		this.elevation = dimensions.elevation;
+		this.rotation = dimensions.rotation;
 		return this;
 	}
 	
@@ -104,17 +114,26 @@ public class UIDimensions {
 	public int getElevation() {
 		return elevation;
 	}
-	
+
+	public float getRotation()
+	{
+		return this.rotation;
+	}
+
 	void reset() {
 		this.elevation = this.width = this.height = this.x = this.y = -1;
 	}
-	
+
+
 	public Matrix4f computeModelMatrix(int screenWidth, int screenHeight) {
 		Matrix4f result = new Matrix4f();
 		
-		result.translate(new Vector3f(2.0f * getCenterX() / screenWidth - 1.0f, 1.0f - 2.0f * getCenterY() / screenHeight, -ELEVATION_DISTANCE * elevation));
+		result.translate(new Vector3f(
+				2.0f * getCenterX() / screenWidth - 1.0f,
+				1.0f - 2.0f * getCenterY() / screenHeight,
+				-ELEVATION_DISTANCE * elevation));
 		result.scale(new Vector3f((float) width / screenWidth, (float) height / screenHeight, 1));
-		
+		result.rotate((float)(Math.toRadians(rotation)), new Vector3f(0, 0, 1));
 		return result;
 	}
 	

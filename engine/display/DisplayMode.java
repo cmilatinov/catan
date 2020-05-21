@@ -43,15 +43,15 @@ public class DisplayMode {
 			false					// Not fullscreen
 		);
 	
-	private int x, y;
-	private int width, height;
+	private final int x, y;
+	private final int width, height;
 	
-	private int cursorMode;
+	private final int cursorMode;
 	
-	private boolean decorated;
-	private boolean vsync;
-	private boolean alwaysOnTop;
-	private boolean fullscreen;
+	private final boolean decorated;
+	private final boolean vsync;
+	private final boolean alwaysOnTop;
+	private final boolean fullscreen;
 	
 	public DisplayMode(int x, int y, int width, int height, int cursorMode, boolean decorated, boolean vsync, boolean alwaysOnTop, boolean fullscreen) {
 		this.x = x;
@@ -100,6 +100,7 @@ public class DisplayMode {
 	public boolean isFullscreen() {
 		return fullscreen;
 	}
+
 	public DisplayMode copy() {
 		return new DisplayMode(x, y, width, height, cursorMode, decorated, vsync, alwaysOnTop, fullscreen);
 	}

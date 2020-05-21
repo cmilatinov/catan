@@ -1,8 +1,9 @@
 package objects;
 
+import display.Window;
 import main.Scene;
 
-public abstract class GameObject implements GameResource {
+public abstract class GameScript implements GameResource {
 
     Scene assignedScene;
 
@@ -38,8 +39,13 @@ public abstract class GameObject implements GameResource {
         return this.assignedScene;
     }
 
-    public abstract void stop();
-    public abstract void start();
-    public abstract void initialize();
-    public abstract void update();
+    public Window getWindow()
+    {
+        return this.assignedScene.getWindow();
+    }
+
+    public void stop() {};
+    public void start() {};
+    public void initialize() {};
+    public void update(double delta) {};
 }

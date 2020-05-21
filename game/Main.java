@@ -1,6 +1,9 @@
-import gameobjects.Cards;
-import gameobjects.Models;
-import gameobjects.UI;
+import camera.Camera;
+import camera.PanCamera;
+import org.joml.Vector3f;
+import scripts.PlayerHand;
+import scripts.Board;
+import scripts.UI;
 import main.Engine;
 import main.Scene;
 import resources.GameResources;
@@ -16,6 +19,11 @@ public class Main {
         var engine = new Engine();
 
         Scene scene = engine.getCurrentScene();
+        Camera orbitCamera = new PanCamera(70, scene.getWindow())
+                .rotate(new Vector3f(60, 0, 0))
+                .translate(new Vector3f(0, 5, -5));
+        scene.setCamera(orbitCamera);
+
         // Skybox
         scene.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
         // R to Reset Camera
@@ -31,9 +39,18 @@ public class Main {
             wireframe.set(!wireframe.get());
         });
 
-        scene.register(new Models());
+        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_1, (int mods) -> {
+            var test = engine.newScene();
+            test.register(new PlayerHand());
+            engine.setCurrentScene(test);
+        });
+        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_2, (int mods) -> {
+            engine.setCurrentScene(scene);
+        });
+
+        scene.register(new Board());
         scene.register(new UI());
-        scene.register(new Cards());
+        scene.register(new PlayerHand());
 
         engine.run();
     }
