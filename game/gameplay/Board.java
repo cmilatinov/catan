@@ -51,7 +51,10 @@ public class Board {
 		
 		createBoard();
 	}
-	
+
+	/*
+	Generates the board vertices and tiles.
+	 */
 	private void createBoard() {
 		tiles = new ArrayList<Tile>();
 		ArrayList<Vertex> verticesList = new ArrayList<Vertex>();
@@ -95,14 +98,15 @@ public class Board {
 		// t for tile and v for vertex
 		int vIndex = 0;
 		int tIndex = 0;
+
+		float startHexX = 2;
+		float startHexY = 0;
+		float hexZ = 2;
 		
-		double startHexX = 2;
-		double startHexY = 0;
-		double hexZ = 2;
-		
-		double currHexX;
-		double currHexY;
-		
+		float currHexX;
+		float currHexY;
+
+		// Assigns vertices to the tiles and sets the tile positions.
 		for(int row = 0; row < TILES_PER_ROW.length; row ++) {
 			currHexX = startHexX * -1;
 			currHexY = startHexY;
@@ -121,7 +125,7 @@ public class Board {
 				
 				tiles.get(tIndex).setHexagonalCoords(currHexX++, currHexY--, hexZ);
 				
-				tiles.get(tIndex).getHexagonalCoords();
+				tiles.get(tIndex++).getHexagonalCoords();
 			}
 			
 			if(row + 1 != TILES_PER_ROW.length) {

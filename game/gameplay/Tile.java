@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import entities.Entity;
 import objects.TexturedMesh;
+import org.joml.Vector3f;
 
 public class Tile extends Entity{
 	
-	private double[] hexagonalCoords;
-	private double[] pixelCoords;
+	private float[] hexagonalCoords;
 	
 	private final TileTypes type;
 	private final ArrayList<Vertex> vertices;
@@ -22,9 +22,8 @@ public class Tile extends Entity{
 		vertices = new ArrayList<Vertex>();
 	}
 	
-	public void setHexagonalCoords(double x, double y, double z) {
-		hexagonalCoords = new double[] {x, y, z};
-		
+	public void setHexagonalCoords(float x, float y, float z) {
+		hexagonalCoords = new float[] {x, y, z};
 		calculatePixelCoords();
 	}
 	
@@ -32,15 +31,15 @@ public class Tile extends Entity{
 		System.out.println(hexagonalCoords[0] + " " + hexagonalCoords[1] + "  " + hexagonalCoords[2]);
 	}
 	
-	public void getPixelCoords() {
-		System.out.println(pixelCoords[0] + " " + pixelCoords[1]);
-	}
-	
 	private void calculatePixelCoords() {
-		double y = (3 * hexagonalCoords[2]) / 2;
-		double x = (Math.sqrt(3)* (hexagonalCoords[2]/2 + hexagonalCoords[0]));
-		
-		pixelCoords = new double[] {x, y};
+		float y = (3 * hexagonalCoords[2]) / 2;
+		float x = (float) (Math.sqrt(3)* (hexagonalCoords[2]/2 + hexagonalCoords[0]));
+
+		setPosition(new Vector3f(x, 0, y));
+	}
+
+	private void calculateVerticesCoords() {
+
 	}
 	
 	public int getValue() {
