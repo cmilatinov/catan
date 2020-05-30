@@ -32,7 +32,8 @@ public class UIManager {
                 .setY(0)
                 .setWidth(window.getWidth())
                 .setHeight(window.getHeight())
-                .setElevation(0));
+                .setElevation(0))
+				.setVisible(false);
         this.renderer = new UIRenderer(window);
         this.window = window;
 

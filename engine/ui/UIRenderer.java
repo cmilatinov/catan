@@ -1,6 +1,5 @@
 package ui;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -19,9 +18,9 @@ import objects.VBO;
 import shaders.ui.ShaderUI;
 import shaders.uisprite.ShaderUISprite;
 
-interface TypeCheck {
-	public boolean instanceOf();
-}
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+
 
 public class UIRenderer {
 	
@@ -168,7 +167,7 @@ public class UIRenderer {
 		VAO vao = mesh.getVAO();
 
 		// Sort quads by elevation
-		quadsToRender.sort(Comparator.comparingInt(a -> a.getDimensions().getElevation()));
+		quadsToRender.sort(Comparator.comparingDouble(a -> a.getDimensions().getElevation() + 0.01f * a.getDimensions().getElevationInParent()));
 
 		// Allocate float array and fill it with data
 		float[] instanceData = new float[quadsToRender.size() * DATA_LENGTH];
@@ -176,7 +175,7 @@ public class UIRenderer {
 
 			UIQuad quad = quadsToRender.get(i);
 
-			Matrix4f modelMatrix = quad.getDimensions().computeModelMatrix(width, height);
+			Matrix4f modelMatrix = quad.computeModelMatrix(width, height);
 			instanceData[(i * DATA_LENGTH)] = modelMatrix.m00();
 			instanceData[(i * DATA_LENGTH ) + 1] = modelMatrix.m01();
 			instanceData[(i * DATA_LENGTH) + 2] = modelMatrix.m02();
@@ -239,7 +238,7 @@ public class UIRenderer {
 		VAO vao = mesh.getVAO();
 
 		// Sort sprites by elevation
-		spritesToRender.sort(Comparator.comparingInt(a -> a.getDimensions().getElevation()));
+		spritesToRender.sort(Comparator.comparingDouble(a -> a.getDimensions().getElevation() + 0.01f * a.getDimensions().getElevationInParent()));
 
 		// Use the shader
 		imageShader.use();
@@ -247,7 +246,7 @@ public class UIRenderer {
 		for (UISprite sprite : spritesToRender) {
 
 			// Load shader uniforms
-			imageShader.modelMatrix.set(sprite.dimensions.computeModelMatrix(width, height));
+			imageShader.modelMatrix.set(sprite.computeModelMatrix(width, height));
 			imageShader.textureFormat.set(ShaderUISprite.IMAGE_FORMAT_RGBA);
 
 			// Bind VAO
@@ -279,7 +278,7 @@ public class UIRenderer {
 		VAO vao = mesh.getVAO();
 
 		// Sort texts by elevation
-		textsToRender.sort(Comparator.comparingInt(a -> a.getDimensions().getElevation()));
+		textsToRender.sort(Comparator.comparingDouble(a -> a.getDimensions().getElevation() + 0.01f * a.getDimensions().getElevationInParent()));
 
 		// Use the shader
 		imageShader.use();
@@ -295,13 +294,11 @@ public class UIRenderer {
 				texture = textTextures.get(text);
 
 			// Update the texture if necessary
-			if (text.shouldUpdateImage) {
+			if (text.sizeChanged || text.shouldUpdateImage)
 				text.drawImageToTexture(texture);
-				text.shouldUpdateImage = false;
-			}
 
 			// Load shader uniforms
-			imageShader.modelMatrix.set(text.dimensions.computeModelMatrix(width, height));
+			imageShader.modelMatrix.set(text.computeModelMatrix(width, height));
 			imageShader.textureFormat.set(ShaderUISprite.IMAGE_FORMAT_ARGB);
 
 			// Bind VAO

@@ -1,28 +1,11 @@
 package ui.animation;
 
-import scripts.UI;
-
 public class UIAnimation {
 
-    public static final class UIMetrics {
+    private final UIAnimationMetrics start;
+    private final UIAnimationMetrics end;
 
-        public final float x, y;
-        public final float scale;
-        public final float rotation;
-
-        private UIMetrics(float x, float y, float scale, float rotation) {
-            this.x = x;
-            this.y = y;
-            this.scale = scale;
-            this.rotation = rotation;
-        }
-
-    }
-
-    private final UIMetrics start;
-    private final UIMetrics end;
-
-    private UIMetrics current;
+    private UIAnimationMetrics current;
 
     private final UIInterpolator interpolator;
 
@@ -31,7 +14,7 @@ public class UIAnimation {
     private float animTime = 0;
     private boolean running = false;
 
-    UIAnimation(UIMetrics start, UIMetrics end, UIInterpolator interpolator, float duration) {
+    UIAnimation(UIAnimationMetrics start, UIAnimationMetrics end, UIInterpolator interpolator, float duration) {
         this.start = start;
         this.end = end;
         this.interpolator = interpolator;
@@ -68,10 +51,10 @@ public class UIAnimation {
         float scale = start.scale + (end.scale - start.scale) * progress;
         float rotation = start.rotation + (end.rotation - start.rotation) * progress;
 
-        current = new UIMetrics(x, y, scale, rotation);
+        current = new UIAnimationMetrics(x, y, scale, rotation);
     }
 
-    public UIMetrics getCurrentMetrics() {
+    public UIAnimationMetrics getCurrentMetrics() {
         return current;
     }
 
