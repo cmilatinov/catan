@@ -50,7 +50,7 @@ public class Main {
 
         scene.register(new Board());
         scene.register(new UI());
-        scene.register(new PlayerHand());
+//        scene.register(new PlayerHand());
 
         engine.run();
     }

@@ -28,7 +28,23 @@ public class UI extends GameScript {
 
     @Override
     public void initialize() {
-        box = new UIQuad();
+        box = new UIQuad() {
+            @Override
+            public void onMouseClick() {
+                System.out.println("Clicked!");
+            }
+
+            @Override
+            public void onMouseHover() {
+                this.setColor(UIColor.LIGHT_GRAY);
+            }
+
+            @Override
+            public void onMouseHoverExit() {
+                this.setColor(UIColor.DARK_GRAY);
+            }
+        };
+
         box.setColor(UIColor.DARK_GRAY);
         box.setBorderRadius(20);
         UIConstraints constraints = new UIConstraints()

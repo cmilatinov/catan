@@ -1,10 +1,11 @@
 package ui;
 
-import ui.animation.UIAnimation;
 import ui.animation.UIAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
 
 public class UIComponent {
 
@@ -12,10 +13,11 @@ public class UIComponent {
 	private UIConstraints constraints = null;
 	private final UIAnimator animator = new UIAnimator();
 	
-	protected List<UIComponent> children = new ArrayList<UIComponent>();
-	
+	protected List<UIComponent> children = new ArrayList<>();
+
+	private boolean isInteractable = true;
 	private boolean visible = true;
-	
+
 	public UIComponent(UIDimensions dimensions) {
 		this.dimensions = dimensions;
 	}
@@ -43,7 +45,32 @@ public class UIComponent {
 	public boolean isVisible() {
 		return visible;
 	}
-	
+
+	public boolean isInteractable() {
+		return this.isInteractable;
+	}
+
+	public void setIsInteractable(boolean isInteractable) {
+		this.isInteractable = isInteractable;
+	}
+
+	public Stream<UIComponent> flatten()
+	{
+		return Stream.concat(Stream.of(this), children.stream().flatMap(UIComponent::flatten));
+	}
+
+	public void onMouseClick() {
+
+	}
+
+	public void onMouseHover() {
+
+	}
+
+	public void onMouseHoverExit() {
+
+	}
+
 	public final void computeChildrenDimensions() {
 		
 		for (int i = 0; i < children.size(); i++) {

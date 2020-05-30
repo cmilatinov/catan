@@ -21,6 +21,7 @@ public final class UIText extends UIComponent {
         this.textArea.setLineWrap(true);
         this.textArea.setWrapStyleWord(true);
         this.textArea.setBackground(new Color(0, 0, 0, 0));
+        this.setIsInteractable(false);
     }
 
     public UIText setText(String text) {

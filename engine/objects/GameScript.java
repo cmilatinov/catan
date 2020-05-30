@@ -13,7 +13,8 @@ public abstract class GameScript implements GameResource {
         TO_START,
         TO_UPDATE,
         TO_INITIALIZE,
-        STOPPED
+        TO_STOP,
+        STOPPED;
     }
 
     public void setState(State newState) {

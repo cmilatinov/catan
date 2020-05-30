@@ -1,6 +1,6 @@
 package ui;
 
-public final class UIQuad extends UIComponent {
+public class UIQuad extends UIComponent {
 	
 	private UIColor color = UIColor.DARK_GRAY;
 	

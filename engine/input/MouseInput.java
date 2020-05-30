@@ -1,16 +1,20 @@
 package input;
 
+import java.nio.BufferOverflowException;
+import java.nio.DoubleBuffer;
 import java.util.HashMap;
 
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import camera.Camera;
 import display.Window;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
+import utils.Pair;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -80,7 +84,7 @@ public class MouseInput {
 
 		@Override
 		public void invoke(long window, double xoffset, double yoffset) {
-			for (int callback: mouseCallbacks.keySet())
+			for (int callback: scrollCallbacks.keySet())
 				scrollCallbacks.get(callback).invoke(xoffset, yoffset);
 
 		}
@@ -220,6 +224,18 @@ public class MouseInput {
 	 */
 	public void removeMouseClickCallback(int callback) {
 		mouseCallbacks.remove(callback);
+	}
+
+	/**
+	 * Retrieve the current mouse position on the screen.
+	 *
+	 * @return [{@link Pair}] A tuple with the first being the x, and the second being the y
+	 */
+	public Pair<Integer, Integer> getMousePosition() {
+		DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+		glfwGetCursorPos(this.window.getHandle(), x, y);
+		return new Pair<>((int)x.get(), (int)y.get());
 	}
 
 	/**

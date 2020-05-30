@@ -108,6 +108,7 @@ public class Scene {
         }
         entityRenderer.destroy();
         camera.destroy();
+        uiManager.cleanup();
         //NOTE: Scene shouldn't be responsible for the destruction of the window
     }
 

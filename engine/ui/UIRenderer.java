@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import objects.Texture;
 import org.joml.Matrix4f;
@@ -17,6 +18,10 @@ import objects.VAO;
 import objects.VBO;
 import shaders.ui.ShaderUI;
 import shaders.uisprite.ShaderUISprite;
+
+interface TypeCheck {
+	public boolean instanceOf();
+}
 
 public class UIRenderer {
 	
@@ -111,25 +116,43 @@ public class UIRenderer {
 	public void render(UIComponent root) {
 
 		// Create list of quads to be rendered
-		List<UIQuad> quadsToRender = new ArrayList<UIQuad>();
-		collectQuadsForRender(quadsToRender, root);
-
+		var quadsToRender = root.children
+				.stream()
+				.flatMap(UIComponent::flatten)
+				.filter(uiComponent -> uiComponent instanceof UIQuad)
+				.map(uiComponent -> (UIQuad)uiComponent)
+				.collect(Collectors.toList());
+		if (root instanceof UIQuad) {
+			quadsToRender.add((UIQuad) root);
+		}
 		// Render process for quads
 		if (quadsToRender.size() > 0)
 			renderQuads(quadsToRender);
 
 		// Create list of sprites to be rendered
-		List<UISprite> spritesToRender = new ArrayList<UISprite>();
-		collectSpritesForRender(spritesToRender, root);
-
+		List<UISprite> spritesToRender = root.children
+				.stream()
+				.flatMap(UIComponent::flatten)
+				.filter(component -> component instanceof UISprite)
+				.map(uiComponent -> (UISprite)uiComponent)
+				.collect(Collectors.toList());
+		if (root instanceof UISprite) {
+			spritesToRender.add((UISprite)root);
+		}
 		// Render process for sprites
 		if (spritesToRender.size() > 0)
 			renderSprites(spritesToRender);
 
 		// Create list of texts to be rendered
-		List<UIText> textsToRender = new ArrayList<UIText>();
-		collectTextsForRender(textsToRender, root);
-
+		List<UIText> textsToRender = root.children
+				.stream()
+				.flatMap(UIComponent::flatten)
+				.filter(component -> component instanceof UIText)
+				.map(uiComponent -> (UIText)uiComponent)
+				.collect(Collectors.toList());
+		if (root instanceof UIText) {
+			textsToRender.add((UIText) root);
+		}
 		// Render process for texts
 		if (textsToRender.size() > 0)
 			renderTexts(textsToRender);
@@ -299,35 +322,4 @@ public class UIRenderer {
 		imageShader.stop();
 
 	}
-
-	private void collectQuadsForRender(List<UIQuad> list, UIComponent component) {
-
-		if (component.getClass().equals(UIQuad.class) && component.isVisible())
-			list.add((UIQuad)component);
-		
-		for (UIComponent child : component.children)
-			collectQuadsForRender(list, child);
-		
-	}
-
-	private void collectSpritesForRender(List<UISprite> list, UIComponent component) {
-
-		if (component.getClass().equals(UISprite.class) && component.isVisible())
-			list.add((UISprite)component);
-
-		for (UIComponent child : component.children)
-			collectSpritesForRender(list, child);
-
-	}
-
-	private void collectTextsForRender(List<UIText> list, UIComponent component) {
-
-		if (component.getClass().equals(UIText.class) && component.isVisible())
-			list.add((UIText)component);
-
-		for (UIComponent child : component.children)
-			collectTextsForRender(list, child);
-
-	}
-	
 }
