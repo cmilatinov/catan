@@ -1,7 +1,5 @@
 package ui.animation;
 
-import static ui.animation.UIAnimation.UIMetrics;
-
 public class UIAnimator {
 
     private UIAnimation anim = null;
@@ -17,12 +15,16 @@ public class UIAnimator {
         return anim.isRunning();
     }
 
+    public boolean hasAnimation() {
+        return anim != null;
+    }
+
     public void setAnimation(UIAnimation anim) {
         this.anim = anim;
     }
 
-    public void animate(UIMetrics end, UIInterpolator interpolator, float duration) {
-        UIMetrics start = anim.getCurrentMetrics();
+    public void animate(UIAnimationMetrics end, UIInterpolator interpolator, float duration) {
+        UIAnimationMetrics start = anim != null ? anim.getCurrentMetrics() : new UIAnimationMetrics(0, 0, 1,0);
         anim = new UIAnimation(start, end, interpolator, duration);
         anim.start();
     }
@@ -37,7 +39,7 @@ public class UIAnimator {
             anim.start();
     }
 
-    public UIMetrics getCurrentAnimationMetrics() {
+    public UIAnimationMetrics getCurrentAnimationMetrics() {
         return anim != null ? anim.getCurrentMetrics() : null;
     }
 

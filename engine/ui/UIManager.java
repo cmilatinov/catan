@@ -22,7 +22,8 @@ public class UIManager {
 				.setY(0)
 				.setWidth(window.getWidth())
 				.setHeight(window.getHeight())
-				.setElevation(0));
+				.setElevation(0))
+				.setVisible(false);
 		renderer = new UIRenderer(window);
 
 		// FPS
@@ -47,7 +48,6 @@ public class UIManager {
 			framerate.setText(Integer.toString(fps));
 			time = fps = 0;
 		}
-		root.computeChildrenDimensions();
 		root.update(delta);
 	}
 	

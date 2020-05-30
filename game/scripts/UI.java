@@ -11,10 +11,8 @@ import java.awt.*;
 
 public class UI extends GameScript {
 
-    UIQuad box;
-    UIText text;
-
-    float time = 0;
+    public UIQuad box;
+    public UIText text;
 
     @Override
     public void stop() {
@@ -29,8 +27,7 @@ public class UI extends GameScript {
     @Override
     public void initialize() {
         box = new UIQuad();
-        box.setColor(UIColor.DARK_GRAY);
-        box.setBorderRadius(20);
+        box.setColor(UIColor.RED);
         UIConstraints constraints = new UIConstraints()
                 .setX(new PixelConstraint(20, UIDimensions.DIRECTION_LEFT))
                 .setY(new PixelConstraint(20, UIDimensions.DIRECTION_TOP))
@@ -38,8 +35,8 @@ public class UI extends GameScript {
                 .setHeight(new AspectConstraint(1));
         getScene().getUiManager().getContainer().add(box, constraints);
 
-        text = new UIText(new Font("Comic Sans MS", Font.BOLD, 9), "THIS IS A VERY LONG PARAGRAPH OF TEXT");
-        text.setColor(UIColor.CYAN);
+        text = new UIText(new Font("Comic Sans MS", Font.PLAIN, 18), "THIS IS A VERY LONG PARAGRAPH OF TEXT");
+        text.setColor(UIColor.BLACK);
         UIConstraints constraints2 = new UIConstraints()
                 .setX(new CenterConstraint())
                 .setY(new CenterConstraint())
@@ -50,15 +47,12 @@ public class UI extends GameScript {
 
     @Override
     public void update(double delta) {
-        time = (time + (float)delta) % 2.0f;
-        text.setColor(new UIColor(
-                0.5f * (float) Math.sin(time * Math.PI) + 0.5f,
-                0.5f * (float) Math.cos(time * Math.PI) + 0.5f,
-                0.5f * (float) Math.sin((time + 1) * Math.PI) + 0.5f, 1));
+
     }
 
     @Override
     public void destroy() {
 
     }
+
 }
