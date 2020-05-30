@@ -70,6 +70,9 @@ public final class Engine {
     }
 
     public void setCurrentScene(Scene currentScene) {
+        if (this.currentScene != null ) {
+            this.currentScene.cleanup();
+        }
         this.currentScene = currentScene;
     }
 

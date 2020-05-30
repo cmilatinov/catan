@@ -1,12 +1,12 @@
 package ui;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import objects.Texture;
 import org.joml.Matrix4f;
@@ -15,8 +15,12 @@ import display.Window;
 import objects.Mesh;
 import objects.VAO;
 import objects.VBO;
-import shaders.ui.UIShader;
-import shaders.uiimage.UIImageShader;
+import shaders.ui.ShaderUI;
+import shaders.uisprite.ShaderUISprite;
+
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+
 
 public class UIRenderer {
 	
@@ -46,8 +50,8 @@ public class UIRenderer {
 	private final Mesh mesh;
 	private final VBO instanceVBO;
 
-	private final UIShader shader;
-	private final UIImageShader imageShader;
+	private final ShaderUI shader;
+	private final ShaderUISprite imageShader;
 
 	private final Map<UIText, Texture> textTextures = new HashMap<UIText, Texture>();
 	
@@ -55,8 +59,8 @@ public class UIRenderer {
 		this.window = window;
 		this.instanceVBO = VBO.create(GL_ARRAY_BUFFER);
 		this.mesh = initMesh(instanceVBO);
-		this.shader = new UIShader();
-		this.imageShader = new UIImageShader();
+		this.shader = new ShaderUI();
+		this.imageShader = new ShaderUISprite();
 
 		imageShader.use();
 		imageShader.textureSampler.set(0);
@@ -111,25 +115,43 @@ public class UIRenderer {
 	public void render(UIComponent root) {
 
 		// Create list of quads to be rendered
-		List<UIQuad> quadsToRender = new ArrayList<UIQuad>();
-		collectQuadsForRender(quadsToRender, root);
-
+		var quadsToRender = root.children
+				.stream()
+				.flatMap(UIComponent::flatten)
+				.filter(uiComponent -> uiComponent instanceof UIQuad)
+				.map(uiComponent -> (UIQuad)uiComponent)
+				.collect(Collectors.toList());
+		if (root instanceof UIQuad) {
+			quadsToRender.add((UIQuad) root);
+		}
 		// Render process for quads
 		if (quadsToRender.size() > 0)
 			renderQuads(quadsToRender);
 
 		// Create list of sprites to be rendered
-		List<UISprite> spritesToRender = new ArrayList<UISprite>();
-		collectSpritesForRender(spritesToRender, root);
-
+		List<UISprite> spritesToRender = root.children
+				.stream()
+				.flatMap(UIComponent::flatten)
+				.filter(component -> component instanceof UISprite)
+				.map(uiComponent -> (UISprite)uiComponent)
+				.collect(Collectors.toList());
+		if (root instanceof UISprite) {
+			spritesToRender.add((UISprite)root);
+		}
 		// Render process for sprites
 		if (spritesToRender.size() > 0)
 			renderSprites(spritesToRender);
 
 		// Create list of texts to be rendered
-		List<UIText> textsToRender = new ArrayList<UIText>();
-		collectTextsForRender(textsToRender, root);
-
+		List<UIText> textsToRender = root.children
+				.stream()
+				.flatMap(UIComponent::flatten)
+				.filter(component -> component instanceof UIText)
+				.map(uiComponent -> (UIText)uiComponent)
+				.collect(Collectors.toList());
+		if (root instanceof UIText) {
+			textsToRender.add((UIText) root);
+		}
 		// Render process for texts
 		if (textsToRender.size() > 0)
 			renderTexts(textsToRender);
@@ -145,7 +167,7 @@ public class UIRenderer {
 		VAO vao = mesh.getVAO();
 
 		// Sort quads by elevation
-		quadsToRender.sort(Comparator.comparingInt(a -> a.getDimensions().getElevation()));
+		quadsToRender.sort(Comparator.comparingDouble(a -> a.getDimensions().getElevation() + 0.01f * a.getDimensions().getElevationInParent()));
 
 		// Allocate float array and fill it with data
 		float[] instanceData = new float[quadsToRender.size() * DATA_LENGTH];
@@ -153,7 +175,7 @@ public class UIRenderer {
 
 			UIQuad quad = quadsToRender.get(i);
 
-			Matrix4f modelMatrix = quad.getDimensions().computeModelMatrix(width, height);
+			Matrix4f modelMatrix = quad.computeModelMatrix(width, height);
 			instanceData[(i * DATA_LENGTH)] = modelMatrix.m00();
 			instanceData[(i * DATA_LENGTH ) + 1] = modelMatrix.m01();
 			instanceData[(i * DATA_LENGTH) + 2] = modelMatrix.m02();
@@ -216,7 +238,7 @@ public class UIRenderer {
 		VAO vao = mesh.getVAO();
 
 		// Sort sprites by elevation
-		spritesToRender.sort(Comparator.comparingInt(a -> a.getDimensions().getElevation()));
+		spritesToRender.sort(Comparator.comparingDouble(a -> a.getDimensions().getElevation() + 0.01f * a.getDimensions().getElevationInParent()));
 
 		// Use the shader
 		imageShader.use();
@@ -224,8 +246,8 @@ public class UIRenderer {
 		for (UISprite sprite : spritesToRender) {
 
 			// Load shader uniforms
-			imageShader.modelMatrix.set(sprite.dimensions.computeModelMatrix(width, height));
-			imageShader.textureFormat.set(UIImageShader.IMAGE_FORMAT_RGBA);
+			imageShader.modelMatrix.set(sprite.computeModelMatrix(width, height));
+			imageShader.textureFormat.set(ShaderUISprite.IMAGE_FORMAT_RGBA);
 
 			// Bind VAO
 			vao.bind(0, 1);
@@ -256,7 +278,7 @@ public class UIRenderer {
 		VAO vao = mesh.getVAO();
 
 		// Sort texts by elevation
-		textsToRender.sort(Comparator.comparingInt(a -> a.getDimensions().getElevation()));
+		textsToRender.sort(Comparator.comparingDouble(a -> a.getDimensions().getElevation() + 0.01f * a.getDimensions().getElevationInParent()));
 
 		// Use the shader
 		imageShader.use();
@@ -272,14 +294,12 @@ public class UIRenderer {
 				texture = textTextures.get(text);
 
 			// Update the texture if necessary
-			if (text.shouldUpdateImage) {
+			if (text.sizeChanged || text.shouldUpdateImage)
 				text.drawImageToTexture(texture);
-				text.shouldUpdateImage = false;
-			}
 
 			// Load shader uniforms
-			imageShader.modelMatrix.set(text.dimensions.computeModelMatrix(width, height));
-			imageShader.textureFormat.set(UIImageShader.IMAGE_FORMAT_ARGB);
+			imageShader.modelMatrix.set(text.computeModelMatrix(width, height));
+			imageShader.textureFormat.set(ShaderUISprite.IMAGE_FORMAT_ARGB);
 
 			// Bind VAO
 			vao.bind(0, 1);
@@ -299,35 +319,4 @@ public class UIRenderer {
 		imageShader.stop();
 
 	}
-
-	private void collectQuadsForRender(List<UIQuad> list, UIComponent component) {
-
-		if (component.getClass().equals(UIQuad.class) && component.isVisible())
-			list.add((UIQuad)component);
-		
-		for (UIComponent child : component.children)
-			collectQuadsForRender(list, child);
-		
-	}
-
-	private void collectSpritesForRender(List<UISprite> list, UIComponent component) {
-
-		if (component.getClass().equals(UISprite.class) && component.isVisible())
-			list.add((UISprite)component);
-
-		for (UIComponent child : component.children)
-			collectSpritesForRender(list, child);
-
-	}
-
-	private void collectTextsForRender(List<UIText> list, UIComponent component) {
-
-		if (component.getClass().equals(UIText.class) && component.isVisible())
-			list.add((UIText)component);
-
-		for (UIComponent child : component.children)
-			collectTextsForRender(list, child);
-
-	}
-	
 }

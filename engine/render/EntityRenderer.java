@@ -12,14 +12,14 @@ import entities.Entity;
 import lights.Light;
 import objects.Mesh;
 import objects.Texture;
-import shaders.entity.EntityShader;
+import shaders.entity.ShaderEntity;
 
 public class EntityRenderer implements FreeableObject {
 	
-	private final EntityShader shader;
+	private final ShaderEntity shader;
 	
 	public EntityRenderer() {
-		shader = new EntityShader();
+		shader = new ShaderEntity();
 		shader.use();
 		shader.projectionViewMatrix.set(new Matrix4f());
 		shader.modelMatrix.set(new Matrix4f());

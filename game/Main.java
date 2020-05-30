@@ -1,14 +1,22 @@
 import camera.Camera;
 import camera.PanCamera;
+
 import org.joml.Vector3f;
 import scripts.PlayerHand;
 import gameplay.Board;
 import scripts.UI;
+
 import main.Engine;
 import main.Scene;
+import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
+import scripts.PlayerHand;
+import scripts.UI;
+import ui.animation.UIAnimationMetrics;
+import ui.animation.UIInterpolators;
 
+import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -31,8 +39,8 @@ public class Main {
 
         // Q to toggle wireframe
         AtomicBoolean wireframe = new AtomicBoolean(false);
-        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_ESCAPE, (int mods) -> scene.getWindow().close());
-        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_Q, (int mods) -> {
+        scene.registerKeyUpAction(GLFW_KEY_ESCAPE, (int mods) -> scene.getWindow().close());
+        scene.registerKeyUpAction(GLFW_KEY_Q, (int mods) -> {
             if(!wireframe.get())
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             else
@@ -40,17 +48,25 @@ public class Main {
             wireframe.set(!wireframe.get());
         });
 
-        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_1, (int mods) -> {
+        scene.registerKeyUpAction(GLFW_KEY_1, (int mods) -> {
             var test = engine.newScene();
             test.register(new PlayerHand());
             engine.setCurrentScene(test);
         });
-        scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_2, (int mods) -> {
-            engine.setCurrentScene(scene);
-        });
+        scene.registerKeyUpAction(GLFW_KEY_2, (int mods) -> engine.setCurrentScene(scene));
 
         // registering display
         scene.register(new Board(3));
+
+        UI ui = new UI();
+        scene.registerKeyUpAction(GLFW_KEY_G, (int mods) ->
+                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 1.0f, 0), UIInterpolators.EASE_IN_OUT, 0.7f));
+        scene.registerKeyUpAction(GLFW_KEY_F, (int mods) ->
+                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 0.5f, 360), UIInterpolators.EASE_IN_OUT, 0.7f));
+        scene.registerKeyUpAction(GLFW_KEY_V, (int mods) ->
+                ui.text.setFont(new Font("Verdana", Font.ITALIC, 12)));
+        scene.register(ui);
+        scene.register(new PlayerHand());
 
         engine.run();
     }

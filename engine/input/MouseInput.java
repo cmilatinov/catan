@@ -1,5 +1,6 @@
 package input;
 
+import java.nio.BufferOverflowException;
 import java.nio.DoubleBuffer;
 import java.util.HashMap;
 
@@ -12,6 +13,10 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import camera.Camera;
 import display.Window;
+import org.lwjgl.glfw.GLFWScrollCallbackI;
+import utils.Pair;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -21,11 +26,15 @@ public class MouseInput {
 
 	private final CursorCallback cursorCallback;
 	private final MouseButtonCallback mouseCallback;
+	private final MouseScrollCallback scrollCallback;
 
 	private int nextCursorHandle = 1;
 	private int nextMouseHandle = 1;
-	private HashMap<Integer, MouseMoveCallback> cursorCallbacks = new HashMap<Integer, MouseMoveCallback>();
-	private HashMap<Integer, MouseClickCallback> mouseCallbacks = new HashMap<Integer, MouseClickCallback>();
+	private int nextScrollHandle = 1;
+
+	private HashMap<Integer, MouseMoveCallback> cursorCallbacks = new HashMap<>();
+	private HashMap<Integer, MouseClickCallback> mouseCallbacks = new HashMap<>();
+	private HashMap<Integer, ScrollCallback> scrollCallbacks = new HashMap<>();
 
 	private float sensitivity = 1.0f;
 	private double lastX = 0, lastY = 0;
@@ -73,6 +82,16 @@ public class MouseInput {
 
 	}
 
+	private class MouseScrollCallback implements GLFWScrollCallbackI {
+
+		@Override
+		public void invoke(long window, double xoffset, double yoffset) {
+			for (int callback: scrollCallbacks.keySet())
+				scrollCallbacks.get(callback).invoke(xoffset, yoffset);
+
+		}
+	}
+
 	/**
 	 * Creates a new mouse input object using the specified window as its parent.
 	 * 
@@ -82,6 +101,7 @@ public class MouseInput {
 		this.window = window;
 		this.cursorCallback = new CursorCallback();
 		this.mouseCallback = new MouseButtonCallback();
+		this.scrollCallback = new MouseScrollCallback();
 	}
 
 	/**
@@ -90,6 +110,7 @@ public class MouseInput {
 	public void redirectWindowCallbacks() {
 		glfwSetCursorPosCallback(window.getHandle(), cursorCallback);
 		glfwSetMouseButtonCallback(window.getHandle(), mouseCallback);
+		glfwSetScrollCallback(window.getHandle(), scrollCallback);
 	}
 
 	/**
@@ -172,6 +193,30 @@ public class MouseInput {
 	}
 
 	/**
+	 * Used to add a callback to fire when the mouse is scrolled. A handle to the callback is returned.
+	 * The callback may be removed by using {@link #removeMouseMoveCallback} and passing
+	 * the handle returned from this method.
+	 *
+	 * @param mouseScroll The callback to invoke whenever the mouse is scrolled.
+	 * @return [{@link MouseInput}] This same instance of the class.
+	 */
+	public int registerMouseScrollCallback(ScrollCallback mouseScroll) {
+		scrollCallbacks.put(nextScrollHandle, mouseScroll);
+		return nextScrollHandle++;
+	}
+
+	/**
+	 * Removes the previously added mouse scrolled callback corresponding to the
+	 * provided handle. This method has no effect when called with a handle that
+	 * does not exist.
+	 *
+	 * @param callback The handle to the callback to be removed.
+	 */
+	public void removeMouseScrollCallback(int callback) {
+		scrollCallbacks.remove(callback);
+	}
+
+	/**
 	 * Used to add a callback to fire when a mouse button is activated. A handle to
 	 * the callback is returned. The callback may be removed by using
 	 * {@link #removeMouseClickCallback} and passing the handle returned from this
@@ -195,6 +240,18 @@ public class MouseInput {
 	 */
 	public void removeMouseClickCallback(int callback) {
 		mouseCallbacks.remove(callback);
+	}
+
+	/**
+	 * Retrieve the current mouse position on the screen.
+	 *
+	 * @return [{@link Pair}] A tuple with the first being the x, and the second being the y
+	 */
+	public Pair<Integer, Integer> getMousePosition() {
+		DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+		glfwGetCursorPos(this.window.getHandle(), x, y);
+		return new Pair<>((int)x.get(), (int)y.get());
 	}
 
 	/**

@@ -12,29 +12,32 @@ import static org.lwjgl.opengl.GL11.*;
 
 public final class UIText extends UIComponent {
 
-    private final JLabel label;
+    private final JTextArea textArea;
     boolean shouldUpdateImage = true;
 
     public UIText(Font font, String text) {
-        this.label = new JLabel(text, SwingConstants.CENTER);
-        this.label.setVerticalAlignment(SwingConstants.CENTER);
-        this.label.setFont(font);
+        this.textArea = new JTextArea(text);
+        this.textArea.setFont(font);
+        this.textArea.setLineWrap(true);
+        this.textArea.setWrapStyleWord(true);
+        this.textArea.setBackground(new Color(0, 0, 0, 0));
+        this.setIsInteractable(false);
     }
 
     public UIText setText(String text) {
-        this.label.setText(text);
+        this.textArea.setText(text);
         this.shouldUpdateImage = true;
         return this;
     }
 
     public UIText setFont(Font font) {
-        this.label.setFont(font);
+        this.textArea.setFont(font);
         this.shouldUpdateImage = true;
         return this;
     }
 
     public UIText setColor(UIColor color) {
-        this.label.setForeground(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
+        this.textArea.setForeground(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
         this.shouldUpdateImage = true;
         return this;
     }
@@ -48,10 +51,10 @@ public final class UIText extends UIComponent {
         Graphics g = image.createGraphics();
 
         // Set label dimensions
-        label.setSize(dimensions.getWidth(), dimensions.getHeight());
+        textArea.setSize(dimensions.getWidth(), dimensions.getHeight());
 
         // Paint the label using graphics
-        label.paint(g);
+        textArea.paint(g);
 
         // Dispose of the graphics
         g.dispose();

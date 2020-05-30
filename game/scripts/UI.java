@@ -11,6 +11,9 @@ import java.awt.*;
 
 public class UI extends GameScript {
 
+    public UIQuad box;
+    public UIText text;
+
     @Override
     public void stop() {
 
@@ -23,9 +26,8 @@ public class UI extends GameScript {
 
     @Override
     public void initialize() {
-        UIQuad box = new UIQuad();
-        box.setColor(UIColor.DARK_GRAY);
-        box.setBorderRadius(20);
+        box = new UIQuad();
+        box.setColor(UIColor.RED);
         UIConstraints constraints = new UIConstraints()
                 .setX(new PixelConstraint(20, UIDimensions.DIRECTION_LEFT))
                 .setY(new PixelConstraint(20, UIDimensions.DIRECTION_TOP))
@@ -33,8 +35,8 @@ public class UI extends GameScript {
                 .setHeight(new AspectConstraint(1));
         getScene().getUiManager().getContainer().add(box, constraints);
 
-        UIText text = new UIText(new Font("Verdana", Font.BOLD, 30), "Hello");
-        text.setColor(UIColor.CYAN);
+        text = new UIText(new Font("Comic Sans MS", Font.PLAIN, 18), "THIS IS A VERY LONG PARAGRAPH OF TEXT");
+        text.setColor(UIColor.BLACK);
         UIConstraints constraints2 = new UIConstraints()
                 .setX(new CenterConstraint())
                 .setY(new CenterConstraint())
@@ -52,4 +54,5 @@ public class UI extends GameScript {
     public void destroy() {
 
     }
+
 }

@@ -5,15 +5,15 @@ import org.joml.Matrix4f;
 import camera.Camera;
 import objects.Mesh;
 import objects.Texture;
-import shaders.skybox.SkyboxShader;
+import shaders.skybox.ShaderSkybox;
 
 public class SkyboxRenderer {
 	
-	private final SkyboxShader shader;
+	private final ShaderSkybox shader;
 	private final Mesh mesh;
 	
 	public SkyboxRenderer(Mesh skyboxMesh) {
-		shader = new SkyboxShader();
+		shader = new ShaderSkybox();
 		shader.use();
 		shader.textureSampler.set(0);
 		shader.stop();
