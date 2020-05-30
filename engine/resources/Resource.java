@@ -1,6 +1,6 @@
 package resources;
 
-import gameplay.TileTypes;
+import gameplay.tiles.TileTypes;
 
 public enum Resource {
 	
@@ -29,6 +29,17 @@ public enum Resource {
 	TEXTURE_COLOR_GREEN,
 	TEXTURE_COLOR_PURPLE,
 	TEXTURE_COLOR_WHITE,
+
+	TEXTURE_TOKEN_2,
+	TEXTURE_TOKEN_3,
+	TEXTURE_TOKEN_4,
+	TEXTURE_TOKEN_5,
+	TEXTURE_TOKEN_6,
+	TEXTURE_TOKEN_8,
+	TEXTURE_TOKEN_9,
+	TEXTURE_TOKEN_10,
+	TEXTURE_TOKEN_11,
+	TEXTURE_TOKEN_12,
 	
 	TEXTURE_SKYBOX,
 	
@@ -41,16 +52,45 @@ public enum Resource {
 	MESH_GUI,
 	MESH_SKYBOX,
 	MESH_TABLE,
-	
+
+	MESH_TOKEN,
+
+	MODEL_TOKEN_2,
+	MODEL_TOKEN_3,
+	MODEL_TOKEN_4,
+	MODEL_TOKEN_5,
+	MODEL_TOKEN_6,
+	MODEL_TOKEN_8,
+	MODEL_TOKEN_9,
+	MODEL_TOKEN_10,
+	MODEL_TOKEN_11,
+	MODEL_TOKEN_12,
+
 	MODEL_TILE_BRICK,
 	MODEL_TILE_DESERT,
 	MODEL_TILE_FOREST,
 	MODEL_TILE_SHEEP,
 	MODEL_TILE_STONE,
+	MODEL_TILE_WHEAT,
 	MODEL_BOARD,
-	MODEL_TABLE,
-	MODEL_TILE_WHEAT;
-	
+	MODEL_TABLE;
+
+	public static Resource getToken(int val) {
+		return switch(val) {
+			case 2 -> MODEL_TOKEN_2;
+			case 3 -> MODEL_TOKEN_3;
+			case 4 -> MODEL_TOKEN_4;
+			case 5 -> MODEL_TOKEN_5;
+			case 6 -> MODEL_TOKEN_6;
+			case 8 -> MODEL_TOKEN_8;
+			case 9 -> MODEL_TOKEN_9;
+			case 10 -> MODEL_TOKEN_10;
+			case 11 -> MODEL_TOKEN_11;
+			case 12 -> MODEL_TOKEN_12;
+			default -> MODEL_TOKEN_2;
+		};
+	}
+
 	public static Resource getTileModel(TileTypes t) {
 		return switch (t) {
 			case BRICK -> MODEL_TILE_BRICK;

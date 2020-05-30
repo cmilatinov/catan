@@ -1,21 +1,19 @@
 package input;
 
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
-
+import java.nio.DoubleBuffer;
 import java.util.HashMap;
 
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 
 import camera.Camera;
 import display.Window;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
 
@@ -119,6 +117,20 @@ public class MouseInput {
 		ignoreNext = true;
 		glfwSetCursorPos(window.getHandle(), x, y);
 		return this;
+	}
+
+	/**
+	 * Gets the mouse cursor current position with respect to its parent window.
+	 *
+	 * @return [{@link Vector2i}] Current mouse cursor position.
+	 */
+	public Vector2i getCursorPosition() {
+		DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
+
+		glfwGetCursorPos(window.getHandle(), x, y);
+
+		return new Vector2i((int)x.get(0),(int) y.get(0));
 	}
 
 	/**

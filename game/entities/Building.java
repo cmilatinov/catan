@@ -1,39 +1,64 @@
 package entities;
 
-import gameplay.TileTypes;
+import gameplay.tiles.TileTypes;
 import log.Logger;
 import main.Engine;
-import objects.TexturedMesh;
-import resources.GameResources;
-import resources.Resource;
+import main.Scene;
+import org.joml.Vector3f;
 
-public class Building extends EntityStatic {
+public class Building {
 
 	private enum Type {
 		SETTLEMENT,
 		CITY;
-
 	}
 
 	private Type type;
-	private final Player owner;
+	private Player owner;
+	private City city;
+	private Settlement settlement;
 
-	private Building(TexturedMesh model, Player owner) {
-		super(model);
+	private Vector3f pos;
+
+	private Scene scene;
+
+	public Building(Scene scene, Player owner) {
 		type = Type.SETTLEMENT;
+
+		settlement = Settlement.create();
+		city = City.create();
+
 		this.owner = owner;
 	}
 
-	public static Building create(Player owner, Resource type) {
-		var model = new TexturedMesh(GameResources.get(Resource.MESH_SETTLEMENT), GameResources.get(type));
-		return new Building(model, owner);
+	public Building(Scene scene) {
+		type = Type.SETTLEMENT;
+
+		settlement = Settlement.create();
+		city = City.create();
+
+		scene.register(settlement.scale(0.040f));
+		this.scene = scene;
+	}
+
+	public void setPosition(Vector3f pos) {
+		city.setPosition(pos);
+		settlement.setPosition(pos);
+		this.pos = pos;
+	}
+
+	public Vector3f getPosition() {
+		return pos;
 	}
 	
 	public void upgrade() {
 		if(type == Type.CITY) {
 			Engine.LOGGER.log(Logger.ERROR, "Unable to upgrade a city.");
 		}
-		
+
+		scene.remove(settlement);
+		scene.register(city.scale(0.040f));
+
 		type = Type.CITY;
 	}
 	

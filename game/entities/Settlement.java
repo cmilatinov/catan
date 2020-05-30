@@ -15,4 +15,9 @@ public class Settlement extends EntityStatic {
         var model = new TexturedMesh(GameResources.get(Resource.MESH_SETTLEMENT), GameResources.get(type));
         return new Settlement(model);
     }
+
+    public static Settlement create() {
+        var model = new TexturedMesh(GameResources.get(Resource.MESH_SETTLEMENT), GameResources.get(Resource.TEXTURE_COLOR_BLUE));
+        return new Settlement(model);
+    }
 }

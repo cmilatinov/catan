@@ -2,7 +2,7 @@ import camera.Camera;
 import camera.PanCamera;
 import org.joml.Vector3f;
 import scripts.PlayerHand;
-import scripts.Board;
+import gameplay.Board;
 import scripts.UI;
 import main.Engine;
 import main.Scene;
@@ -28,6 +28,7 @@ public class Main {
         scene.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
         // R to Reset Camera
         scene.registerKeyUpAction(GLFW_KEY_R, (int mods) -> scene.getCamera().reset());
+
         // Q to toggle wireframe
         AtomicBoolean wireframe = new AtomicBoolean(false);
         scene.getWindow().keyboard().registerKeyUp(GLFW_KEY_ESCAPE, (int mods) -> scene.getWindow().close());
@@ -48,9 +49,8 @@ public class Main {
             engine.setCurrentScene(scene);
         });
 
-        scene.register(new Board());
-        scene.register(new UI());
-        scene.register(new PlayerHand());
+        // registering display
+        scene.register(new Board(3));
 
         engine.run();
     }

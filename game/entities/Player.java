@@ -2,7 +2,7 @@ package entities;
 
 import java.util.HashMap;
 
-import gameplay.TileTypes;
+import gameplay.tiles.TileTypes;
 
 public class Player {
 	private final HashMap<TileTypes, Integer> resourceCards;

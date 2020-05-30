@@ -1,4 +1,4 @@
-package gameplay;
+package gameplay.tiles;
 
 import java.util.Random;
 
