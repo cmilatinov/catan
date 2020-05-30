@@ -1,13 +1,9 @@
 package ui;
 
-import org.joml.Matrix2f;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class UIDimensions {
-	
-	public static final int DIMENSIONS = 2;
 	
 	public static final int DIMENSION_X = 0;
 	public static final int DIMENSION_Y = 1;
@@ -24,10 +20,11 @@ public class UIDimensions {
 	public static final int DIRECTION_RIGHT = DIRECTION_POSITIVE;
 	
 	private static final float ELEVATION_DISTANCE = 0.01f;
+	private static final float ELEVATION_PARENT_DISTANCE = 0.001f;
 	
 	private int width = -1, height = -1;
 	private int x = -1, y = -1;
-	private int elevation = -1;
+	private int elevation = -1, elevationInParent = -1;
 	private float rotation;
 
 	UIDimensions setWidth(int width) {
@@ -55,8 +52,12 @@ public class UIDimensions {
 		return this;
 	}
 
-	UIDimensions setRotation(float rotation)
-	{
+	UIDimensions setElevationInParent(int elevationInParent) {
+		this.elevationInParent = elevationInParent;
+		return this;
+	}
+
+	UIDimensions setRotation(float rotation) {
 		this.rotation = rotation;
 		return this;
 	}
@@ -115,6 +116,10 @@ public class UIDimensions {
 		return elevation;
 	}
 
+	public int getElevationInParent() {
+		return elevationInParent;
+	}
+
 	public float getRotation()
 	{
 		return this.rotation;
@@ -131,7 +136,7 @@ public class UIDimensions {
 		result.translate(new Vector3f(
 				2.0f * getCenterX() / screenWidth - 1.0f,
 				1.0f - 2.0f * getCenterY() / screenHeight,
-				-ELEVATION_DISTANCE * elevation));
+				- ELEVATION_DISTANCE * elevation - ELEVATION_PARENT_DISTANCE * elevationInParent));
 		result.scale(new Vector3f((float) width / screenWidth, (float) height / screenHeight, 1));
 		result.rotate((float)(Math.toRadians(rotation)), new Vector3f(0, 0, 1));
 		return result;

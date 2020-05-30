@@ -1,4 +1,4 @@
-package shaders;
+package shaders.uniform;
 
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform3fv;
@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import shaders.Uniform;
 
 public class UniformVector3fArray extends Uniform {
 	

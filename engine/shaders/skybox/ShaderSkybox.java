@@ -1,10 +1,10 @@
 package shaders.skybox;
 
 import shaders.Shader;
-import shaders.UniformInt;
-import shaders.UniformMatrix4f;
+import shaders.uniform.UniformInt;
+import shaders.uniform.UniformMatrix4f;
 
-public class SkyboxShader extends Shader {
+public class ShaderSkybox extends Shader {
 
 	private static final String VERTEX_FILE = "/shaders/skybox/vertex.glsl";
 	private static final String FRAGMENT_FILE = "/shaders/skybox/fragment.glsl";
@@ -15,7 +15,7 @@ public class SkyboxShader extends Shader {
 	
 	public final UniformInt textureSampler = new UniformInt("tex");
 
-	public SkyboxShader() {
+	public ShaderSkybox() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		registerUniforms(
 				projectionViewMatrix,

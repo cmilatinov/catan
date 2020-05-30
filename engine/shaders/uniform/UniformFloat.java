@@ -1,4 +1,6 @@
-package shaders;
+package shaders.uniform;
+
+import shaders.Uniform;
 
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform1f;

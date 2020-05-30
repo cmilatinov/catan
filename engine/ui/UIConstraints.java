@@ -57,23 +57,23 @@ public class UIConstraints {
 		return rotation;
 	}
 
-	public UIConstraints setRotation(int rotation) {
+	public UIConstraints setRotation(float rotation) {
 		this.rotation = rotation;
 		return this;
 	}
 
 	void computeDimensions(UIDimensions parent, UIDimensions result) {
 		
-		if(width == null && height == null) {
+		if (width == null && height == null) {
 			result.setWidth(parent.getWidth());
 			result.setHeight(parent.getHeight());
-		} else if(width == null && height != null) {
+		} else if (width == null) {
 			result.setWidth(parent.getWidth());
 			result.setHeight(height.compute(parent, result, UIDimensions.DIMENSION_HEIGHT));
-		} else if(width != null && height == null) {
+		} else if (height == null) {
 			result.setHeight(parent.getHeight());
 			result.setWidth(width.compute(parent, result, UIDimensions.DIMENSION_WIDTH));
-		} else if(width.getPriority() >= height.getPriority()) {
+		} else if (width.getPriority() >= height.getPriority()) {
 			result.setWidth(width.compute(parent, result, UIDimensions.DIMENSION_WIDTH));
 			result.setHeight(height.compute(parent, result, UIDimensions.DIMENSION_HEIGHT));
 		} else {
@@ -81,24 +81,23 @@ public class UIConstraints {
 			result.setWidth(width.compute(parent, result, UIDimensions.DIMENSION_WIDTH));
 		}
 		
-		if(x == null && y == null) {
+		if (x == null && y == null) {
 			result.setX(parent.getX());
 			result.setY(parent.getY());
-		} else if(x == null && y != null) {
+		} else if (x == null) {
 			result.setX(parent.getX());
 			result.setY(y.compute(parent, result, UIDimensions.DIMENSION_Y));
-		} else if(x != null && y == null) {
+		} else if (y == null) {
 			result.setY(parent.getY());
 			result.setX(x.compute(parent, result, UIDimensions.DIMENSION_X));
-		} else if(x.getPriority() >= y.getPriority()) {
+		} else if (x.getPriority() >= y.getPriority()) {
 			result.setX(x.compute(parent, result, UIDimensions.DIMENSION_X));
 			result.setY(y.compute(parent, result, UIDimensions.DIMENSION_Y));
 		} else {
 			result.setY(y.compute(parent, result, UIDimensions.DIMENSION_Y));
 			result.setX(x.compute(parent, result, UIDimensions.DIMENSION_X));
 		}
-		
-		result.setElevation(parent.getElevation() + 1);
+
 		result.setRotation(rotation);
 	}
 
