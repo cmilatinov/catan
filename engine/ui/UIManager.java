@@ -106,7 +106,6 @@ public class UIManager {
             framerate.setText(Integer.toString(fps));
             time = fps = 0;
         }
-        root.computeChildrenDimensions();
         root.update(delta);
     }
 
