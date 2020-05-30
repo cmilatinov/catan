@@ -71,10 +71,10 @@ public class Board extends GameScript {
 				.translate(new Vector3f(0, 0, -4));
 		getScene().register(city);
 
-		Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
-		Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
-		getScene().register(sun);
-		getScene().register(sun2);
+		Light light1 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
+		Light light2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, -500));
+		getScene().register(light1);
+		getScene().register(light2);
 
 	}
 
