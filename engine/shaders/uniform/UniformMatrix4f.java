@@ -1,4 +1,4 @@
-package shaders;
+package shaders.uniform;
 
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import shaders.Uniform;
 
 public class UniformMatrix4f extends Uniform {
 	

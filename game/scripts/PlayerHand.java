@@ -30,7 +30,7 @@ public class PlayerHand extends GameScript {
                     .setHeightWidth(new PixelConstraint(150))
                     .setX(new CenterConstraint(i * 50))
                     .setY(new CenterConstraint(-100))
-                    .setRotation(90);
+                    .setRotation((float)Math.random() * 180.0f);
             getScene().getUiManager().getContainer().add(cards[i], constraint);
 
         }

@@ -1,11 +1,8 @@
 package shaders.ui;
 
 import shaders.Shader;
-import shaders.Uniform;
-import shaders.UniformInt;
-import shaders.UniformVector2f;
 
-public class UIShader extends Shader {
+public class ShaderUI extends Shader {
 
 	private static final String VERTEX_FILE = "/shaders/ui/vertex.glsl";
 	private static final String FRAGMENT_FILE = "/shaders/ui/fragment.glsl";
@@ -16,7 +13,7 @@ public class UIShader extends Shader {
 	private static final String ATTRIBUTE_COLOR = "color";
 	private static final String ATTRIBUTE_BORDER_RADIUS = "borderRadius";
 
-	public UIShader() {
+	public ShaderUI() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 

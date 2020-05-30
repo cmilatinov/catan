@@ -1,12 +1,12 @@
 package shaders.entity;
 
 import shaders.Shader;
-import shaders.UniformInt;
-import shaders.UniformMatrix4f;
-import shaders.UniformVector3f;
-import shaders.UniformVector3fArray;
+import shaders.uniform.UniformInt;
+import shaders.uniform.UniformMatrix4f;
+import shaders.uniform.UniformVector3f;
+import shaders.uniform.UniformVector3fArray;
 
-public class EntityShader extends Shader {
+public class ShaderEntity extends Shader {
 	
 	private static final String VERTEX_FILE = "/shaders/entity/vertex.glsl";
 	private static final String FRAGMENT_FILE = "/shaders/entity/fragment.glsl";
@@ -28,7 +28,7 @@ public class EntityShader extends Shader {
 	
 	public final UniformVector3f cameraPos = new UniformVector3f("cameraPos");
 
-	public EntityShader() {
+	public ShaderEntity() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 		registerUniforms(
 				projectionViewMatrix,

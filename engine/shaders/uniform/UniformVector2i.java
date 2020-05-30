@@ -1,4 +1,4 @@
-package shaders;
+package shaders.uniform;
 
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform2iv;
@@ -7,6 +7,7 @@ import java.nio.IntBuffer;
 
 import org.joml.Vector2i;
 import org.lwjgl.BufferUtils;
+import shaders.Uniform;
 
 public class UniformVector2i extends Uniform {
 	

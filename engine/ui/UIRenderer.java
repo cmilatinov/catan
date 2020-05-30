@@ -15,8 +15,8 @@ import display.Window;
 import objects.Mesh;
 import objects.VAO;
 import objects.VBO;
-import shaders.ui.UIShader;
-import shaders.uiimage.UIImageShader;
+import shaders.ui.ShaderUI;
+import shaders.uisprite.ShaderUISprite;
 
 public class UIRenderer {
 	
@@ -46,8 +46,8 @@ public class UIRenderer {
 	private final Mesh mesh;
 	private final VBO instanceVBO;
 
-	private final UIShader shader;
-	private final UIImageShader imageShader;
+	private final ShaderUI shader;
+	private final ShaderUISprite imageShader;
 
 	private final Map<UIText, Texture> textTextures = new HashMap<UIText, Texture>();
 	
@@ -55,8 +55,8 @@ public class UIRenderer {
 		this.window = window;
 		this.instanceVBO = VBO.create(GL_ARRAY_BUFFER);
 		this.mesh = initMesh(instanceVBO);
-		this.shader = new UIShader();
-		this.imageShader = new UIImageShader();
+		this.shader = new ShaderUI();
+		this.imageShader = new ShaderUISprite();
 
 		imageShader.use();
 		imageShader.textureSampler.set(0);
@@ -225,7 +225,7 @@ public class UIRenderer {
 
 			// Load shader uniforms
 			imageShader.modelMatrix.set(sprite.dimensions.computeModelMatrix(width, height));
-			imageShader.textureFormat.set(UIImageShader.IMAGE_FORMAT_RGBA);
+			imageShader.textureFormat.set(ShaderUISprite.IMAGE_FORMAT_RGBA);
 
 			// Bind VAO
 			vao.bind(0, 1);
@@ -279,7 +279,7 @@ public class UIRenderer {
 
 			// Load shader uniforms
 			imageShader.modelMatrix.set(text.dimensions.computeModelMatrix(width, height));
-			imageShader.textureFormat.set(UIImageShader.IMAGE_FORMAT_ARGB);
+			imageShader.textureFormat.set(ShaderUISprite.IMAGE_FORMAT_ARGB);
 
 			// Bind VAO
 			vao.bind(0, 1);

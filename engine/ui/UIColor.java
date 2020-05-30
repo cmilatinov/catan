@@ -10,6 +10,7 @@ public class UIColor {
 	public static final UIColor MAGENTA = new UIColor(1.0f, 0, 1.0f, 1.0f);
 	public static final UIColor YELLOW = new UIColor(1.0f, 1.0f, 0, 1.0f);
 
+	public static final UIColor BLACK = new UIColor(0, 0, 0, 1.0f);
 	
 	public static final UIColor LIGHT_GRAY = new UIColor(0.8f, 0.8f, 0.8f, 1.0f);
 	public static final UIColor DARK_GRAY = new UIColor(0.4f, 0.4f, 0.4f, 1.0f);

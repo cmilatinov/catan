@@ -1,14 +1,13 @@
-package shaders.uiimage;
+package shaders.uisprite;
 
 import shaders.Shader;
-import shaders.UniformInt;
-import shaders.UniformMatrix4f;
-import shaders.UniformVector2f;
+import shaders.uniform.UniformInt;
+import shaders.uniform.UniformMatrix4f;
 
-public class UIImageShader extends Shader {
+public class ShaderUISprite extends Shader {
 
-    private static final String VERTEX_FILE = "/shaders/uiimage/vertex.glsl";
-    private static final String FRAGMENT_FILE = "/shaders/uiimage/fragment.glsl";
+    private static final String VERTEX_FILE = "/shaders/uisprite/vertex.glsl";
+    private static final String FRAGMENT_FILE = "/shaders/uisprite/fragment.glsl";
 
     private static final String ATTRIBUTE_POS = "pos";
     private static final String ATTRIBUTE_UV = "uv";
@@ -21,8 +20,7 @@ public class UIImageShader extends Shader {
     public final UniformInt textureSampler = new UniformInt("tex");
     public final UniformInt textureFormat = new UniformInt("textureFormat");
 
-
-    public UIImageShader() {
+    public ShaderUISprite() {
         super(VERTEX_FILE, FRAGMENT_FILE);
         registerUniforms(
                 modelMatrix,
