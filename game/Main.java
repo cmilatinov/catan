@@ -1,14 +1,6 @@
-import camera.Camera;
-import camera.PanCamera;
-
-import org.joml.Vector3f;
-import scripts.PlayerHand;
 import gameplay.Board;
-import scripts.UI;
-
 import main.Engine;
 import main.Scene;
-import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 import scripts.PlayerHand;
@@ -27,10 +19,6 @@ public class Main {
         var engine = new Engine();
 
         Scene scene = engine.getCurrentScene();
-        Camera orbitCamera = new PanCamera(70, scene.getWindow())
-                .rotate(new Vector3f(60, 0, 0))
-                .translate(new Vector3f(0, 5, -5));
-        scene.setCamera(orbitCamera);
 
         // Skybox
         scene.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
@@ -65,8 +53,9 @@ public class Main {
                 ui.box.animator().animate(new UIAnimationMetrics(0, 0, 0.5f, 360), UIInterpolators.EASE_IN_OUT, 0.7f));
         scene.registerKeyUpAction(GLFW_KEY_V, (int mods) ->
                 ui.text.setFont(new Font("Verdana", Font.ITALIC, 12)));
+
         scene.register(ui);
-        scene.register(new PlayerHand());
+//        scene.register(new PlayerHand());
 
         engine.run();
     }
