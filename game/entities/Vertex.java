@@ -1,23 +1,22 @@
-package gameplay.tiles;
+package entities;
 
-import entities.Building;
-import gameplay.tiles.TileTypes;
+import gameplay.TileTypes;
 import objects.TexturedMesh;
-import entities.Entity;
+
+import java.util.ArrayList;
 
 public class Vertex extends Entity{
 	private Building building;
 	private TileTypes port;
+	private ArrayList<Side> sides;
 	
 	public Vertex(TexturedMesh model) {
 		super(model);
-
-		scale(0.996f);
 	}
 
 	@Override
 	public boolean shouldRender() {
-		return false;
+		return true;
 	}
 
 	public Building getBuilding() {
@@ -26,6 +25,10 @@ public class Vertex extends Entity{
 	
 	public void setPort(TileTypes t) {
 		port = t;
+	}
+
+	public void addSide(Side s) {
+		sides.add(s);
 	}
 	
 	public void setBuilding(Building building) {

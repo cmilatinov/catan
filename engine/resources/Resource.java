@@ -1,6 +1,6 @@
 package resources;
 
-import gameplay.tiles.TileTypes;
+import gameplay.TileTypes;
 
 public enum Resource {
 	

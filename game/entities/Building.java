@@ -1,6 +1,6 @@
 package entities;
 
-import gameplay.tiles.TileTypes;
+import gameplay.TileTypes;
 import log.Logger;
 import main.Engine;
 import main.Scene;

@@ -1,10 +1,8 @@
-package gameplay.tiles;
+package entities;
 
 import java.util.ArrayList;
 
-import entities.Entity;
-import entities.EntityStatic;
-import main.Scene;
+import gameplay.TileTypes;
 import objects.TexturedMesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

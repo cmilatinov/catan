@@ -1,8 +1,9 @@
-package gameplay.tiles;
+package gameplay;
 
 import entities.Building;
-import entities.Entity;
-import entities.EntityStatic;
+import entities.Side;
+import entities.Tile;
+import entities.Vertex;
 import main.Scene;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -11,16 +12,17 @@ import resources.Resource;
 
 import java.util.*;
 
-import static gameplay.tiles.TileTypes.*;
+import static gameplay.TileTypes.*;
 
 public class Tiles {
 
     private ArrayList<Tile> tiles;
     private ArrayList<Vertex> vertices;
+    private ArrayList<Side> sides;
 
     private int desertIndex = -1;
 
-    private int boardRadius;
+    private final int BOARD_RADIUS;
 
     private Map<TileTypes, Integer> tileConfiguration = new HashMap<TileTypes, Integer>();
     private ArrayList<Integer> tokenConfig = new ArrayList<Integer>();
@@ -32,7 +34,7 @@ public class Tiles {
     private int BRICK_COUNT = 3;
     private int DESERT_COUNT = 1;
 
-    private final int HEX_TILE = 6;
+    private final int SIDES = 6;
 
     public Tiles(int boardRadius, int sheepCount, int wheatCount, int forestCount, int stoneCount, int brickCount, int desertCount) {
         this(boardRadius);
@@ -46,7 +48,7 @@ public class Tiles {
     }
 
     public Tiles(int boardRadius) {
-        this.boardRadius = boardRadius;
+        BOARD_RADIUS = boardRadius;
     }
 
     /**
@@ -74,6 +76,7 @@ public class Tiles {
 
         tiles = new ArrayList<Tile>();
         vertices = new ArrayList<Vertex>();
+        sides = new ArrayList<Side>();
 
         // Generates the appropriate amount of types for the tiles
         Iterator tileIterator = tileConfiguration.entrySet().iterator();
@@ -101,43 +104,88 @@ public class Tiles {
 
         Collections.shuffle(tiles);
 
-        positionTiles();
-        positionVertices();
+        generateTiles();
+        generateGrid();
+        System.out.println(sides.size());
     }
 
-    public void positionVertices() {
+    public void moveSettlement(int ind) {
+        vertices.get(ind).translate(new Vector3f(0, 0.5f, 0));
+    }
+
+    public void generateGrid() {
         for(Tile t : tiles) {
-            float z, x, newX, newZ;
-            double initialAngle = Math.PI / 6;
+            float vZ, vX, sX, sZ;
+            double initialVAngle = Math.PI / 6;
+            double initialSAngle = 0;
+
             Vertex newVertex = null;
-            boolean exists;
+            Side newSide = null;
 
-            for(int i = 0; i < HEX_TILE; i ++) {
-                x = (float) Math.cos(initialAngle - (i * Math.PI/3));
-                z = (float) Math.sin(initialAngle - (i * Math.PI/3));
+            boolean vExists, sExists;
 
-                newX = x + t.getPositionX();
-                newZ = z + t.getPositionZ();
-                exists = false;
+            for(int i = 0; i < SIDES; i ++) {
+                vX = (float) Math.cos(initialVAngle - (i * Math.PI/3)) + t.getPositionX();
+                vZ = (float) Math.sin(initialVAngle - (i * Math.PI/3)) + t.getPositionZ();
 
-                for(Vertex v : vertices)
-                    if(Math.abs(newX - v.getPositionX()) < 0.1 && Math.abs(newZ - v.getPositionZ()) < 0.1 ) {
-                        newVertex = v;
-                        exists = true;
+                sX = (float) (Math.cos(initialSAngle - (i * Math.PI/3)) * 0.866) + t.getPositionX();
+                sZ = (float) (Math.sin(initialSAngle - (i * Math.PI/3)) * 0.866) + t.getPositionZ();
+
+                vExists = false;
+                sExists = false;
+
+                for(Side s : sides)
+                    if(Math.abs(sX - s.getPositionX()) < 0.01 && Math.abs(sZ - s.getPositionZ()) < 0.01 ) {
+                        newSide = s;
+                        sExists = true;
                     }
 
-                if(!exists) {
+                for(Vertex v : vertices)
+                    if(Math.abs(vX - v.getPositionX()) < 0.1 && Math.abs(vZ - v.getPositionZ()) < 0.1 ) {
+                        newVertex = v;
+                        vExists = true;
+                    }
+
+                if(!vExists) {
                     newVertex = new Vertex(GameResources.get(Resource.MODEL_TILE_BRICK));
-                    newVertex.setPosition(new Vector3f(newX, 0.1f, newZ));
+                    newVertex.setPosition(new Vector3f(vX, 0.1f, vZ));
                     vertices.add(newVertex);
+                }
+
+                if(!sExists) {
+                    newSide = new Side(GameResources.get(Resource.MODEL_TILE_FOREST));
+                    newSide.setPosition(new Vector3f(sX, 0.1f, sZ));
+                    sides.add(newSide);
                 }
 
                 t.addVertex(newVertex);
             }
+
+            Vector3f firstV, secondV, vMatch = new Vector3f();
+
+            for(Side s : sides) {
+                firstV = null;
+                secondV = null;
+                for(Vertex v : vertices) {
+                    s.getPosition().sub(v.getPosition(), vMatch);
+                    if(vMatch.length() - 0.5 < 0.5) {
+                        if(firstV == null)
+                            firstV = v.getPosition();
+                        else {
+                            secondV = v.getPosition();
+                            break;
+                        }
+                    }
+                }
+                firstV.sub(secondV);
+
+                s.createRoad();
+                s.getRoad().setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(firstV.z / firstV.x)), 0));
+            }
         }
     }
 
-    public void positionTiles() {
+    public void generateTiles() {
         float [] hexCoords = new float [3];
         int zeroIndex = 1;
         int hIndex = 2;
@@ -145,12 +193,12 @@ public class Tiles {
 
         int tIndex = 0;
 
-        for(int i = boardRadius - 1; i > 0; i --) {
+        for(int i = BOARD_RADIUS - 1; i > 0; i --) {
             hexCoords[0] = i;
             hexCoords[1] = 0;
             hexCoords[2] = -i;
 
-            for(int t = 0; t < i * HEX_TILE; t ++) {
+            for(int t = 0; t < i * SIDES; t ++) {
                 tiles.get(tIndex).setHexCoords(new Vector2f(hexCoords[0], hexCoords[2]));
                 tiles.get(tIndex).scale(0.996f);
 
@@ -178,6 +226,10 @@ public class Tiles {
         tiles.get(tIndex).setHexCoords(new Vector2f(0, 0));
     }
 
+    /**
+     * Method that returns the tile of type desert
+     * @return - Tile of type desert
+     */
     public Tile getDesertTile() {
         if(desertIndex == -1)
             return null;
@@ -204,27 +256,15 @@ public class Tiles {
                 scene.register(t.getToken());
         }
 
-    }
-
-    public void insertBuilding(int index, Scene scene) {
-        vertices.get(index).setBuilding(new Building(scene));
-    }
-
-    /**
-     * This method checks if a given angle is one of the possible angles in a hex, meaning Pi*2/6
-     *
-     * @param theta The angle to check
-     * @return True if it's one of the 6 angles, otherwise, False
-     */
-    private boolean isAngleInHex(float theta) {
-        float alpha = 0;
-        float alphaIncrement = (float) 360 / (HEX_TILE);
-        for(int i = 0; i <=HEX_TILE; i ++) {
-            if(alpha == theta)
-                return true;
-            alpha += alphaIncrement;
+        for(Side s : sides) {
+            scene.register(s.scale(0.1f));
+            scene.register(s.getRoad());
         }
-        return false;
+
+    }
+
+    public void insertBuilding(Scene scene) {
+        vertices.get((int)(Math.random() * vertices.size())).setBuilding(new Building(scene));
     }
 
 }

@@ -1,17 +1,20 @@
 package gameplay;
 
 import entities.*;
-import gameplay.tiles.Tiles;
 import lights.Light;
 import objects.GameScript;
 import org.joml.Vector3f;
 import resources.Resource;
+
+import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_6;
 
 public class Board extends GameScript {
 	private Entity robber;
 	private Tiles tiles;
+
+	public int ind = 0;
 	
 	/**
 	 * Constructor to create a board.
@@ -48,28 +51,9 @@ public class Board extends GameScript {
 
 		tiles.registerBoard(getScene());
 
-		Entity road = Road
-				.create(Resource.TEXTURE_COLOR_BLUE)
-				.scale(0.45f)
-				.rotate(new Vector3f(0, 90, 0))
-				.translate(new Vector3f(0, 0, -3.5f));
-		getScene().register(road);
-
 		getScene().getWindow().keyboard().registerKeyUp(GLFW_KEY_6, (int mods) -> {
-			tiles.insertBuilding(3, getScene());
+			tiles.moveSettlement(ind ++);
 		});
-
-		Entity settlement = Settlement
-				.create(Resource.TEXTURE_COLOR_BLUE)
-				.scale(0.040f)
-				.translate(new Vector3f(0, 0, -3));
-		getScene().register(settlement);
-
-		Entity city = City
-				.create(Resource.TEXTURE_COLOR_BLUE)
-				.scale(0.045f)
-				.translate(new Vector3f(0, 0, -4));
-		getScene().register(city);
 
 		Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
 		Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));

@@ -11,10 +11,6 @@ public class Road extends Entity {
 		super(model);
 	}
 
-	public Road(Vector3f pos, Vector3f rot, float scale, TexturedMesh model) {
-		super(pos, rot, scale, model);
-	}
-
 	public static Road create(Resource type)
 	{
 		var model = new TexturedMesh(GameResources.get(Resource.MESH_ROAD), GameResources.get(type));
