@@ -1,14 +1,6 @@
-import camera.Camera;
-import camera.PanCamera;
-
-import org.joml.Vector3f;
-import scripts.PlayerHand;
 import gameplay.Board;
-import scripts.UI;
-
 import main.Engine;
 import main.Scene;
-import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 import scripts.PlayerHand;
@@ -27,10 +19,6 @@ public class Main {
         var engine = new Engine();
 
         Scene scene = engine.getCurrentScene();
-//        Camera orbitCamera = new PanCamera(70, scene.getWindow())
-//                .rotate(new Vector3f(60, 0, 0))
-//                .translate(new Vector3f(0, 5, -5));
-//        scene.setCamera(orbitCamera);
 
         // Skybox
         scene.setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
