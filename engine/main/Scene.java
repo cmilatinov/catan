@@ -10,6 +10,7 @@ import objects.GameScript;
 import objects.Mesh;
 import objects.Texture;
 import org.joml.Vector3f;
+import physics.PhysicsManager;
 import render.EntityRenderer;
 import render.SkyboxRenderer;
 import resources.GameResources;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 public class Scene {
 
+    private final ArrayList<Entity> allEntities = new ArrayList<>();
     private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
     private final List<Light> lights = new ArrayList<>();
     private final List<GameScript> gameScripts = new ArrayList<>();
@@ -31,6 +33,7 @@ public class Scene {
     private final EntityRenderer entityRenderer;
     private final SkyboxRenderer skyboxRenderer;
     public final Window attachedWindow;
+    private final PhysicsManager physics;
 
     private Texture skybox = null;
 
@@ -39,6 +42,7 @@ public class Scene {
     public Scene(Window window) {
         this.attachedWindow = window;
         this.uiManager = new UIManager(window);
+        this.physics = new PhysicsManager(this);
 
         camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
 
@@ -54,7 +58,14 @@ public class Scene {
         return uiManager;
     }
 
+    public PhysicsManager physics() {
+        return this.physics;
+    }
+
     public void setCamera(Camera camera) {
+        if(this.camera != null) {
+            this.camera.destroy();
+        }
         this.camera = camera;
     }
 
@@ -83,6 +94,10 @@ public class Scene {
                 }
             }
         }
+    }
+
+    public ArrayList<Entity> getEntities() {
+        return this.allEntities;
     }
 
     public void renderScene() {
@@ -121,6 +136,8 @@ public class Scene {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
 
+        allEntities.add(ent);
+
         if (!entities.containsKey(mesh))
             entities.put(ent.getModel().getMesh(), new HashMap<Texture, List<Entity>>() {{
                 put(ent.getModel().getTexture(), new ArrayList<Entity>() {{
@@ -144,6 +161,8 @@ public class Scene {
     public void remove(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
+
+        allEntities.remove(ent);
 
         if (!entities.containsKey(mesh))
             return;

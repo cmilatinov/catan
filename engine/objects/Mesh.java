@@ -14,7 +14,7 @@ public class Mesh implements GameResource {
 	 * Creates a new mesh with the given VAO and vertex count.
 	 * 
 	 * @param vao The VAO used to describe this mesh.
-	 * @param id  The number of vertices present in the mesh.
+	 * @param vertexCount  The number of vertices present in the mesh.
 	 */
 	public Mesh(VAO vao, int vertexCount) {
 		this.vao = vao;

@@ -12,6 +12,7 @@ import entities.Entity;
 import lights.Light;
 import objects.Mesh;
 import objects.Texture;
+import physics.colliders.SphereCollider;
 import shaders.entity.ShaderEntity;
 
 public class EntityRenderer implements FreeableObject {
@@ -54,7 +55,11 @@ public class EntityRenderer implements FreeableObject {
 				texture.bindToUnit(0);
 				
 				for (Entity entity : entities.get(mesh).get(texture)) {
-					
+
+//					if(Entity instanceof SphereCollider) {
+//
+//					}
+
 					if(!entity.shouldRender())
 						continue;
 					

@@ -1,6 +1,7 @@
 package entities;
 
 import objects.TexturedMesh;
+import physics.colliders.SphereCollider;
 import resources.GameResources;
 import resources.Resource;
 
