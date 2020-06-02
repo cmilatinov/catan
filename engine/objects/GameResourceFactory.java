@@ -347,7 +347,7 @@ public class GameResourceFactory {
 	}
 
 	/**
-	 * Frees any game resources generated. All resources created from this class become 
+	 * Frees any game resources generated. All resources created from this class become
 	 * obsolete and should not be referenced after this method is called.
 	 */
 	public static void cleanGameResources() {

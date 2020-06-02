@@ -1,13 +1,13 @@
 package resources;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-
-import java.util.HashMap;
-
 import objects.GameResource;
 import objects.GameResourceFactory;
 import objects.TexturedMesh;
+
+import java.util.HashMap;
+
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
 
 public class GameResources {
 	
@@ -15,35 +15,6 @@ public class GameResources {
 	
 	private static final String MESH_PATH = "./models/";
 	private static final String TEXTURE_PATH = "./textures/";
-	
-	private static final float SKYBOX_SIZE = 500;
-	private static final int[] SKYBOX_MESH_INDICES = {
-		0, 4, 6,
-		0, 6, 2, 
-		0, 2, 3, 
-		0, 3, 1,
-		2, 6, 7,
-		2, 7, 3,
-		4, 7, 6,
-		4, 5, 7,
-		0, 5, 4,
-		0, 1, 5,
-		1, 7, 5,
-		1, 3, 7,
-	};
-	
-	private static final float[] SKYBOX_MESH_VERTICES = {
-		-SKYBOX_SIZE, -SKYBOX_SIZE, -SKYBOX_SIZE,
-		-SKYBOX_SIZE, -SKYBOX_SIZE, SKYBOX_SIZE,
-		-SKYBOX_SIZE, SKYBOX_SIZE, -SKYBOX_SIZE,
-		-SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE,
-		SKYBOX_SIZE, -SKYBOX_SIZE, -SKYBOX_SIZE,
-		SKYBOX_SIZE, -SKYBOX_SIZE, SKYBOX_SIZE,
-		SKYBOX_SIZE, SKYBOX_SIZE, -SKYBOX_SIZE,
-		SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE	
-	};
-	
-	private static final GameResourceFactory loader = new GameResourceFactory();
 	
 	public static void loadAll() {
 		
@@ -56,7 +27,6 @@ public class GameResources {
 		loadMesh(Resource.MESH_BOARD, MESH_PATH + "board.obj");
 		loadMesh(Resource.MESH_TABLE, MESH_PATH + "table.obj");
 		loadMesh(Resource.MESH_TOKEN, MESH_PATH + "token.obj");
-		resources.put(Resource.MESH_SKYBOX, loader.loadMesh(SKYBOX_MESH_INDICES, SKYBOX_MESH_VERTICES));
 		
 		// Textures
 		loadTexture2D(Resource.TEXTURE_TILE_BRICK, TEXTURE_PATH + "tile_brick.png", GL_LINEAR, true);
@@ -117,19 +87,19 @@ public class GameResources {
 	}
 
 	public static void cleanAll() {
-		loader.destroy();
+		GameResourceFactory.cleanGameResources();
 	}
 
 	private static void loadMesh(Resource id, String filepath) {
-		resources.put(id, loader.loadOBJ(filepath));
+		resources.put(id, GameResourceFactory.loadOBJ(filepath));
 	}
 
 	private static void loadTexture2D(Resource id, String filepath, int filtering, boolean mipmap) {
-		resources.put(id, loader.loadTexture2D(filepath, filtering, mipmap));
+		resources.put(id, GameResourceFactory.loadTexture2D(filepath, filtering, mipmap));
 	}
 
 	private static void loadTextureCubeMap(Resource id, String filepath) {
-		resources.put(id, loader.loadTextureCubeMap(filepath));
+		resources.put(id, GameResourceFactory.loadTextureCubeMap(filepath));
 	}
 
 	private static void loadModel(Resource id, Resource mesh, Resource texture) {

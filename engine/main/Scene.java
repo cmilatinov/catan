@@ -13,8 +13,6 @@ import org.joml.Vector3f;
 import physics.PhysicsManager;
 import render.EntityRenderer;
 import render.SkyboxRenderer;
-import resources.GameResources;
-import resources.Resource;
 import ui.UIManager;
 
 import java.util.ArrayList;
@@ -47,7 +45,7 @@ public class Scene {
         camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
 
         entityRenderer = new EntityRenderer();
-        skyboxRenderer = new SkyboxRenderer(GameResources.get(Resource.MESH_SKYBOX));
+        skyboxRenderer = new SkyboxRenderer();
     }
 
     public Window getWindow() {

@@ -49,7 +49,6 @@ public enum Resource {
 	MESH_CITY,
 	MESH_ROBBER,
 	MESH_BOARD,
-	MESH_SKYBOX,
 	MESH_TABLE,
 
 	MESH_TOKEN,
