@@ -28,9 +28,10 @@ public class UI extends GameScript {
     public void initialize() {
         box = new UIQuad();
         box.setColor(UIColor.RED);
+        box.setBorderRadius(20);
         UIConstraints constraints = new UIConstraints()
-                .setX(new PixelConstraint(20, UIDimensions.DIRECTION_LEFT))
-                .setY(new PixelConstraint(20, UIDimensions.DIRECTION_TOP))
+                .setX(new PixelConstraint(30, UIDimensions.DIRECTION_LEFT))
+                .setY(new PixelConstraint(30, UIDimensions.DIRECTION_TOP))
                 .setWidth(new RelativeConstraint(0.2f))
                 .setHeight(new AspectConstraint(1));
         getScene().getUiManager().getContainer().add(box, constraints);

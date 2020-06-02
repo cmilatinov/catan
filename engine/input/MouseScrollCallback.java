@@ -1,5 +1,5 @@
 package input;
 
-public interface ScrollCallback {
+public interface MouseScrollCallback {
     void invoke(double x, double y);
 }

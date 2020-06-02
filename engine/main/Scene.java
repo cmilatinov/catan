@@ -73,7 +73,7 @@ public class Scene {
         return this.camera;
     }
 
-    public void update(double delta) throws Exception {
+    public void update(double delta) {
         camera.update(delta);
         for (GameScript gameScript : gameScripts) {
             switch (gameScript.getCurrentState()) {

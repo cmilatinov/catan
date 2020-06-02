@@ -12,6 +12,7 @@ public class ShaderUI extends Shader {
 	private static final String ATTRIBUTE_DIMENSIONS = "dimensions";
 	private static final String ATTRIBUTE_COLOR = "color";
 	private static final String ATTRIBUTE_BORDER_RADIUS = "borderRadius";
+	private static final String ATTRIBUTE_ROTATION = "rotation";
 
 	public ShaderUI() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -23,6 +24,7 @@ public class ShaderUI extends Shader {
 		bindToAttribute(6, ATTRIBUTE_DIMENSIONS);
 		bindToAttribute(7, ATTRIBUTE_COLOR);
 		bindToAttribute(8, ATTRIBUTE_BORDER_RADIUS);
+		bindToAttribute(9, ATTRIBUTE_ROTATION);
 	}
 
 }
