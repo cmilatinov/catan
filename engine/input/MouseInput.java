@@ -1,22 +1,18 @@
 package input;
 
-import java.nio.BufferOverflowException;
-import java.nio.DoubleBuffer;
-import java.util.HashMap;
-
+import camera.Camera;
+import display.Window;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
-
-import camera.Camera;
-import display.Window;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
 import utils.Pair;
 
-import static org.lwjgl.glfw.GLFW.*;
+import java.nio.DoubleBuffer;
+import java.util.HashMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -26,7 +22,7 @@ public class MouseInput {
 
 	private final CursorCallback cursorCallback;
 	private final MouseButtonCallback mouseCallback;
-	private final MouseScrollCallback scrollCallback;
+	private final MouseWheelCallback scrollCallback;
 
 	private int nextCursorHandle = 1;
 	private int nextMouseHandle = 1;
@@ -34,7 +30,7 @@ public class MouseInput {
 
 	private HashMap<Integer, MouseMoveCallback> cursorCallbacks = new HashMap<>();
 	private HashMap<Integer, MouseClickCallback> mouseCallbacks = new HashMap<>();
-	private HashMap<Integer, ScrollCallback> scrollCallbacks = new HashMap<>();
+	private HashMap<Integer, MouseScrollCallback> scrollCallbacks = new HashMap<>();
 
 	private float sensitivity = 1.0f;
 	private double lastX = 0, lastY = 0;
@@ -46,9 +42,9 @@ public class MouseInput {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void invoke(long wnd, double x, double y) {
+		public void invoke(long hwnd, double x, double y) {
 
-			if (wnd != window.getHandle())
+			if (hwnd != window.getHandle())
 				return;
 
 			if (ignoreNext) {
@@ -82,14 +78,17 @@ public class MouseInput {
 
 	}
 
-	private class MouseScrollCallback implements GLFWScrollCallbackI {
+	private class MouseWheelCallback implements GLFWScrollCallbackI {
 
-		@Override
+		/**
+		 * {@inheritDoc}
+		 */
 		public void invoke(long window, double xoffset, double yoffset) {
 			for (int callback: scrollCallbacks.keySet())
 				scrollCallbacks.get(callback).invoke(xoffset, yoffset);
 
 		}
+
 	}
 
 	/**
@@ -101,7 +100,7 @@ public class MouseInput {
 		this.window = window;
 		this.cursorCallback = new CursorCallback();
 		this.mouseCallback = new MouseButtonCallback();
-		this.scrollCallback = new MouseScrollCallback();
+		this.scrollCallback = new MouseWheelCallback();
 	}
 
 	/**
@@ -194,13 +193,13 @@ public class MouseInput {
 
 	/**
 	 * Used to add a callback to fire when the mouse is scrolled. A handle to the callback is returned.
-	 * The callback may be removed by using {@link #removeMouseMoveCallback} and passing
+	 * The callback may be removed by using {@link #removeMouseScrollCallback} and passing
 	 * the handle returned from this method.
 	 *
 	 * @param mouseScroll The callback to invoke whenever the mouse is scrolled.
 	 * @return [{@link MouseInput}] This same instance of the class.
 	 */
-	public int registerMouseScrollCallback(ScrollCallback mouseScroll) {
+	public int registerMouseScrollCallback(MouseScrollCallback mouseScroll) {
 		scrollCallbacks.put(nextScrollHandle, mouseScroll);
 		return nextScrollHandle++;
 	}

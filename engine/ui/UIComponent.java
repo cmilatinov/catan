@@ -8,7 +8,6 @@ import ui.animation.UIAnimator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import java.util.stream.Stream;
 
 
 public class UIComponent {
@@ -154,5 +153,5 @@ public class UIComponent {
 
 		return result;
 	}
-	
+
 }

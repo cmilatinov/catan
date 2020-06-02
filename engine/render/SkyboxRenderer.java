@@ -8,16 +8,22 @@ import objects.Texture;
 import shaders.skybox.ShaderSkybox;
 
 public class SkyboxRenderer {
-	
+
+	private static Mesh mesh = null;
+
 	private final ShaderSkybox shader;
-	private final Mesh mesh;
-	
-	public SkyboxRenderer(Mesh skyboxMesh) {
+
+	public SkyboxRenderer() {
 		shader = new ShaderSkybox();
 		shader.use();
 		shader.textureSampler.set(0);
 		shader.stop();
-		this.mesh = skyboxMesh;
+		if (mesh == null)
+			mesh = initMesh();
+	}
+
+	private static Mesh initMesh() {
+
 	}
 	
 	public void render(Camera cam, Texture skybox) {

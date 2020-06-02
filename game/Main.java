@@ -48,9 +48,9 @@ public class Main {
 
         UI ui = new UI();
         scene.registerKeyUpAction(GLFW_KEY_G, (int mods) ->
-                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 1.0f, 0), UIInterpolators.EASE_IN_OUT, 0.7f));
+                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 1.0f, 0), UIInterpolators.EASE_IN_OUT, 0.5f));
         scene.registerKeyUpAction(GLFW_KEY_F, (int mods) ->
-                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 0.5f, 360), UIInterpolators.EASE_IN_OUT, 0.7f));
+                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 0.3f, 0), UIInterpolators.EASE_IN_OUT, 0.5f));
         scene.registerKeyUpAction(GLFW_KEY_V, (int mods) ->
                 ui.text.setFont(new Font("Verdana", Font.ITALIC, 12)));
 

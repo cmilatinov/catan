@@ -1,25 +1,23 @@
 package ui;
 
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import objects.Texture;
-import org.joml.Matrix4f;
-
 import display.Window;
 import objects.Mesh;
+import objects.Texture;
 import objects.VAO;
 import objects.VBO;
+import org.joml.Matrix4f;
 import shaders.ui.ShaderUI;
 import shaders.uisprite.ShaderUISprite;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL15.*;
 
 
 public class UIRenderer {
@@ -44,7 +42,7 @@ public class UIRenderer {
 	};
 	
 	private static final int MAX_INSTANCES = 1000;
-	private static final int DATA_LENGTH = 25;
+	private static final int DATA_LENGTH = 26;
 	
 	private final Window window;
 	private final Mesh mesh;
@@ -106,6 +104,9 @@ public class UIRenderer {
 		
 		// Border radius
 		vao.addInstancedAttribute(8, 1, GL_FLOAT, DATA_LENGTH * Float.BYTES, 24 * Float.BYTES);
+
+		// Rotation
+		vao.addInstancedAttribute(9, 1, GL_FLOAT, DATA_LENGTH * Float.BYTES, 25 * Float.BYTES);
 		
 		// Unbind VAO and store mesh
 		return new Mesh(vao.unbind(), UI_MESH_INDICES.length);
@@ -206,6 +207,8 @@ public class UIRenderer {
 			instanceData[(i * DATA_LENGTH) + 23] = color.getA();
 
 			instanceData[(i * DATA_LENGTH) + 24] = quad.getBorderRadius();
+
+			instanceData[(i * DATA_LENGTH) + 25] = quad.getDimensions().getRotation();
 		}
 
 		// Use shader
@@ -215,13 +218,13 @@ public class UIRenderer {
 		instanceVBO.bind().storeSubData(0, instanceData);
 
 		// Bind VAO
-		vao.bind(0, 1, 2, 3, 4, 5, 6, 7, 8);
+		vao.bind(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 		// Draw meshes
 		mesh.drawInstanced(quadsToRender.size());
 
 		// Unbind VAO
-		vao.unbind(0, 1, 2, 3, 4, 5, 6, 7, 8);
+		vao.unbind(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 		// Stop shader
 		shader.stop();
@@ -319,4 +322,5 @@ public class UIRenderer {
 		imageShader.stop();
 
 	}
+
 }
