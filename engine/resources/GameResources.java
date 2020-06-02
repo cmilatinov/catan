@@ -13,8 +13,8 @@ public class GameResources {
 	
 	private static final HashMap<Resource, GameResource> resources = new HashMap<>();
 	
-	private static final String MESH_PATH = "./models/";
-	private static final String TEXTURE_PATH = "./textures/";
+	public static final String MESH_PATH = "./models/";
+	public static final String TEXTURE_PATH = "./textures/";
 	
 	public static void loadAll() {
 		

@@ -1,7 +1,9 @@
 package ui;
 
 public class UIColor {
-	
+
+	public static final UIColor WHITE = new UIColor(1, 1, 1, 1.0f);
+
 	public static final UIColor RED = new UIColor(1.0f, 0, 0, 1.0f);
 	public static final UIColor GREEN = new UIColor(0, 1.0f, 0, 1.0f);
 	public static final UIColor BLUE = new UIColor(0, 0, 1.0f, 1.0f);

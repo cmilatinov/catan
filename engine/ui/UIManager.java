@@ -33,7 +33,7 @@ public class UIManager {
                 .setWidth(window.getWidth())
                 .setHeight(window.getHeight())
                 .setElevation(0))
-				.setVisible(false);
+                .setVisible(false);
         this.renderer = new UIRenderer(window);
         this.window = window;
 
@@ -51,17 +51,17 @@ public class UIManager {
     private void onMouseClick(int button, int action, int mods) {
         var mouseCords = window.mouse().getMousePosition();
         UIComponent uiComponent = findUIComponentFromCoords(mouseCords.first, mouseCords.second);
-        if(uiComponent != null) {
+        if (uiComponent != null) {
             uiComponent.onMouseClick();
         }
     }
 
     private void onMouseMove(double x, double y, double dx, double dy) {
-        UIComponent uiComponent = findUIComponentFromCoords((int)x, (int)y);
-        if(lastHoveredComponent != null && lastHoveredComponent != uiComponent) {
-          lastHoveredComponent.onMouseHoverExit();
+        UIComponent uiComponent = findUIComponentFromCoords((int) x, (int) y);
+        if (lastHoveredComponent != null && lastHoveredComponent != uiComponent) {
+            lastHoveredComponent.onMouseHoverExit();
         }
-        if(uiComponent != null) {
+        if (uiComponent != null) {
             uiComponent.onMouseHover();
             lastHoveredComponent = uiComponent;
         }
@@ -71,9 +71,9 @@ public class UIManager {
         UIComponent found = null;
         Iterator iterator = root.children.iterator();
         while (iterator.hasNext()) {
-            UIComponent uiComponent = (UIComponent)iterator.next();
+            UIComponent uiComponent = (UIComponent) iterator.next();
 
-            if(!uiComponent.isInteractable()) {
+            if (!uiComponent.isInteractable()) {
                 continue;
             }
 

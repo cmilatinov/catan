@@ -10,7 +10,7 @@ import java.awt.image.DataBufferInt;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static org.lwjgl.opengl.GL11.*;
 
-public final class UIText extends UIComponent {
+public class UIText extends UIComponent {
 
     private final JTextArea textArea;
     boolean shouldUpdateImage = true;

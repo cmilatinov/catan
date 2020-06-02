@@ -45,7 +45,12 @@ public final class Engine {
         log("Loading assets ...");
         GameResources.loadAll();
 
-        currentScene = new Scene(window);
+        currentScene = new Scene() {
+            @Override
+            public void initialize() {
+
+            }
+        };
     }
 
     public Scene getCurrentScene() {
@@ -56,8 +61,9 @@ public final class Engine {
         this.currentScene = currentScene;
     }
 
-    public Scene newScene() {
-        return new Scene(window);
+    public Window getWindow()
+    {
+        return window;
     }
 
     public void run() {
@@ -100,7 +106,12 @@ public final class Engine {
 
             // Update
             window.update();
-            currentScene.update(delta);
+            try {
+                currentScene.update(delta);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log(e.getMessage());
+            }
             currentScene.getUiManager().update(delta);
 
             fbo.bind();

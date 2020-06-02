@@ -45,11 +45,12 @@ public class Board extends GameScript {
 
 		getScene().register(table);
 
+		tiles.registerBoard(getScene());
+
 		robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
 		getScene().register(robber);
 		robber.setPosition(tiles.getDesertTile().getPosition());
 
-		tiles.registerBoard(getScene());
 
 		getScene().getWindow().keyboard().registerKeyUp(GLFW_KEY_6, (int mods) -> {
 			tiles.moveSettlement(ind ++);
