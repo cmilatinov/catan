@@ -14,9 +14,9 @@ public class Packets {
 	/**
 	 * Creates a new instance of the provided packet type.
 	 * @param type The packet type.
-	 * @return [{@link Object}] The newly created packet instance.
+	 * @return [{@link Packet}] The newly created packet instance.
 	 */
-	public static final Packet createOfType(int type) {
+	public static Packet createOfType(int type) {
 		
 		try {
 			
@@ -40,11 +40,11 @@ public class Packets {
 	}
 	
 	/**
-	 * Creates a new instance of the provided packet type with the given serialized data.
-	 * @param type The packet type.
-	 * @return [{@link Object}] The newly created packet instance.
+	 * Creates a new packet instance with the given serialized data.
+	 * @param data The serialized packet data.
+	 * @return [{@link Packet}] The newly created packet instance.
 	 */
-	public static final Packet createFromData(byte[] data) {
+	public static Packet createFromData(byte[] data) {
 		
 		try {
 			
@@ -78,7 +78,7 @@ public class Packets {
 	 * @param type A unique integer representing the packet.
 	 * @param packet The corresponding packet class used to instantiate packets of that type.
 	 */
-	public static final void register(int type, Class<? extends Packet> packet) {
+	public static void register(int type, Class<? extends Packet> packet) {
 		packets.put(type, packet);
 	}
 	
@@ -89,7 +89,7 @@ public class Packets {
 	 * @return [<b>P</b>] The casted packet object or null if p is not of class P.
 	 */
 	@SuppressWarnings("unchecked")
-	public static final <P extends Packet> P cast(Packet p) {
+	public static <P extends Packet> P cast(Packet p) {
 		try {
 			return (P) p;
 		} catch (ClassCastException e) {

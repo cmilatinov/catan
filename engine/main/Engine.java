@@ -1,35 +1,18 @@
 package main;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_BACK;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_RGB;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glCullFace;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
-
-import org.lwjgl.glfw.GLFWErrorCallback;
-
 import display.DisplayMode;
 import display.Window;
 import log.Logger;
 import objects.FBO;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import resources.GameResources;
-import ui.UIManager;
+
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 
 public final class Engine {
 
@@ -48,8 +31,8 @@ public final class Engine {
         DisplayMode mode = new DisplayMode(
                 DisplayMode.CENTER,            // Center X
                 DisplayMode.CENTER,            // Center Y
-                1280,                    // Width
-                720,                     // Height
+                1920,                    // Width
+                1080,                     // Height
                 GLFW_CURSOR_NORMAL,            // Normal cursor
                 true,                 // Decorated
                 true,                    // Use VSYNC
@@ -62,7 +45,12 @@ public final class Engine {
         log("Loading assets ...");
         GameResources.loadAll();
 
-        currentScene = new Scene(window);
+        currentScene = new Scene() {
+            @Override
+            public void initialize() {
+
+            }
+        };
     }
 
     public Scene getCurrentScene() {
@@ -73,8 +61,9 @@ public final class Engine {
         this.currentScene = currentScene;
     }
 
-    public Scene newScene() {
-        return new Scene(window);
+    public Window getWindow()
+    {
+        return window;
     }
 
     public void run() {
@@ -121,7 +110,7 @@ public final class Engine {
                 currentScene.update(delta);
             } catch (Exception e) {
                 e.printStackTrace();
-                log(Logger.WARN, e.getMessage());
+                log(e.getMessage());
             }
             currentScene.getUiManager().update(delta);
 

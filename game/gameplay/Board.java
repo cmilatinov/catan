@@ -71,11 +71,12 @@ public class Board extends GameScript {
 
 		getScene().register(table);
 
+		tiles.registerBoard(getScene());
+
 		robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
 		getScene().register(robber);
 		robber.setPosition(tiles.getDesertTile().getPosition());
 
-		tiles.registerBoard(getScene());
 
 		Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
 		Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));

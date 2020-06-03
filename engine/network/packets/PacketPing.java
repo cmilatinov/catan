@@ -1,8 +1,8 @@
 package network.packets;
 
-import java.nio.ByteBuffer;
-
 import network.Packet;
+
+import java.nio.ByteBuffer;
 
 public class PacketPing extends Packet {
 	
@@ -60,7 +60,7 @@ public class PacketPing extends Packet {
 	
 	/**
 	 * Returns whether or not this packet should be returned to the sender.
-	 * @return Whether or not this packet should be returned to the sender.
+	 * @return True if this packet should be returned to the sender, false otherwise.
 	 */
 	public boolean getShouldReturnPing() {
 		return returnPing;

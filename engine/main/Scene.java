@@ -14,8 +14,6 @@ import org.joml.Vector3f;
 import physics.PhysicsManager;
 import render.EntityRenderer;
 import render.SkyboxRenderer;
-import resources.GameResources;
-import resources.Resource;
 import ui.UIManager;
 
 import java.util.ArrayList;
@@ -23,58 +21,138 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Scene {
+public abstract class Scene {
 
     private final ArrayList<Entity> allEntities = new ArrayList<>();
     private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
     private final List<Light> lights = new ArrayList<>();
     private final List<GameScript> gameScripts = new ArrayList<>();
 
-    private final UIManager uiManager;
+    private UIManager uiManager;
     private final EntityRenderer entityRenderer;
     private final SkyboxRenderer skyboxRenderer;
-    public final Window attachedWindow;
-    private final PhysicsManager physics;
+    private PhysicsManager physics;
+
+    private Window attachedWindow;
+
+    protected SceneManager sceneManager;
 
     private Texture skybox = null;
 
     private Camera camera;
 
-    public Scene(Window window) {
-        this.attachedWindow = window;
-        this.uiManager = new UIManager(window);
-        this.physics = new PhysicsManager(this);
-
-        camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
-
+    public Scene() {
         entityRenderer = new EntityRenderer();
-        skyboxRenderer = new SkyboxRenderer(GameResources.get(Resource.MESH_SKYBOX));
+        skyboxRenderer = new SkyboxRenderer();
     }
 
+    /**
+     * Tag to identify current scene
+     *
+     * @return the tag
+     */
+    public String getTag() {
+        return "default";
+    }
+
+    protected boolean isValid() {
+        return this.attachedWindow != null;
+    }
+
+    /**
+     * Initialize the Scene so that all of it's subsystems are ready
+     *
+     * @param window the window to attach to the scene
+     */
+    public void setup(Window window, SceneManager sceneManager) {
+        this.attachedWindow = window;
+        this.sceneManager = sceneManager;
+        this.uiManager = new UIManager(window);
+        this.physics = new PhysicsManager(this);
+        camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
+    }
+
+    /**
+     * Do any initialization for the scene here
+     */
+    public abstract void initialize();
+
+    /**
+     * Get the scene manager attached to this scene
+     * @return the scene manager
+     */
+    public SceneManager getSceneManager() {
+        return sceneManager;
+    }
+
+    /**
+     * Return the Window for the current scene
+     *
+     * @return the reference to the window
+     */
     public Window getWindow() {
         return attachedWindow;
     }
 
+    /**
+     * Return the UI Manager for the current scene
+     *
+     * @return the reference to the UI Manager
+     */
     public UIManager getUiManager() {
         return uiManager;
     }
 
+    /**
+     * Access the physics subsystem
+     *
+     * @return the reference to the PhysicsManager
+     */
     public PhysicsManager physics() {
         return this.physics;
     }
 
+    /**
+     * Set the current camera for the scene
+     *
+     * @param camera the new camera for the scene
+     */
     public void setCamera(Camera camera) {
-        if(this.camera != null) {
+        if (this.camera != null) {
             this.camera.destroy();
         }
         this.camera = camera;
     }
 
+    /**
+     * Get the current camera for the scene
+     *
+     * @return The Camera Reference
+     */
     public Camera getCamera() {
         return this.camera;
     }
 
+    /**
+     * Return all the entity's registered to this scene
+     *
+     * @return a list of all entities
+     */
+    public ArrayList<Entity> getEntities() {
+        return this.allEntities;
+    }
+
+    /**
+     * Run any attached GameScripts which handle game/ui logic
+     *
+     * @param delta the time delta between frames
+     * @throws Exception Exception for any of the GameScripts
+     */
     public void update(double delta) throws Exception {
+        if (!isValid()) {
+            throw new RuntimeException("Attempting to update the scene when it hasn't been setup (Scene::setup(Window window))");
+        }
+
         camera.update(delta);
         for (GameScript gameScript : gameScripts) {
             switch (gameScript.getCurrentState()) {
@@ -97,20 +175,31 @@ public class Scene {
         }
     }
 
-    public ArrayList<Entity> getEntities() {
-        return this.allEntities;
-    }
-
+    /**
+     * Render all render-able entities
+     */
     public void renderScene() {
         if (skybox != null)
             skyboxRenderer.render(this.camera, skybox);
         entityRenderer.render(this.camera, entities, lights);
     }
 
+    /**
+     * Shortcut to register key up actions
+     *
+     * @param code     the keycode
+     * @param callback the callback to execute
+     */
     public void registerKeyUpAction(int code, KeyCallback callback) {
         this.getWindow().keyboard().registerKeyUp(code, callback);
     }
 
+    /**
+     * Shortcut to register key down actions
+     *
+     * @param code     the keycode
+     * @param callback the callback to execute
+     */
     public void registerKeyDownAction(int code, KeyCallback callback) {
         this.getWindow().keyboard().registerKeyDown(code, callback);
     }
@@ -119,24 +208,16 @@ public class Scene {
         this.getWindow().mouse().registerMouseClickCallback(callback);
     }
 
-    public void cleanup() {
-        for (Mesh m : entities.keySet()) {
-            m.destroy();
-            for (Texture t : entities.get(m).keySet()) {
-                t.destroy();
-            }
-        }
-        entityRenderer.destroy();
-        camera.destroy();
-        uiManager.cleanup();
-        //NOTE: Scene shouldn't be responsible for the destruction of the window
-    }
-
     public void register(GameScript object) {
         object.setContext(this);
         gameScripts.add(object);
     }
 
+    /**
+     * Register a Entity to the scene
+     *
+     * @param ent the entity to be registered
+     */
     public void register(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
@@ -159,10 +240,20 @@ public class Scene {
             entities.get(mesh).get(texture).add(ent);
     }
 
+    /**
+     * Register a light source to the scene
+     *
+     * @param light the light to be registerd
+     */
     public void register(Light light) {
         lights.add(light);
     }
 
+    /**
+     * Remove a entity from the scene
+     *
+     * @param ent the entity the remove
+     */
     public void remove(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
@@ -178,12 +269,38 @@ public class Scene {
         entities.get(mesh).get(texture).remove(ent);
     }
 
+    /**
+     * Remove a light from the scene
+     *
+     * @param light the light to be removed
+     */
     public void remove(Light light) {
         lights.remove(light);
     }
 
+    /**
+     * Set the skybox texture to be used for this scene;
+     *
+     * @param skybox the skybox texture to use
+     */
     public void setSkyboxTexture(Texture skybox) {
         this.skybox = skybox;
+    }
+
+    /**
+     * Call any destruction logic for objects in this scene
+     */
+    public void cleanup() {
+        for (Mesh m : entities.keySet()) {
+            m.destroy();
+            for (Texture t : entities.get(m).keySet()) {
+                t.destroy();
+            }
+        }
+        entityRenderer.destroy();
+        camera.destroy();
+        uiManager.cleanup();
+        //NOTE: Scene shouldn't be responsible for the destruction of the window
     }
 
 }

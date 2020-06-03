@@ -1,25 +1,20 @@
 package network.packets;
 
+import network.Packet;
+import utils.StringUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import network.Packet;
-import utils.StringUtils;
 
 public class PacketConnect extends Packet {
 	
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
 	
 	/**
-	 * The client's Cloud-Code username.
+	 * The client's username.
 	 */
 	private String username;
-	
-	/**
-	 * The client's Cloud-Code password.
-	 */
-	private String password;
 	
 	/**
 	 * Creates a new connection request packet with an empty username and password set.
@@ -27,18 +22,15 @@ public class PacketConnect extends Packet {
 	public PacketConnect() {
 		super(PacketType.CONNECT);
 		this.username = "";
-		this.password = "";
 	}
 	
 	/**
 	 * Creates a new connection request packet with the credentials.
 	 * @param username The username used to authenticate the client.
-	 * @param password The password used to authenticate the client.
 	 */
-	public PacketConnect(String username, String password) {
+	public PacketConnect(String username) {
 		super(PacketType.CONNECT);
 		this.username = username;
-		this.password = password;
 	}
 	
 	/**
@@ -52,13 +44,8 @@ public class PacketConnect extends Packet {
 		byte usernameSize = buffer.get();
 		byte[] usernameBytes = new byte[usernameSize];
 		buffer.get(usernameBytes);
-		
-		byte passwordSize = buffer.get();
-		byte[] passwordBytes = new byte[passwordSize];
-		buffer.get(passwordBytes);
-		
+
 		username = StringUtils.createFromBytes(usernameBytes, ENCODING);
-		password = StringUtils.createFromBytes(passwordBytes, ENCODING);
 	}
 	
 	/**
@@ -66,13 +53,10 @@ public class PacketConnect extends Packet {
 	 */
 	public byte[] serialize() {
 		byte[] bUsername = StringUtils.getBytes(username, ENCODING);
-		byte[] bPassword = StringUtils.getBytes(password, ENCODING);
-		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 2 + bUsername.length + bPassword.length);
+		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 1 + bUsername.length);
 		serializeHeader(data);
 		data.put((byte) bUsername.length)
-			.put(bUsername)
-			.put((byte) bPassword.length)
-			.put(bPassword);
+			.put(bUsername);
 		return data.array();
 	}
 	
@@ -91,24 +75,6 @@ public class PacketConnect extends Packet {
 	 */
 	public PacketConnect setUsername(String username) {
 		this.username = username;
-		return this;
-	}
-	
-	/**
-	 * Returns the stored password. 
-	 * @return [{@link String}] The stored password in string format.
-	 */
-	public String getPassword() {
-		return password;
-	}
-	
-	/**
-	 * Sets this packet's stored password.
-	 * @param password The new password this packet is to hold.
-	 * @return [{@link PacketConnect}] This same {@link PacketConnect} instance to allow for method chaining.
-	 */
-	public PacketConnect setPassword(String password) {
-		this.password = password;
 		return this;
 	}
 	

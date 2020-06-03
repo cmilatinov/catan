@@ -1,5 +1,8 @@
 package network;
 
+import network.packets.*;
+import utils.Pair;
+
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -8,15 +11,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-
-import network.packets.PacketAcceptConnection;
-import network.packets.PacketConnect;
-import network.packets.PacketDisconnect;
-import network.packets.PacketKey;
-import network.packets.PacketPing;
-import network.packets.PacketType;
-import utils.Pair;
-import utils.UserToken;
 
 public class GameServer extends Thread {
 	
@@ -41,24 +35,18 @@ public class GameServer extends Thread {
 		public PublicKey key;
 		
 		/**
-		 * The token identifying this user, to be used when performing edits.
-		 */
-		public UserToken token;
-		
-		/**
 		 * The amount of time after which this client will be considered disconnected.
 		 */
 		public volatile long timeout = CLIENT_TIMEOUT;
 		
 		/**
 		 * Creates a new client instance with the specified IP address and port number.
-		 * @param address The remote IP address from which the client is responding.
-		 * @param port The remote port number from which the client is responding.
+		 * @param address The remote IP address and port from which the client is responding.
+		 * @param key The client's public RSA key.
 		 */
-		public RemoteClient(InetSocketAddress address, PublicKey key, UserToken token) {
+		public RemoteClient(InetSocketAddress address, PublicKey key) {
 			this.address = address;
 			this.key = key;
-			this.token = token;
 			this.handler = new ClientHandler(this);
 		}
 		
@@ -72,7 +60,7 @@ public class GameServer extends Thread {
 		/**
 		 * The packet queue to serve for this client.
 		 */
-		private volatile LinkedBlockingDeque<Packet> packets = new LinkedBlockingDeque<Packet>();
+		private final LinkedBlockingDeque<Packet> packets = new LinkedBlockingDeque<Packet>();
 		
 		/**
 		 * The client this handler is serving.
@@ -153,7 +141,7 @@ public class GameServer extends Thread {
 		}
 		
 		private void handlePacket(PacketPing packet) {
-			if(packet.getShouldReturnPing()) {
+			if (packet.getShouldReturnPing()) {
 				packet.setShouldReturnPing(false);
 				sender.send(packet, client.address, client.key);
 			}
@@ -189,17 +177,17 @@ public class GameServer extends Thread {
 	/**
 	 * The packet queue filled with incoming packets.
 	 */
-	private volatile LinkedBlockingDeque<Pair<InetSocketAddress, Packet>> packetQueue = new LinkedBlockingDeque<Pair<InetSocketAddress, Packet>>();
+	private final LinkedBlockingDeque<Pair<InetSocketAddress, Packet>> packetQueue = new LinkedBlockingDeque<Pair<InetSocketAddress, Packet>>();
 	
 	/**
 	 * The list of currently connected clients.
 	 */
-	private volatile Map<InetSocketAddress, RemoteClient> clients = new ConcurrentHashMap<InetSocketAddress, RemoteClient>();
+	private final Map<InetSocketAddress, RemoteClient> clients = new ConcurrentHashMap<InetSocketAddress, RemoteClient>();
 	
 	/**
 	 * Temporarily store RSA keys in a hashmap.
 	 */
-	private volatile Map<InetSocketAddress, PublicKey> remoteKeys = new HashMap<InetSocketAddress, PublicKey>();
+	private final Map<InetSocketAddress, PublicKey> remoteKeys = new HashMap<InetSocketAddress, PublicKey>();
 	
 	/**
 	 * Indicates whether the server is ready to be started.
@@ -213,7 +201,6 @@ public class GameServer extends Thread {
 	
 	/**
 	 * Initializes the server to an operational state.
-	 * @return [{@link CloudCodeServer}] This same {@link CloudCodeServer} instance to allow for method chaining.
 	 */
 	public GameServer(int port) {
 		keys = RSA.generateKeyPair(KEY_SIZE);
@@ -222,7 +209,7 @@ public class GameServer extends Thread {
 		});
 		sender = new UDPSender(receiver.getSocket());
 		
-		if(keys != null && receiver.isReady() && sender.isReady())
+		if(receiver.isReady() && sender.isReady())
 			ready = true;
 	}
 	
@@ -278,7 +265,7 @@ public class GameServer extends Thread {
 				
 				client.handler.packets.add(p);
 				
-			} catch (Exception e) {}
+			} catch (Exception ignored) {}
 			
 		}
 	}
@@ -341,14 +328,14 @@ public class GameServer extends Thread {
 	private void handlePacket(InetSocketAddress source, PacketConnect packet) {
 		RemoteClient client = clients.get(source);
 		if(client != null) {
-			sender.send(new PacketAcceptConnection(client.token), source, client.key);
+			sender.send(new PacketAcceptConnection(), source, client.key);
 			return;
 		}
 		
-		RemoteClient newClient = new RemoteClient(source, remoteKeys.get(source), UserToken.create());
+		RemoteClient newClient = new RemoteClient(source, remoteKeys.get(source));
 		onConnect(newClient);
 		
-		sender.send(new PacketAcceptConnection(newClient.token), source, newClient.key);
+		sender.send(new PacketAcceptConnection(), source, newClient.key);
 	}
 	
 	/**

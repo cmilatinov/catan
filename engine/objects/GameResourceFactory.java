@@ -1,19 +1,15 @@
 package objects;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameterf;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
+import org.lwjgl.assimp.*;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
@@ -23,23 +19,9 @@ import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
+public class GameResourceFactory {
 
-import javax.imageio.ImageIO;
-
-import org.lwjgl.assimp.AIFace;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIScene;
-import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.Assimp;
-
-public class GameResourceFactory implements GameResource {
-
-	private final ArrayList<GameResource> cleanup = new ArrayList<>();
+	private static final ArrayList<GameResource> cleanup = new ArrayList<>();
 
 	/**
 	 * Loads a mesh from an OBJ file.
@@ -48,7 +30,7 @@ public class GameResourceFactory implements GameResource {
 	 * @return [{@link Mesh}] Null if unable to parse the file, the loaded mesh
 	 *         object otherwise.
 	 */
-	public Mesh loadOBJ(String path) {
+	public static Mesh loadOBJ(String path) {
 		AIScene scene = Assimp.aiImportFile(path, Assimp.aiProcess_Triangulate | Assimp.aiProcess_FlipUVs);
 
 		if (scene.mNumMeshes() <= 0)
@@ -99,7 +81,7 @@ public class GameResourceFactory implements GameResource {
 	 * @param uvs      The texture coordinate list of the mesh, in UV format.
 	 * @return [{@link Mesh}] The resulting mesh object.
 	 */
-	public Mesh loadMesh(int[] indices, float[] vertices, float[] normals, float[] uvs) {
+	public static Mesh loadMesh(int[] indices, float[] vertices, float[] normals, float[] uvs) {
 
 		// Create VAO
 		VAO vao = VAO.create().bind();
@@ -135,7 +117,7 @@ public class GameResourceFactory implements GameResource {
 	 * @param uvs      The texture coordinate list of the mesh, in UV format.
 	 * @return [{@link Mesh}] The resulting mesh object.
 	 */
-	public Mesh loadMesh(int[] indices, float[] vertices, float[] uvs) {
+	public static Mesh loadMesh(int[] indices, float[] vertices, float[] uvs) {
 
 		// Create VAO
 		VAO vao = VAO.create().bind();
@@ -167,7 +149,7 @@ public class GameResourceFactory implements GameResource {
 	 * @param vertices The vertex list of the mesh, in XYZ format.
 	 * @return [{@link Mesh}] The resulting mesh object.
 	 */
-	public Mesh loadMesh(int[] indices, float[] vertices) {
+	public static Mesh loadMesh(int[] indices, float[] vertices) {
 
 		// Create VAO
 		VAO vao = VAO.create().bind();
@@ -198,7 +180,7 @@ public class GameResourceFactory implements GameResource {
 	 * @return [{@link Texture}] Null if the texture could not be loaded, otherwise
 	 *         returns the texture object corresponding to the loaded bitmap.
 	 */
-	public Texture loadTexture2D(String filepath, int filtering, boolean mipmap) {
+	public static Texture loadTexture2D(String filepath, int filtering, boolean mipmap) {
 		try {
 
 			// Load the file
@@ -210,26 +192,8 @@ public class GameResourceFactory implements GameResource {
 			// Bind it
 			glBindTexture(GL_TEXTURE_2D, texture);
 
-			// Retrieve the pixel data
-			int[] pixels = new int[img.getWidth() * img.getHeight()];
-			img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
-
-			// Allocate a new buffer
-			ByteBuffer buffer = ByteBuffer.allocateDirect(img.getWidth() * img.getHeight() * 4);
-
-			// Put in the pixel data in the bytebuffer correctly
-			for (int y = 0; y < img.getHeight(); y++) {
-				for (int x = 0; x < img.getWidth(); x++) {
-					int pixel = pixels[y * img.getWidth() + x];
-					buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
-					buffer.put((byte) ((pixel >> 8) & 0xFF)); // Green component
-					buffer.put((byte) (pixel & 0xFF)); // Blue component
-					buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component. Only for RGBA
-				}
-			}
-
-			// Flip the buffer to be read
-			buffer.flip();
+			// Pack image data in byte buffer
+			ByteBuffer buffer = imageToRGBABuffer(img);
 
 			// Load the texture with the pixel data
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE,
@@ -266,7 +230,7 @@ public class GameResourceFactory implements GameResource {
 	 * @return [{@link Texture}] Null if any of the textures could not be loaded, otherwise
 	 *         returns the texture object corresponding to the loaded cube map.
 	 */
-	public Texture loadTextureCubeMap(String filepath) {
+	public static Texture loadTextureCubeMap(String filepath) {
 
 		try {
 
@@ -281,26 +245,8 @@ public class GameResourceFactory implements GameResource {
 				// Load the file
 				BufferedImage img = ImageIO.read(new File(filepath + "/skybox" + i + ".jpg"));
 
-				// Retrieve the pixel data
-				int[] pixels = new int[img.getWidth() * img.getHeight()];
-				img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
-
-				// Allocate a new buffer
-				ByteBuffer buffer = ByteBuffer.allocateDirect(img.getWidth() * img.getHeight() * 4);
-
-				// Put in the pixel data in the bytebuffer correctly
-				for (int y = 0; y < img.getHeight(); y++) {
-					for (int x = 0; x < img.getWidth(); x++) {
-						int pixel = pixels[y * img.getWidth() + x];
-						buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
-						buffer.put((byte) ((pixel >> 8) & 0xFF)); // Green component
-						buffer.put((byte) (pixel & 0xFF)); // Blue component
-						buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component. Only for RGBA
-					}
-				}
-
-				// Flip the buffer to be read
-				buffer.flip();
+				// Pack image data in byte buffer
+				ByteBuffer buffer = imageToRGBABuffer(img);
 
 				// Load the texture with the pixel data
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, img.getWidth(), img.getHeight(), 0,
@@ -328,7 +274,7 @@ public class GameResourceFactory implements GameResource {
 	 * @param subdivisions The number of subdivisions to create the plane with.
 	 * @return [{@link Mesh}] The resulting mesh.
 	 */
-	public Mesh generatePlane(int subdivisions) {
+	public static Mesh generatePlane(int subdivisions) {
 
 		float[] vertices = new float[(subdivisions + 1) * (subdivisions + 1) * 2];
 		int[] indices = new int[subdivisions * subdivisions * 6];
@@ -371,15 +317,47 @@ public class GameResourceFactory implements GameResource {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Stores the pixel data of an image into a byte buffer in RGBA format.
+	 *
+	 * @param img The source image.
+	 * @return [{@link ByteBuffer}] The resulting byte buffer.
 	 */
-	public void destroy() {
-		for (GameResource g : cleanup)
-			g.destroy();
+	private static ByteBuffer imageToRGBABuffer(BufferedImage img) {
+		int[] pixels = new int[img.getWidth() * img.getHeight()];
+		img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+
+		// Allocate a new buffer
+		ByteBuffer buffer = ByteBuffer.allocateDirect(img.getWidth() * img.getHeight() * 4);
+
+		// Put in the pixel data in the bytebuffer correctly
+		for (int y = 0; y < img.getHeight(); y++) {
+			for (int x = 0; x < img.getWidth(); x++) {
+				int pixel = pixels[y * img.getWidth() + x];
+				buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
+				buffer.put((byte) ((pixel >> 8) & 0xFF)); // Green component
+				buffer.put((byte) (pixel & 0xFF)); // Blue component
+				buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component. Only for RGBA
+			}
+		}
+
+		// Flip the buffer to be read
+		buffer.flip();
+
+		return buffer;
+	}
+
+	/**
+	 * Frees any game resources generated. All resources created from this class become
+	 * obsolete and should not be referenced after this method is called.
+	 */
+	public static void cleanGameResources() {
+		for (GameResource resource: cleanup)
+			resource.destroy();
+		cleanup.clear();
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends GameResource> T addToCleanup(GameResource g) {
+	private static <T extends GameResource> T addToCleanup(GameResource g) {
 		cleanup.add(g);
 		return (T) g;
 	}

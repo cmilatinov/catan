@@ -13,7 +13,7 @@ public class Client {
 		
 		client.start();
 		client.onConnect(() -> System.out.println("Connected"));
-		client.connect("localhost", 50000, "rednite", "hehe");
+		client.connect("localhost", 50000, "rednite");
 	}
 	
 }

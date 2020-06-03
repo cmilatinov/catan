@@ -35,7 +35,7 @@ public class UDPSender extends Thread {
 	private volatile boolean running = false;
 	
 	/**
-	 * Intializes a new {@link UDPSender} on a random port.
+	 * Initializes a new {@link UDPSender} on a random port.
 	 */
 	public UDPSender() {
 		try {
@@ -82,7 +82,7 @@ public class UDPSender extends Thread {
 	}
 	
 	/**
-	 * Intializes a new {@link UDPSender} on a random port.
+	 * Initializes a new {@link UDPSender} on a random port.
 	 * @param socket The socket to listen with.
 	 */
 	public UDPSender(DatagramSocket socket) {
@@ -175,8 +175,7 @@ public class UDPSender extends Thread {
 	/**
 	 * Enqueues an encrypted packet to be sent to the specified IP and port.
 	 * @param packet The packet to send.
-	 * @param destinationIP The destination IP address.
-	 * @param destinationPort The destination port number.
+	 * @param dest The destination IP address and port number.
 	 * @param key The public RSA key to encrypt the packet with.
 	 */
 	public void send(Packet packet, InetSocketAddress dest, PublicKey key) {

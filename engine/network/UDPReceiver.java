@@ -34,12 +34,12 @@ public class UDPReceiver extends Thread {
 	/**
 	 * The byte buffer used to receive packets.
 	 */
-	private byte[] buffer = new byte[BUFFER_LENGTH];
+	private final byte[] buffer = new byte[BUFFER_LENGTH];
 
 	/**
 	 * The private RSA key used for decryption.
 	 */
-	private PrivateKey key;
+	private final PrivateKey key;
 
 	/**
 	 * The datagram socket used to listen for incoming packets.
@@ -62,7 +62,7 @@ public class UDPReceiver extends Thread {
 	private volatile boolean running = false;
 	
 	/**
-	 * Intializes a new {@link UDPReceiver} on a random port.
+	 * Initializes a new {@link UDPReceiver} on a random port.
 	 * @param key The RSA key to be used for decryption. 
 	 */
 	public UDPReceiver(PrivateKey key) {
@@ -93,7 +93,7 @@ public class UDPReceiver extends Thread {
 	}
 
 	/**
-	 * Intializes a new {@link UDPReceiver} on the specified port.
+	 * Initializes a new {@link UDPReceiver} on the specified port.
 	 * @param address The IP address to bind the socket to.
 	 * @param port The port to listen on.
 	 * @param key The RSA key to be used for decryption. 
@@ -126,7 +126,7 @@ public class UDPReceiver extends Thread {
 	}
 	
 	/**
-	 * Intializes a new {@link UDPReceiver} using the specified socket.
+	 * Initializes a new {@link UDPReceiver} using the specified socket.
 	 * @param socket The socket to listen with.
 	 * @param key The RSA key to be used for decryption. 
 	 */
@@ -199,7 +199,7 @@ public class UDPReceiver extends Thread {
 				if(callback != null)
 					callback.invoke(new InetSocketAddress(dp.getAddress(), dp.getPort()), packet);
 				
-			} catch (IOException e) {}
+			} catch (IOException ignored) {}
 			
 		}
 
