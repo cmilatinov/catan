@@ -1,5 +1,6 @@
 package resources;
 
+import entities.Building.BuildingType;
 import gameplay.TileTypes;
 
 public enum Resource {
@@ -25,10 +26,9 @@ public enum Resource {
 	
 	TEXTURE_COLOR_BLUE,
 	TEXTURE_COLOR_RED,
-	TEXTURE_COLOR_YELLOW,
 	TEXTURE_COLOR_GREEN,
 	TEXTURE_COLOR_PURPLE,
-	TEXTURE_COLOR_WHITE,
+	TEXTURE_COLOR_ORANGE,
 
 	TEXTURE_TOKEN_2,
 	TEXTURE_TOKEN_3,
@@ -74,6 +74,13 @@ public enum Resource {
 	MODEL_TILE_WHEAT,
 	MODEL_BOARD,
 	MODEL_TABLE;
+
+	public static Resource getBuildingMesh(BuildingType val) {
+		return switch (val) {
+			case SETTLEMENT -> MESH_SETTLEMENT;
+			case CITY -> MESH_CITY;
+		};
+	}
 
 	public static Resource getToken(int val) {
 		return switch(val) {

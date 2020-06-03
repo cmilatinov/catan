@@ -28,16 +28,6 @@ public class Tile extends Entity {
 		hexCoords = coords;
 		calculatePixelCoords();
 	}
-
-	public String hexCoordsToString() {
-		if(hexCoords != null)
-			return "x : " + hexCoords.x + ", y : " + hexCoords.y;
-		return null;
-	}
-
-	public Vector2f getHexCoords() {
-		return hexCoords;
-	}
 	
 	private void calculatePixelCoords() {
 		float z = (3 * hexCoords.y) / 2;
@@ -71,18 +61,6 @@ public class Tile extends Entity {
 	
 	public TileTypes getType() {
 		return this.type;
-	}
-	
-	public void rewardSettlers() {
-		vertices.forEach(v -> {
-			if(v.getBuilding() != null) {
-				v.getBuilding().rewardOwner(type);
-			}
-		});
-	}
-
-	public boolean shouldUpdate() {
-		return false;
 	}
 
 	public boolean shouldRender() {

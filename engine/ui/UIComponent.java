@@ -94,7 +94,7 @@ public class UIComponent {
 		return animator;
 	}
 
-	public final void update(double delta) {
+	public void update(double delta) {
 
 		// Update the animator if needed
 		if (animator.shouldUpdate())

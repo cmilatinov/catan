@@ -5,6 +5,7 @@ import camera.CameraFPS;
 import display.Window;
 import entities.Entity;
 import input.KeyCallback;
+import input.MouseClickCallback;
 import lights.Light;
 import objects.GameScript;
 import objects.Mesh;
@@ -112,6 +113,10 @@ public class Scene {
 
     public void registerKeyDownAction(int code, KeyCallback callback) {
         this.getWindow().keyboard().registerKeyDown(code, callback);
+    }
+
+    public void registerMouseClickAction(MouseClickCallback callback) {
+        this.getWindow().mouse().registerMouseClickCallback(callback);
     }
 
     public void cleanup() {

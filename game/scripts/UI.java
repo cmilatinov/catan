@@ -27,7 +27,7 @@ public class UI extends GameScript {
     @Override
     public void initialize() {
         box = new UIQuad();
-        box.setColor(UIColor.RED);
+        box.setColor(UIColor.GREEN);
         UIConstraints constraints = new UIConstraints()
                 .setX(new PixelConstraint(20, UIDimensions.DIRECTION_LEFT))
                 .setY(new PixelConstraint(20, UIDimensions.DIRECTION_TOP))

@@ -1,9 +1,6 @@
 package gameplay;
 
-import entities.Building;
-import entities.Side;
-import entities.Tile;
-import entities.Vertex;
+import entities.*;
 import main.Scene;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -106,11 +103,6 @@ public class Tiles {
 
         generateTiles();
         generateGrid();
-        System.out.println(sides.size());
-    }
-
-    public void moveSettlement(int ind) {
-        vertices.get(ind).translate(new Vector3f(0, 0.5f, 0));
     }
 
     public void generateGrid() {
@@ -179,8 +171,7 @@ public class Tiles {
                 }
                 firstV.sub(secondV);
 
-                s.createRoad();
-                s.getRoad().setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(firstV.z / firstV.x)), 0));
+                s.setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(firstV.z / firstV.x)), 0));
             }
         }
     }
@@ -258,13 +249,8 @@ public class Tiles {
 
         for(Side s : sides) {
             scene.register(s.scale(0.1f));
-            scene.register(s.getRoad());
         }
 
-    }
-
-    public void insertBuilding(Scene scene) {
-        vertices.get((int)(Math.random() * vertices.size())).setBuilding(new Building(scene));
     }
 
 }

@@ -3,7 +3,6 @@ import main.Engine;
 import main.Scene;
 import resources.GameResources;
 import resources.Resource;
-import scripts.PlayerHand;
 import scripts.UI;
 import ui.animation.UIAnimationMetrics;
 import ui.animation.UIInterpolators;
@@ -38,7 +37,6 @@ public class Main {
 
         scene.registerKeyUpAction(GLFW_KEY_1, (int mods) -> {
             var test = engine.newScene();
-            test.register(new PlayerHand());
             engine.setCurrentScene(test);
         });
         scene.registerKeyUpAction(GLFW_KEY_2, (int mods) -> engine.setCurrentScene(scene));

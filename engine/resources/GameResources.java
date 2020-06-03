@@ -89,7 +89,11 @@ public class GameResources {
 		proxyTexture2D(Resource.TEXTURE_TABLE, TEXTURE_PATH + "wood.jpg", GL_LINEAR, true);
 		
 		// Color textures
-		proxyTexture2D(Resource.TEXTURE_COLOR_BLUE, TEXTURE_PATH + "blue.png", GL_NEAREST, false);
+		proxyTexture2D(Resource.TEXTURE_COLOR_BLUE, TEXTURE_PATH + "color_blue.png", GL_NEAREST, false);
+		proxyTexture2D(Resource.TEXTURE_COLOR_PURPLE, TEXTURE_PATH + "color_purple.png", GL_NEAREST, false);
+		proxyTexture2D(Resource.TEXTURE_COLOR_ORANGE, TEXTURE_PATH + "color_orange.png", GL_NEAREST, false);
+		proxyTexture2D(Resource.TEXTURE_COLOR_RED, TEXTURE_PATH + "color_red.png", GL_NEAREST, false);
+		proxyTexture2D(Resource.TEXTURE_COLOR_GREEN, TEXTURE_PATH + "color_green.png", GL_NEAREST, false);
 		
 		// Skybox
 		proxyTextureCubeMap(Resource.TEXTURE_SKYBOX, TEXTURE_PATH + "skybox/");

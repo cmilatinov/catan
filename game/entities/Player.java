@@ -9,6 +9,9 @@ public class Player {
 	private final HashMap<TileTypes, Integer> resourceCards = new HashMap<TileTypes, Integer>();
 	private Resource color;
 
+	public final int SETTLEMENTS = 5, ROADS = 15, CITIES = 4;
+	private int freeSettlements = 1, freeRoads = 1;
+
 	public Player(Resource color) {
 		clearHand();
 		this.color = color;
@@ -27,20 +30,28 @@ public class Player {
 		resourceCards.put(TileTypes.WHEAT, 0);
 	}
 
+	public void addFreeSettlement() {
+		freeSettlements ++;
+	}
+
+	public void addFreeRoad() {
+		freeRoads ++;
+	}
+
+	public int getFreeRoads() {
+		return freeRoads;
+	}
+
+	public int getFreeSettlements() {
+		return freeSettlements;
+	}
+
 	public Resource getColor() {
 		return color;
 	}
-	
-	public void placeCity(int vertex) {
-		
-	}
-	
-	public void placeSettlement(int vertex) {
-		
-	}
-	
-	public void placeRoad() {
-		
+
+	public void setColor(Resource color) {
+		this.color = color;
 	}
 	
 	public void giveCards(TileTypes type, int value) {

@@ -3,7 +3,7 @@ package ui;
 public class UIColor {
 	
 	public static final UIColor RED = new UIColor(1.0f, 0, 0, 1.0f);
-	public static final UIColor GREEN = new UIColor(0, 1.0f, 0, 1.0f);
+	public static final UIColor GREEN = new UIColor(0.17f, 0.68f, 0.31f, 1.0f);
 	public static final UIColor BLUE = new UIColor(0, 0, 1.0f, 1.0f);
 
 	public static final UIColor CYAN = new UIColor(0, 1.0f, 1.0f, 1.0f);
