@@ -1,25 +1,13 @@
 package network;
 
+import network.packets.*;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-
-import network.Packet;
-import network.Packets;
-import network.RSA;
-import network.UDPReceiver;
-import network.UDPSender;
-import network.packets.PacketAcceptConnection;
-import network.packets.PacketConnect;
-import network.packets.PacketKey;
-import network.packets.PacketPing;
-import network.packets.PacketRejectConnection;
-import network.packets.PacketType;
-import utils.UserToken;
 
 public class GameClient extends Thread {
 	
@@ -69,11 +57,6 @@ public class GameClient extends Thread {
 	private String password = null;
 	
 	/**
-	 * The user token to use for authentication.
-	 */
-	private UserToken userToken = null;
-	
-	/**
 	 * The packet queue filled with incoming packets.
 	 */
 	private volatile LinkedBlockingDeque<Packet> packetQueue = new LinkedBlockingDeque<Packet>();
@@ -110,7 +93,6 @@ public class GameClient extends Thread {
 	
 	/**
 	 * Initializes the client to an operational state.
-	 * @return [{@link CloudCodeClient}] This same {@link CloudCodeClient} instance to allow for method chaining.
 	 */
 	public GameClient() {
 		keys = RSA.generateKeyPair(KEY_SIZE);
@@ -157,31 +139,26 @@ public class GameClient extends Thread {
 				
 				// Reset timeout counter
 				timeout = SERVER_TIMEOUT;
-				
-				switch(p.getType()) {
-					
-					case PacketType.KEY:
+
+				switch (p.getType()) {
+					case PacketType.KEY -> {
 						PacketKey pKey = Packets.cast(p);
 						handlePacket(pKey);
-						break;
-				
-					case PacketType.ACCEPT_CONNECTION:
+					}
+					case PacketType.ACCEPT_CONNECTION -> {
 						PacketAcceptConnection pAcceptConn = Packets.cast(p);
 						handlePacket(pAcceptConn);
-						break;
-						
-					case PacketType.REJECT_CONNECTION:
+					}
+					case PacketType.REJECT_CONNECTION -> {
 						PacketRejectConnection pRejectConn = Packets.cast(p);
 						handlePacket(pRejectConn);
-						break;
-					
-					case PacketType.PING:
+					}
+					case PacketType.PING -> {
 						PacketPing pPing = Packets.cast(p);
 						handlePacket(pPing);
-						break;
-				
+					}
 				}
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 			
 			// Server has timed out
 			if(timeout <= 0 && connected)
@@ -219,20 +196,20 @@ public class GameClient extends Thread {
 	
 	/**
 	 * Attempts to connect the client to the remote address and port specified.
+	 *
 	 * @param address The remote IP address in string form (ie. "192.168.0.1") to connect to.
 	 * @param port The remote port number to connect to.
-	 * @param username The username to use for authentication.
-	 * @param password The password to use for authentication.
-	 * @return [{@link CloudCodeClient}] This same {@link CloudCodeClient} instance to allow for method chaining.
+	 * @param username The username to use.
+	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
 	 */
-	public GameClient connect(String address, int port, String username, String password) {
+	public GameClient connect(String address, int port, String username) {
 		if(!ready) return this;
 		try {
 			remoteAddress = new InetSocketAddress(InetAddress.getByName(address), port);
 			this.username = username;
 			this.password = password;
 			if(remoteKey != null) {
-				sender.send(new PacketConnect(username, password), remoteAddress, remoteKey);
+				sender.send(new PacketConnect(username), remoteAddress, remoteKey);
 			} else {
 				connectOnReceiveKey = true;
 				sender.send(new PacketKey(true, keys.getPublic()), remoteAddress);
@@ -248,7 +225,7 @@ public class GameClient extends Thread {
 	/**
 	 * Sets the callback to invoke when a connection to a remote server is made.
 	 * @param callback The new callback to run once a connection is made.
-	 * @return [{@link CloudCodeClient}] This same {@link CloudCodeClient} instance to allow for method chaining.
+	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient onConnect(Runnable callback) {
 		this.onConnect = callback;
@@ -275,16 +252,15 @@ public class GameClient extends Thread {
 		if(connectOnReceiveKey && packet.getKey() != null) {
 			remoteKey = packet.getKey();
 			connectOnReceiveKey = false;
-			sender.send(new PacketConnect(username, password), remoteAddress, remoteKey);
+			sender.send(new PacketConnect(username), remoteAddress, remoteKey);
 		}
 	}
 	
 	private void handlePacket(PacketAcceptConnection packet) {
 		connected = true;
-		userToken = packet.getToken();
 		if(this.onConnect != null)
 			onConnect.run();
-		System.out.println("Connected to server. Token: " + Arrays.toString(userToken.getBytes()));
+		System.out.println("Connected to server.");
 	}
 	
 	private void handlePacket(PacketRejectConnection packet) {
