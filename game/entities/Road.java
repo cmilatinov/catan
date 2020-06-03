@@ -1,9 +1,12 @@
 package entities;
 
+import gameplay.TileTypes;
 import objects.TexturedMesh;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
+
+import java.util.HashMap;
 
 public class Road extends Entity {
 

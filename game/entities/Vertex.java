@@ -1,5 +1,6 @@
 package entities;
 
+import gameplay.BuildingCost;
 import gameplay.TileTypes;
 import main.Scene;
 import objects.TexturedMesh;
@@ -8,6 +9,8 @@ import resources.Resource;
 import entities.Building.BuildingType;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Vertex extends EntityToggleable implements SphereCollider {
 	private Player owner;
@@ -15,6 +18,7 @@ public class Vertex extends EntityToggleable implements SphereCollider {
 	private ArrayList<Side> sides;
 
 	private Building building;
+	private BuildingType buildingType;
 
 	public Vertex(TexturedMesh model) {
 		super(model);
@@ -31,19 +35,48 @@ public class Vertex extends EntityToggleable implements SphereCollider {
 		building.setPosition(getPosition());
 	}
 
+	public Player getOwner() {
+		return owner;
+	}
+
+	public boolean canUpgrade(Player player) {
+		if(owner != player)
+			return false;
+
+		for (Map.Entry<TileTypes, Integer> resource : BuildingCost.getInstance().getBuildingCost(BuildingType.CITY).entrySet())
+			if(owner.getResourceCards(resource.getKey()) < resource.getValue())
+				return false;
+
+		return true;
+	}
+
+	public boolean canSettle(Player owner) {
+		if(owner.getFreeSettlements() > 0) {
+			owner.reduceFreeSettlements();
+			return true;
+		}
+
+		for (Map.Entry<TileTypes, Integer> resource : BuildingCost.getInstance().getBuildingCost(BuildingType.SETTLEMENT).entrySet())
+			if(owner.getResourceCards(resource.getKey()) < resource.getValue())
+				return false;
+
+		return true;
+	}
+
 	public void settle(Player owner) {
 		this.owner = owner;
+
+		buildingType = BuildingType.SETTLEMENT;
 		building = Building.create(BuildingType.SETTLEMENT, owner.getColor());
 		building.setPosition(getPosition());
 	}
 
 	public void upgradeSettlement(Player player) {
-		if(owner != player)
-			return;
-
 		Resource color = Resource.TEXTURE_COLOR_BLUE;
 		if(owner != null)
 			color = owner.getColor();
+
+		buildingType = BuildingType.CITY;
 		building = Building.create(BuildingType.CITY, color);
 		building.setPosition(getPosition());
 	}
@@ -53,6 +86,14 @@ public class Vertex extends EntityToggleable implements SphereCollider {
 	@Override
 	public void destroy() {
 
+	}
+
+	public int getBuildingValue() {
+		return switch (buildingType) {
+			case SETTLEMENT -> 1;
+			case CITY -> 2;
+			default -> 0;
+		};
 	}
 
 	@Override

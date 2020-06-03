@@ -1,20 +1,23 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import gameplay.TileTypes;
 import objects.TexturedMesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import physics.colliders.SphereCollider;
 import resources.GameResources;
 import resources.Resource;
 
-public class Tile extends Entity {
+public class Tile extends Entity implements SphereCollider {
 	private Vector2f hexCoords;
 	private EntityStatic token;
 
 	private TileTypes type;
-	public ArrayList<Vertex> vertices;
+	private ArrayList<Vertex> vertices;
 	private int value = -1;
 	
 	public Tile(TexturedMesh model, TileTypes type) {
@@ -40,6 +43,10 @@ public class Tile extends Entity {
 			token.translate(new Vector3f(0, 0.1f, 0));
 			token.scale(0.2f);
 		}
+	}
+
+	public List<Vertex> getOccupiedVertices() {
+		return vertices.stream().filter(v -> v.getBuilding() != null).collect(Collectors.toList());
 	}
 
 	public void addVertex(Vertex v) {
@@ -70,5 +77,10 @@ public class Tile extends Entity {
 	@Override
 	public void destroy() {
 		this.getModel().destroy();
+	}
+
+	@Override
+	public float getRadius() {
+		return 0.866f;
 	}
 }

@@ -4,7 +4,7 @@ import main.SceneManager;
 import objects.GameResourceFactory;
 import objects.GameScript;
 import objects.Texture;
-import scene.Game;
+import scene.GameManager;
 import ui.*;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
@@ -16,7 +16,7 @@ public class MainMenu extends GameScript {
     @Override
     public void initialize() {
         SceneManager sceneManager = this.getScene().getSceneManager();
-        Texture mainMenuTexture = GameResourceFactory.loadTexture2D(TEXTURE_PATH + "mainmenu.jpg", GL_LINEAR, true);
+        Texture mainMenuTexture = GameResourceFactory.loadTexture2D(TEXTURE_PATH + "color_red.png", GL_LINEAR, true);
         UISprite mainMenuSprite = new UISprite(mainMenuTexture);
         var backgroundConstraints = new UIConstraints()
                 .setX(new PixelConstraint(0, UIDimensions.DIRECTION_LEFT))
@@ -37,7 +37,7 @@ public class MainMenu extends GameScript {
 
             @Override
             public void onMouseClick() {
-                sceneManager.loadScene(Game.class);
+                sceneManager.loadScene(GameManager.class);
             }
         };
         // Setup constraints for the Load Game Button

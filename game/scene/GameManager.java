@@ -1,23 +1,24 @@
 package scene;
 
-import gameplay.Board;
+import entities.*;
+import lights.Light;
 import main.Scene;
+import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
-import scripts.PlayerHand;
-import scripts.UI;
-import ui.animation.UIAnimationMetrics;
-import ui.animation.UIInterpolators;
 
-import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_V;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 
-public class Game extends Scene{
+public class GameManager extends Scene{
+
+
+    public GameManager() {
+
+    }
 
     @Override
     public void initialize() {
@@ -38,20 +39,19 @@ public class Game extends Scene{
         });
 
         registerKeyUpAction(GLFW_KEY_1, (int mods) -> sceneManager.loadScene(MainMenu.class));
-        registerKeyUpAction(GLFW_KEY_2, (int mods) -> sceneManager.loadScene(Game.class));
+        registerKeyUpAction(GLFW_KEY_2, (int mods) -> sceneManager.loadScene(GameManager.class));
 
-        // registering display
-        register(new Board(3));
+        Entity table = Table.create()
+                .scale(10)
+                .translate(new Vector3f(0, -0.07f, 0));
 
-        UI ui = new UI();
-        registerKeyUpAction(GLFW_KEY_G, (int mods) ->
-                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 1.0f, 0), UIInterpolators.EASE_IN_OUT, 0.7f));
-        registerKeyUpAction(GLFW_KEY_F, (int mods) ->
-                ui.box.animator().animate(new UIAnimationMetrics(0, 0, 0.5f, 360), UIInterpolators.EASE_IN_OUT, 0.7f));
-        registerKeyUpAction(GLFW_KEY_V, (int mods) ->
-                ui.text.setFont(new Font("Verdana", Font.ITALIC, 12)));
+        register(table);
 
-        register(ui);
-//        register(new PlayerHand());
+        Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
+        Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
+        register(sun);
+        register(sun2);
+
+        register(new scripts.GameManager());
     }
 }

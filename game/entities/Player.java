@@ -22,6 +22,15 @@ public class Player {
 		color = Resource.TEXTURE_COLOR_BLUE;
 	}
 
+	public void addResourceCard(TileTypes resource, int val) {
+		resourceCards.put(resource, resourceCards.get(resource) + val);
+	}
+
+	public int getResourceCards(TileTypes type) {
+		return resourceCards.get(type);
+	}
+
+
 	public void clearHand() {
 		resourceCards.put(TileTypes.BRICK, 0);
 		resourceCards.put(TileTypes.SHEEP, 0);
@@ -29,6 +38,10 @@ public class Player {
 		resourceCards.put(TileTypes.FOREST, 0);
 		resourceCards.put(TileTypes.WHEAT, 0);
 	}
+
+	public void reduceFreeSettlements() { freeSettlements --;}
+
+	public void reduceFreeRoads () { freeRoads --; }
 
 	public void addFreeSettlement() {
 		freeSettlements ++;

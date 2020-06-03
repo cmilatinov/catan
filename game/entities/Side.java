@@ -1,10 +1,14 @@
 package entities;
 
+import gameplay.RoadCost;
+import gameplay.TileTypes;
 import objects.TexturedMesh;
 import org.joml.Vector3f;
 import physics.colliders.SphereCollider;
 import resources.GameResources;
 import resources.Resource;
+
+import java.util.Map;
 
 public class Side extends EntityToggleable implements SphereCollider {
     private Road road;
@@ -26,6 +30,19 @@ public class Side extends EntityToggleable implements SphereCollider {
         road.setRotation(getRotation());
         road.scale(0.45f);
         this.owner = owner;
+    }
+
+    public boolean canSetRoad(Player owner) {
+        if(owner.getFreeRoads() > 0) {
+            owner.reduceFreeRoads();
+            return true;
+        }
+
+        for (Map.Entry<TileTypes, Integer> resource : RoadCost.getInstance().getCost().entrySet())
+            if(owner.getResourceCards(resource.getKey()) < resource.getValue())
+                return false;
+
+        return true;
     }
 
     public void createRoad() {

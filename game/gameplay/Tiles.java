@@ -1,13 +1,16 @@
 package gameplay;
 
 import entities.*;
+import lights.Light;
 import main.Scene;
+import objects.GameScript;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static gameplay.TileTypes.*;
 
@@ -46,6 +49,10 @@ public class Tiles {
 
     public Tiles(int boardRadius) {
         BOARD_RADIUS = boardRadius;
+    }
+
+    public List<Tile> getTiles(int val) {
+        return tiles.stream().filter(t -> t.getValue() == val).collect(Collectors.toList());
     }
 
     /**
@@ -227,17 +234,7 @@ public class Tiles {
         return tiles.get(desertIndex);
     }
 
-    /**
-     * Method to register the tile entities into a given scene.
-     * @param scene - The scene you want to register the tiles into
-     */
-    public void registerTiles(Scene scene) {
-        for (Tile t : tiles) {
-            scene.register(t);
-        }
-    }
-
-    public void registerBoard(Scene scene) {
+    public void register(Scene scene) {
         for(Vertex v : vertices)
             scene.register(v.scale(0.3f));
 
@@ -250,7 +247,5 @@ public class Tiles {
         for(Side s : sides) {
             scene.register(s.scale(0.1f));
         }
-
     }
-
 }

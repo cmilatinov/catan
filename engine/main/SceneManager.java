@@ -1,8 +1,5 @@
 package main;
 
-import log.Logger;
-import scene.Game;
-
 import java.util.HashMap;
 import java.util.Map;
 
