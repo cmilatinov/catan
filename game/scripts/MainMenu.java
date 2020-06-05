@@ -4,7 +4,7 @@ import main.SceneManager;
 import objects.GameResourceFactory;
 import objects.GameScript;
 import objects.Texture;
-import scene.GameManager;
+import scene.Game;
 import ui.*;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
@@ -37,7 +37,7 @@ public class MainMenu extends GameScript {
 
             @Override
             public void onMouseClick() {
-                sceneManager.loadScene(GameManager.class);
+                sceneManager.loadScene(Game.class);
             }
         };
         // Setup constraints for the Load Game Button

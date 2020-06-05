@@ -10,7 +10,7 @@ public class Player {
 	private Resource color;
 
 	public final int SETTLEMENTS = 5, ROADS = 15, CITIES = 4;
-	private int freeSettlements = 1, freeRoads = 1;
+	private int freeSettlements = 0, freeRoads = 0;
 
 	public Player(Resource color) {
 		clearHand();

@@ -1,6 +1,7 @@
-package gameplay;
+package scripts;
 
 import entities.*;
+import gameplay.TileTypes;
 import lights.Light;
 import main.Scene;
 import objects.GameScript;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static gameplay.TileTypes.*;
 
-public class Tiles {
+public class Tiles extends GameScript{
 
     private ArrayList<Tile> tiles;
     private ArrayList<Vertex> vertices;
@@ -234,18 +235,24 @@ public class Tiles {
         return tiles.get(desertIndex);
     }
 
-    public void register(Scene scene) {
+
+    @Override
+    public void initialize() {
         for(Vertex v : vertices)
-            scene.register(v.scale(0.3f));
+            getScene().register(v.scale(0.3f));
 
         for (Tile t : tiles) {
-            scene.register(t);
+            getScene().register(t);
             if(t.getToken() != null)
-                scene.register(t.getToken());
+                getScene().register(t.getToken());
         }
 
         for(Side s : sides) {
-            scene.register(s.scale(0.1f));
+            getScene().register(s.scale(0.1f));
         }
+    }
+    @Override
+    public void destroy() {
+
     }
 }

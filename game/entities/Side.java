@@ -1,11 +1,10 @@
 package entities;
 
-import gameplay.RoadCost;
+import gameplay.Costs;
 import gameplay.TileTypes;
 import objects.TexturedMesh;
 import org.joml.Vector3f;
 import physics.colliders.SphereCollider;
-import resources.GameResources;
 import resources.Resource;
 
 import java.util.Map;
@@ -38,7 +37,7 @@ public class Side extends EntityToggleable implements SphereCollider {
             return true;
         }
 
-        for (Map.Entry<TileTypes, Integer> resource : RoadCost.getInstance().getCost().entrySet())
+        for (Map.Entry<TileTypes, Integer> resource : Costs.getInstance().getBuildingCost(Building.BuildingType.ROAD).entrySet())
             if(owner.getResourceCards(resource.getKey()) < resource.getValue())
                 return false;
 

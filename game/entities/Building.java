@@ -11,7 +11,8 @@ public class Building extends EntityStatic{
 
 	public enum BuildingType{
 		CITY,
-		SETTLEMENT
+		SETTLEMENT,
+		ROAD
 	}
 
 	private Building(TexturedMesh model) {

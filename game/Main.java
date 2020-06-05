@@ -1,6 +1,6 @@
 import main.Engine;
 import main.SceneManager;
-import scene.GameManager;
+import scene.Game;
 import scene.MainMenu;
 
 public class Main {
@@ -46,7 +46,7 @@ public class Main {
 //        scene.register(new PlayerHand());
 
         SceneManager sceneManager = new SceneManager(engine);
-        sceneManager.addScene(new GameManager());
+        sceneManager.addScene(new Game());
         sceneManager.addScene(new MainMenu());
         sceneManager.loadScene(MainMenu.class);
 

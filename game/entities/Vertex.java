@@ -1,15 +1,13 @@
 package entities;
 
-import gameplay.BuildingCost;
+import gameplay.Costs;
 import gameplay.TileTypes;
-import main.Scene;
 import objects.TexturedMesh;
 import physics.colliders.SphereCollider;
 import resources.Resource;
 import entities.Building.BuildingType;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 public class Vertex extends EntityToggleable implements SphereCollider {
@@ -43,7 +41,7 @@ public class Vertex extends EntityToggleable implements SphereCollider {
 		if(owner != player)
 			return false;
 
-		for (Map.Entry<TileTypes, Integer> resource : BuildingCost.getInstance().getBuildingCost(BuildingType.CITY).entrySet())
+		for (Map.Entry<TileTypes, Integer> resource : Costs.getInstance().getBuildingCost(BuildingType.CITY).entrySet())
 			if(owner.getResourceCards(resource.getKey()) < resource.getValue())
 				return false;
 
@@ -56,7 +54,7 @@ public class Vertex extends EntityToggleable implements SphereCollider {
 			return true;
 		}
 
-		for (Map.Entry<TileTypes, Integer> resource : BuildingCost.getInstance().getBuildingCost(BuildingType.SETTLEMENT).entrySet())
+		for (Map.Entry<TileTypes, Integer> resource : Costs.getInstance().getBuildingCost(BuildingType.SETTLEMENT).entrySet())
 			if(owner.getResourceCards(resource.getKey()) < resource.getValue())
 				return false;
 
