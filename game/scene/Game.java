@@ -1,11 +1,15 @@
 package scene;
 
+import camera.Camera;
+import camera.PanCamera;
 import entities.*;
 import lights.Light;
 import main.Scene;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
+import scripts.GameManager;
+import scripts.UI;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,15 +17,19 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 
-public class GameManager extends Scene{
+public class Game extends Scene {
 
 
-    public GameManager() {
+    public Game() {
 
     }
 
     @Override
     public void initialize() {
+        Camera camera = new PanCamera(70, getWindow());
+        camera.setPosition(new Vector3f(10, 10, 10));
+        setCamera(camera);
+
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
         // R to Reset Camera
@@ -39,7 +47,7 @@ public class GameManager extends Scene{
         });
 
         registerKeyUpAction(GLFW_KEY_1, (int mods) -> sceneManager.loadScene(MainMenu.class));
-        registerKeyUpAction(GLFW_KEY_2, (int mods) -> sceneManager.loadScene(GameManager.class));
+        registerKeyUpAction(GLFW_KEY_2, (int mods) -> sceneManager.loadScene(Game.class));
 
         Entity table = Table.create()
                 .scale(10)
@@ -52,6 +60,7 @@ public class GameManager extends Scene{
         register(sun);
         register(sun2);
 
-        register(new scripts.GameManager());
+        register(new GameManager());
+        register(new UI());
     }
 }

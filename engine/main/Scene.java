@@ -8,6 +8,7 @@ import input.KeyCallback;
 import input.MouseClickCallback;
 import lights.Light;
 import objects.GameScript;
+import objects.InjectableScript;
 import objects.Mesh;
 import objects.Texture;
 import org.joml.Vector3f;
@@ -16,6 +17,7 @@ import render.EntityRenderer;
 import render.SkyboxRenderer;
 import ui.UIManager;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +28,7 @@ public abstract class Scene {
     private final ArrayList<Entity> allEntities = new ArrayList<>();
     private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
     private final List<Light> lights = new ArrayList<>();
-    private final List<GameScript> gameScripts = new ArrayList<>();
+    private final HashMap<Class<GameScript>, GameScript> gameScripts = new HashMap<>();
 
     private UIManager uiManager;
     private final EntityRenderer entityRenderer;
@@ -154,7 +156,7 @@ public abstract class Scene {
         }
 
         camera.update(delta);
-        for (GameScript gameScript : gameScripts) {
+        for (GameScript gameScript : gameScripts.values()) {
             switch (gameScript.getCurrentState()) {
                 case TO_START -> {
                     gameScript.start();
@@ -168,9 +170,22 @@ public abstract class Scene {
                     gameScript.update(delta);
                 }
                 case TO_INITIALIZE -> {
+                    injectDependencies(gameScript);
                     gameScript.initialize();
                     gameScript.setState(GameScript.State.TO_UPDATE);
                 }
+            }
+        }
+    }
+
+    protected void injectDependencies(GameScript gameScript) throws IllegalAccessException {
+        Field[] fields = gameScript.getClass().getDeclaredFields();
+        for (Field field: fields ) {
+            InjectableScript annotation = field.getAnnotation(InjectableScript.class);
+            GameScript classToInject = gameScripts.get(field.getType());
+            if(null != annotation && null != classToInject) {
+                field.setAccessible(true);
+                field.set(gameScript, classToInject);
             }
         }
     }
@@ -210,7 +225,7 @@ public abstract class Scene {
 
     public void register(GameScript object) {
         object.setContext(this);
-        gameScripts.add(object);
+        gameScripts.put((Class<GameScript>) object.getClass(), object);
     }
 
     /**

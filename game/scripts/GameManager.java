@@ -3,6 +3,7 @@ package scripts;
 import entities.*;
 import gameplay.Tiles;
 import objects.GameScript;
+import objects.InjectableScript;
 import org.joml.Vector3f;
 import resources.Resource;
 
@@ -21,6 +22,8 @@ public class GameManager extends GameScript {
     private ArrayList<Side> sidesOccupied;
 
     private ArrayList<Player> players = new ArrayList<Player>();
+
+
 
     enum GamePhases {
         ROLLING,
