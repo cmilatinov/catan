@@ -48,7 +48,7 @@ public class Main {
         SceneManager sceneManager = new SceneManager(engine);
         sceneManager.addScene(new Game());
         sceneManager.addScene(new MainMenu());
-        sceneManager.loadScene(MainMenu.class);
+        sceneManager.loadScene(Game.class);
 
         engine.run();
     }

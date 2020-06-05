@@ -27,7 +27,7 @@ public class MainMenu extends GameScript {
         var loadGameButton = new UIButton() {
             @Override
             public void onMouseHoverExit() {
-                this.setColor(UIColor.DARK_GRAY);
+                this.setColor(UIColor.WHITE);
             }
 
             @Override
@@ -54,7 +54,7 @@ public class MainMenu extends GameScript {
         var exitGame = new UIButton() {
             @Override
             public void onMouseHoverExit() {
-                this.setColor(UIColor.DARK_GRAY);
+                this.setColor(UIColor.WHITE);
             }
 
             @Override
