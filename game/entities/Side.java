@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import physics.colliders.SphereCollider;
 import resources.Resource;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Side extends EntityToggleable implements SphereCollider {
@@ -14,9 +15,12 @@ public class Side extends EntityToggleable implements SphereCollider {
     private Player owner;
     private Vector3f rotation;
 
+    private ArrayList<Vertex> vertices;
+
     public Side(TexturedMesh model) {
         super(model);
         rotation = new Vector3f();
+        vertices = new ArrayList<Vertex>();
     }
 
     public void createRoad(Player owner) {
@@ -32,16 +36,11 @@ public class Side extends EntityToggleable implements SphereCollider {
     }
 
     public boolean canSetRoad(Player owner) {
-        if(owner.getFreeRoads() > 0) {
-            owner.reduceFreeRoads();
-            return true;
-        }
-
         for (Map.Entry<TileTypes, Integer> resource : Costs.getInstance().getBuildingCost(Building.BuildingType.ROAD).entrySet())
             if(owner.getResourceCards(resource.getKey()) < resource.getValue())
                 return false;
 
-        return true;
+        return checkOwner(owner);
     }
 
     public void createRoad() {
@@ -49,6 +48,22 @@ public class Side extends EntityToggleable implements SphereCollider {
         road.setPosition(getPosition());
         road.setRotation(getRotation());
         road.scale(0.45f);
+    }
+
+    public void addVertex(Vertex v) {
+        vertices.add(v);
+    }
+
+    public boolean checkOwner(Player currentPlayer) {
+        for(Vertex v : vertices){
+            if(v.getOwner() == currentPlayer)
+                return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Vertex> getVertices(){
+        return vertices;
     }
 
     public Road getRoad() {
@@ -62,6 +77,6 @@ public class Side extends EntityToggleable implements SphereCollider {
 
     @Override
     public float getRadius() {
-        return 0.2f;
+        return 0.5f;
     }
 }

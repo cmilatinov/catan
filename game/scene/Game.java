@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
+import scripts.Tiles;
 import scripts.UI;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 
 public class Game extends Scene {
-
+    private Tiles tiles;
 
     public Game() {
 
@@ -26,14 +27,8 @@ public class Game extends Scene {
 
     @Override
     public void initialize() {
-        Camera camera = new PanCamera(70, getWindow());
-        camera.setPosition(new Vector3f(10, 10, 10));
-        setCamera(camera);
-
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
-        // R to Reset Camera
-        registerKeyUpAction(GLFW_KEY_R, (int mods) -> getCamera().reset());
 
         // Q to toggle wireframe
         AtomicBoolean wireframe = new AtomicBoolean(false);
@@ -60,7 +55,10 @@ public class Game extends Scene {
         register(sun);
         register(sun2);
 
+        tiles = new Tiles(3);
+        tiles.generateMap();
+        register(tiles);
+
         register(new GameManager());
-        register(new UI());
     }
 }

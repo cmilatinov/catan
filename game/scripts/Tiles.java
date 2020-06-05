@@ -18,8 +18,10 @@ import static gameplay.TileTypes.*;
 public class Tiles extends GameScript{
 
     private ArrayList<Tile> tiles;
-    private ArrayList<Vertex> vertices;
+    public ArrayList<Vertex> vertices;
     private ArrayList<Side> sides;
+
+    private Entity robber;
 
     private int desertIndex = -1;
 
@@ -169,10 +171,13 @@ public class Tiles extends GameScript{
                 for(Vertex v : vertices) {
                     s.getPosition().sub(v.getPosition(), vMatch);
                     if(vMatch.length() - 0.5 < 0.5) {
-                        if(firstV == null)
+                        if(firstV == null){
                             firstV = v.getPosition();
+                            s.addVertex(v);
+                        }
                         else {
                             secondV = v.getPosition();
+                            s.addVertex(v);
                             break;
                         }
                     }
@@ -235,6 +240,10 @@ public class Tiles extends GameScript{
         return tiles.get(desertIndex);
     }
 
+    public Entity getRobber(){
+        return robber;
+    }
+
 
     @Override
     public void initialize() {
@@ -250,6 +259,11 @@ public class Tiles extends GameScript{
         for(Side s : sides) {
             getScene().register(s.scale(0.1f));
         }
+
+        robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
+        robber.setPosition(getDesertTile().getPosition());
+        getDesertTile().setEmbargoed(true);
+        getScene().register(robber);
     }
     @Override
     public void destroy() {

@@ -49,11 +49,6 @@ public class Vertex extends EntityToggleable implements SphereCollider {
 	}
 
 	public boolean canSettle(Player owner) {
-		if(owner.getFreeSettlements() > 0) {
-			owner.reduceFreeSettlements();
-			return true;
-		}
-
 		for (Map.Entry<TileTypes, Integer> resource : Costs.getInstance().getBuildingCost(BuildingType.SETTLEMENT).entrySet())
 			if(owner.getResourceCards(resource.getKey()) < resource.getValue())
 				return false;
