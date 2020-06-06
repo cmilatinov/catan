@@ -77,12 +77,12 @@ public enum Resource {
 		return switch (val) {
 			case SETTLEMENT -> MESH_SETTLEMENT;
 			case CITY -> MESH_CITY;
+			case ROAD -> MESH_ROAD;
 		};
 	}
 
 	public static Resource getToken(int val) {
 		return switch(val) {
-			case 2 -> MODEL_TOKEN_2;
 			case 3 -> MODEL_TOKEN_3;
 			case 4 -> MODEL_TOKEN_4;
 			case 5 -> MODEL_TOKEN_5;

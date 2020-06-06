@@ -28,7 +28,7 @@ public class GameManager extends GameScript {
     private final ArrayList<Vertex> verticesOccupied = new ArrayList<Vertex>();
     private final ArrayList<Side> sidesOccupied = new ArrayList<Side>();
 
-    private final GameObserver gameObserver = new GameObserver();
+    public final GameObserver gameObserver = new GameObserver();
 
     // Game strategies
     SettingUp settingUp;
@@ -40,7 +40,7 @@ public class GameManager extends GameScript {
     private final int SETUP_TURNS = 2;
 
     // Game Phases
-    private enum GamePhases {
+    public enum GamePhases {
         SETUP,
         ROLLING,
         SETTLING,
@@ -79,7 +79,9 @@ public class GameManager extends GameScript {
                 if(settingUp.isTurnDone()) {
                     turn ++;
                     if(turn == SETUP_TURNS * players.size())
-                        currentGamePhase = GamePhases.ROLLING;
+                        setCurrentGamePhase(GamePhases.ROLLING);
+
+                    gameObserver.broadcast(PlayerEvent.PLAYER_TURN, getCurrentPlayer());
                 }
                 break;
             case SETTLING:
@@ -88,7 +90,7 @@ public class GameManager extends GameScript {
             case STEALING:
                 stealing.onClick(clicked, getCurrentPlayer());
                 if(stealing.isTurnDone())
-                    currentGamePhase = GamePhases.SETTLING;
+                    setCurrentGamePhase(GamePhases.SETTLING);
                 break;
         }
     }
@@ -97,8 +99,9 @@ public class GameManager extends GameScript {
         if(currentGamePhase != GamePhases.SETTLING)
             return;
 
-        currentGamePhase = GamePhases.ROLLING;
+        setCurrentGamePhase(GamePhases.ROLLING);
         turn ++;
+        gameObserver.broadcast(PlayerEvent.PLAYER_TURN, getCurrentPlayer());
     }
 
     public void onSpaceUp(int mods) {
@@ -113,7 +116,7 @@ public class GameManager extends GameScript {
 
         switch(roll1 + roll2) {
             case 7:
-                currentGamePhase = GamePhases.STEALING;
+                setCurrentGamePhase(GamePhases.STEALING);
                 break;
             default:
                 for(Tile t : tiles.getTiles(roll1 + roll2))
@@ -121,7 +124,7 @@ public class GameManager extends GameScript {
                         if(!t.isEmbargoed())
                             v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
 
-                currentGamePhase = GamePhases.SETTLING;
+                setCurrentGamePhase(GamePhases.SETTLING);
                 break;
         }
     }
@@ -129,7 +132,7 @@ public class GameManager extends GameScript {
     @Override
     public void initialize() {
         turn = 0;
-        currentGamePhase = GamePhases.SETUP;
+        setCurrentGamePhase(GamePhases.SETUP);
 
         for(int i = 0; i < 4; i ++) {
             Player newPlayer = new Player();
@@ -153,24 +156,12 @@ public class GameManager extends GameScript {
         getScene().registerMouseClickAction(this::onClick);
         getScene().registerKeyUpAction(GLFW_KEY_SPACE, this::onSpaceUp);
         getScene().registerKeyUpAction(GLFW_KEY_T, this::nextTurn);
-    }
 
-    public String getCurrentStateName() {
-        return switch(currentGamePhase){
-            case SETTLING ->  "Settling";
-            case STEALING ->  "Stealing";
-            case SETUP -> "Setting up";
-            case ROLLING -> "Rolling";
-        };
+        gameObserver.broadcast(PlayerEvent.PLAYER_TURN, getCurrentPlayer());
     }
 
     public Player getCurrentPlayer() {
         return players.get(turn % 4);
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
     @Override
@@ -188,7 +179,15 @@ public class GameManager extends GameScript {
                 collidingEntity.setRender(true);
             }
         }
+    }
 
-        text.setText(getCurrentStateName());
+    public void setCurrentGamePhase(GamePhases currentGamePhase) {
+        this.currentGamePhase = currentGamePhase;
+        gameObserver.broadcast(currentGamePhase);
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

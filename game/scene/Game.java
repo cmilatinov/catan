@@ -1,7 +1,5 @@
 package scene;
 
-import camera.Camera;
-import camera.PanCamera;
 import entities.*;
 import lights.Light;
 import main.Scene;
@@ -10,7 +8,8 @@ import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
-import scripts.UI;
+import ui.PlayerUI;
+import ui.UI;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -61,5 +60,6 @@ public class Game extends Scene {
 
         register(new GameManager());
         register(new UI());
+        register(new PlayerUI());
     }
 }

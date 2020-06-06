@@ -7,10 +7,8 @@ import entities.Entity;
 import input.KeyCallback;
 import input.MouseClickCallback;
 import lights.Light;
-import objects.GameScript;
-import objects.InjectableScript;
-import objects.Mesh;
-import objects.Texture;
+import objects.*;
+import org.apache.commons.collections4.map.ListOrderedMap;
 import org.joml.Vector3f;
 import physics.PhysicsManager;
 import render.EntityRenderer;
@@ -18,29 +16,31 @@ import render.SkyboxRenderer;
 import ui.UIManager;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static objects.GameScript.*;
 
 public abstract class Scene {
 
+    // Entities
     private final ArrayList<Entity> allEntities = new ArrayList<>();
     private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
     private final List<Light> lights = new ArrayList<>();
-    private final HashMap<Class<GameScript>, GameScript> gameScripts = new HashMap<>();
+    private final ListOrderedMap<Class, GameScript> gameScripts = new ListOrderedMap<>();
 
+    // Manager
     private UIManager uiManager;
-    private final EntityRenderer entityRenderer;
-    private final SkyboxRenderer skyboxRenderer;
     private PhysicsManager physics;
 
-    private Window attachedWindow;
-
+    // Renderers
+    private final SkyboxRenderer skyboxRenderer;
+    private final EntityRenderer entityRenderer;
     protected SceneManager sceneManager;
 
+    // Other
+    private final HashMap<Class<GameScript>, List<GameScript>> deferred = new HashMap<>();
+    private Window attachedWindow;
     private Texture skybox = null;
-
     private Camera camera;
 
     public Scene() {
@@ -160,34 +160,85 @@ public abstract class Scene {
             switch (gameScript.getCurrentState()) {
                 case TO_START -> {
                     gameScript.start();
-                    gameScript.setState(GameScript.State.TO_UPDATE);
+                    gameScript.setState(State.TO_UPDATE);
                 }
                 case TO_STOP -> {
                     gameScript.stop();
-                    gameScript.setState(GameScript.State.STOPPED);
+                    gameScript.setState(State.STOPPED);
                 }
                 case TO_UPDATE -> {
                     gameScript.update(delta);
                 }
                 case TO_INITIALIZE -> {
-                    injectDependencies(gameScript);
+                    if (handleDependencies(gameScript)) {
+                        gameScript.initialize();
+                        gameScript.setState(State.TO_UPDATE);
+                        handleDependents(gameScript);
+                    }
+                }
+                case RE_INITIALIZE -> {
                     gameScript.initialize();
-                    gameScript.setState(GameScript.State.TO_UPDATE);
+                    gameScript.setState(State.TO_UPDATE);
                 }
             }
         }
     }
 
-    protected void injectDependencies(GameScript gameScript) throws IllegalAccessException {
+    /**
+     * Handle any other scripts which were waiting upon this script
+     * @param gameScript Script Object to check dependents
+     */
+    protected void handleDependents(GameScript gameScript)
+    {
+        List<GameScript> dependentScripts = deferred.get(gameScript.getClass());
+        if (null != dependentScripts) {
+            for (GameScript script : dependentScripts) {
+                if (script.getCurrentState() == State.TO_INITIALIZE) {
+                    script.initialize();
+                    script.setState(State.TO_UPDATE);
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle dependency injection of other scripts and deferring the initialization
+     * NOTE: only really handles one level of dependencies, will have to come back to this is we need
+     * a more robust solution
+     * @param gameScript Script Object to handle
+     * @return true if there is no need to defer
+     * @throws IllegalAccessException if we fail to inject the dependency
+     */
+    protected boolean handleDependencies(GameScript gameScript) throws IllegalAccessException {
         Field[] fields = gameScript.getClass().getDeclaredFields();
         for (Field field: fields ) {
+            // Skip over things which are not GameScripts
+            if (!(GameScript.class.isAssignableFrom(field.getType()))) {
+                continue;
+            }
+            // Injection of the GameScript
             InjectableScript annotation = field.getAnnotation(InjectableScript.class);
             GameScript classToInject = gameScripts.get(field.getType());
             if(null != annotation && null != classToInject) {
                 field.setAccessible(true);
                 field.set(gameScript, classToInject);
             }
+            // TODO: MICHAEL FIX THIS
+//            // Check if we need to defer
+//            InitializeSelfAfter deferAnnotation = field.getAnnotation(InitializeSelfAfter.class);
+//            boolean dependencyNotInitialized = gameScripts.get(field.getType()).getCurrentState() == State.TO_INITIALIZE;
+//            if (null != deferAnnotation && dependencyNotInitialized) {
+//               List<GameScript> deferredList = deferred.get(field.getClass());
+//               if (null == deferredList) {
+//                  deferredList = new ArrayList<>();
+//               }
+//               deferredList.add(gameScript);
+//               //noinspection unchecked, we already know it's a GameScript object
+//               deferred.put((Class<GameScript>) field.getType(), deferredList);
+//               return false;
+//            }
         }
+        return true;
     }
 
     /**
@@ -219,13 +270,33 @@ public abstract class Scene {
         this.getWindow().keyboard().registerKeyDown(code, callback);
     }
 
+    /**
+     * Shortcut to register mouse click actions
+     * @param callback the callback to register
+     */
     public void registerMouseClickAction(MouseClickCallback callback) {
         this.getWindow().mouse().registerMouseClickCallback(callback);
     }
 
+    /**
+     * Register a Game Script to be ran during the Scene
+     * @param object the Gamescript to register
+     */
     public void register(GameScript object) {
         object.setContext(this);
-        gameScripts.put((Class<GameScript>) object.getClass(), object);
+        //Check if we have to modify the order
+        InitializeSelfBefore[] annotations = object.getClass().getAnnotationsByType(InitializeSelfBefore.class);
+        for(InitializeSelfBefore annotation : annotations) {
+            if(null != annotation) {
+                int scriptIndex = gameScripts.indexOf(annotation.clazz());
+                if (scriptIndex != -1) {
+                    gameScripts.put(scriptIndex, object.getClass(), object);
+                    return;
+                }
+            }
+        }
+        // Insert the game script normally
+        gameScripts.put(object.getClass(), object);
     }
 
     /**

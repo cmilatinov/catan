@@ -16,8 +16,10 @@ public class UIColor {
 	
 	public static final UIColor LIGHT_GRAY = new UIColor(0.8f, 0.8f, 0.8f, 1.0f);
 	public static final UIColor DARK_GRAY = new UIColor(0.4f, 0.4f, 0.4f, 1.0f);
-	
-	private final float r, g, b, a;
+    public static final UIColor ORANGE = new UIColor(1.000f, 0.647f, 0.000f, 1.0f);
+	public static final UIColor PURPLE = new UIColor(0.502f, 0.000f, 0.502f, 1.0f);
+
+    private final float r, g, b, a;
 	
 	public UIColor(float r, float g, float b, float a) {
 		this.r = r;

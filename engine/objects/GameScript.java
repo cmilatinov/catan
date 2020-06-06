@@ -12,6 +12,7 @@ public abstract class GameScript implements GameResource {
     public enum State {
         TO_START,
         TO_UPDATE,
+        RE_INITIALIZE,
         TO_INITIALIZE,
         TO_STOP,
         STOPPED;
