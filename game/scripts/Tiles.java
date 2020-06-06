@@ -62,6 +62,8 @@ public class Tiles extends GameScript{
      * Method generating the tiles and assigning the vertices to each tile
      */
     public void generateMap() {
+        robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
+
         tokenConfig.add(1); //0 -> 2
         tokenConfig.add(2); //1 -> 3
         tokenConfig.add(2); //2 -> 4
@@ -113,6 +115,9 @@ public class Tiles extends GameScript{
 
         generateTiles();
         generateGrid();
+
+        getDesertTile().setEmbargoed(true);
+        robber.setPosition(getDesertTile().getPosition());
     }
 
     public void generateGrid() {
@@ -235,8 +240,13 @@ public class Tiles extends GameScript{
      * @return - Tile of type desert
      */
     public Tile getDesertTile() {
-        if(desertIndex == -1)
-            return null;
+        if(desertIndex == -1) {
+            for(Tile t : tiles)
+                System.out.println(t.getType());
+            throw new RuntimeException("Desert tile does not exist.");
+        }
+
+
         return tiles.get(desertIndex);
     }
 
@@ -260,9 +270,6 @@ public class Tiles extends GameScript{
             getScene().register(s.scale(0.1f));
         }
 
-        robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
-        robber.setPosition(getDesertTile().getPosition());
-        getDesertTile().setEmbargoed(true);
         getScene().register(robber);
     }
     @Override
