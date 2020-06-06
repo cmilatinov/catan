@@ -60,5 +60,6 @@ public class Game extends Scene {
         register(tiles);
 
         register(new GameManager());
+        register(new UI());
     }
 }

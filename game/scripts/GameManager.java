@@ -7,16 +7,13 @@ import gameplay.strategies.Settling;
 import gameplay.strategies.Stealing;
 import objects.GameScript;
 import objects.InjectableScript;
+import observers.GameObserver;
 import resources.Resource;
 import ui.*;
-import ui.constraints.AspectConstraint;
-import ui.constraints.CenterConstraint;
-import ui.constraints.PixelConstraint;
-import ui.constraints.RelativeConstraint;
 
-import java.awt.*;
 import java.util.ArrayList;
 
+import static observers.GameObserver.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class GameManager extends GameScript {
@@ -27,10 +24,11 @@ public class GameManager extends GameScript {
     public UIQuad box;
     public UIText text;
 
-    private ArrayList<Vertex> verticesOccupied;
-    private ArrayList<Side> sidesOccupied;
+    private final ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Vertex> verticesOccupied = new ArrayList<Vertex>();
+    private final ArrayList<Side> sidesOccupied = new ArrayList<Side>();
 
-    private ArrayList<Player> players = new ArrayList<Player>();
+    private final GameObserver gameObserver = new GameObserver();
 
     // Game strategies
     SettingUp settingUp;
@@ -58,7 +56,9 @@ public class GameManager extends GameScript {
      * @return - Returns a random number between 1 and 6
      */
     public int roll() {
-        return (int)(Math.random() * 6) + 1;
+        int roll = (int)(Math.random() * 6) + 1;
+        gameObserver.broadcast(DiceEvents.DICE_ROLLED, roll);
+        return roll;
     }
 
     /**
@@ -131,15 +131,19 @@ public class GameManager extends GameScript {
         turn = 0;
         currentGamePhase = GamePhases.SETUP;
 
-        for(int i = 0; i < 4; i ++)
-            players.add(new Player());
+        for(int i = 0; i < 4; i ++) {
+            Player newPlayer = new Player();
+            players.add(newPlayer);
+            gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
+        }
         players.get(0).setColor(Resource.TEXTURE_COLOR_BLUE);
+        gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(0));
         players.get(1).setColor(Resource.TEXTURE_COLOR_GREEN);
+        gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(1));
         players.get(2).setColor(Resource.TEXTURE_COLOR_PURPLE);
+        gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(2));
         players.get(3).setColor(Resource.TEXTURE_COLOR_RED);
-
-        verticesOccupied = new ArrayList<Vertex>();
-        sidesOccupied = new ArrayList<Side>();
+        gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(3));
 
         settingUp = new SettingUp(verticesOccupied, sidesOccupied, getScene());
         settling = new Settling(verticesOccupied, sidesOccupied, getScene());
@@ -149,25 +153,6 @@ public class GameManager extends GameScript {
         getScene().registerMouseClickAction(this::onClick);
         getScene().registerKeyUpAction(GLFW_KEY_SPACE, this::onSpaceUp);
         getScene().registerKeyUpAction(GLFW_KEY_T, this::nextTurn);
-
-        box = new UIQuad();
-        box.setColor(UIColor.RED);
-        box.setBorderRadius(20);
-        UIConstraints constraints = new UIConstraints()
-                .setX(new PixelConstraint(30, UIDimensions.DIRECTION_LEFT))
-                .setY(new PixelConstraint(30, UIDimensions.DIRECTION_TOP))
-                .setWidth(new RelativeConstraint(0.2f))
-                .setHeight(new AspectConstraint(1));
-        getScene().getUiManager().getContainer().add(box, constraints);
-
-        text = new UIText(new Font("Comic Sans MS", Font.PLAIN, 18), getCurrentStateName());
-        text.setColor(UIColor.BLACK);
-        UIConstraints constraints2 = new UIConstraints()
-                .setX(new CenterConstraint())
-                .setY(new CenterConstraint())
-                .setWidth(new RelativeConstraint(0.6f))
-                .setHeight(new RelativeConstraint(0.6f));
-        box.add(text, constraints2);
     }
 
     public String getCurrentStateName() {
