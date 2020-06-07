@@ -18,7 +18,7 @@ public class PanCamera extends Camera {
     private Vector3f dragStart = null;
 
     double delta = 0;
-    float speed = 10.0f;
+    float speed = 50f;
 
     public PanCamera(float fov, Window window) {
         super((float) window.getWidth() / (float) window.getHeight(), fov);
@@ -28,19 +28,23 @@ public class PanCamera extends Camera {
         window.mouse().setSensitivity(0.2f);
     }
 
-    private void onMouseScroll(double v, double v1) {
-
+    private void onMouseScroll(double x, double y) {
+        if(y < 0) {
+            pos.add(new Vector3f(0, (float)delta * speed, 0));
+        }
+        if(y > 0) {
+            pos.sub(new Vector3f(0, (float)delta * speed, 0));
+        }
     }
 
 
     protected void onMouseMove(double x, double y, double dx, double dy) {
         if(dragStart == null && window.mouse().isMouseDown(GLFW_MOUSE_BUTTON_LEFT)) {
             dragStart = window.mouse().getRayAtMouseCoords(this);
-            System.out.println("Drag start: " + dragStart);
         }
         if(dragStart != null) {
             Vector3f dragPos = window.mouse().getRayAtMouseCoords(this);
-            Vector3f direction = dragPos.sub(dragStart);
+            Vector3f direction = dragPos.sub(dragStart).mul(-1).mul((float)delta * speed);
             direction.y = 0;
             new Matrix4f().translate(direction)
                     .transformPosition(pos);
@@ -52,6 +56,11 @@ public class PanCamera extends Camera {
             rotate(new Vector3f((float) dy, (float) dx, 0));
             rot.x = clamp(rot.x, 10, 60);
         }
+    }
+
+    public boolean isDragging()
+    {
+        return dragStart != null;
     }
 
     private float clamp(float value, int a, int b)
