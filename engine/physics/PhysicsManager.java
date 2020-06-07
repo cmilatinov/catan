@@ -13,6 +13,10 @@ public class PhysicsManager {
         this.scene = scene;
     }
 
+    /**
+     * Send a ray from the Camera at the mouse's coordinates
+     * @return An entity hit by the raycast, null if not found
+     */
     public Entity raycastFromCamera() {
         Vector3f ray = scene.getWindow().mouse().getRayAtMouseCoords(scene.getCamera());
         for(Entity entity : scene.getEntities()) {
