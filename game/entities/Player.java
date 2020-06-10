@@ -2,11 +2,11 @@ package entities;
 
 import java.util.HashMap;
 
-import gameplay.TileTypes;
+import gameplay.ResourceType;
 import resources.Resource;
 
 public class Player {
-	private final HashMap<TileTypes, Integer> resourceCards = new HashMap<TileTypes, Integer>();
+	private final HashMap<ResourceType, Integer> resourceCards = new HashMap<ResourceType, Integer>();
 	private Resource color;
 
 	public final int SETTLEMENTS = 5, ROADS = 15, CITIES = 4;
@@ -22,21 +22,21 @@ public class Player {
 		color = Resource.TEXTURE_COLOR_BLUE;
 	}
 
-	public void addResourceCard(TileTypes resource, int val) {
+	public void addResourceCard(ResourceType resource, int val) {
 		resourceCards.put(resource, resourceCards.get(resource) + val);
 	}
 
-	public int getResourceCards(TileTypes type) {
+	public int getResourceCards(ResourceType type) {
 		return resourceCards.get(type);
 	}
 
 
 	public void clearHand() {
-		resourceCards.put(TileTypes.BRICK, 0);
-		resourceCards.put(TileTypes.SHEEP, 0);
-		resourceCards.put(TileTypes.STONE, 0);
-		resourceCards.put(TileTypes.FOREST, 0);
-		resourceCards.put(TileTypes.WHEAT, 0);
+		resourceCards.put(ResourceType.BRICK, 0);
+		resourceCards.put(ResourceType.SHEEP, 0);
+		resourceCards.put(ResourceType.STONE, 0);
+		resourceCards.put(ResourceType.FOREST, 0);
+		resourceCards.put(ResourceType.WHEAT, 0);
 	}
 
 	public void reduceFreeSettlements() { freeSettlements --;}
@@ -67,7 +67,7 @@ public class Player {
 		this.color = color;
 	}
 	
-	public void giveCards(TileTypes type, int value) {
+	public void giveCards(ResourceType type, int value) {
 		resourceCards.put(type, resourceCards.get(type) + value);
 	}
 	

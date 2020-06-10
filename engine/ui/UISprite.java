@@ -3,7 +3,7 @@ package ui;
 import objects.Texture;
 import render.Sprite;
 
-public final class UISprite extends UIComponent implements Sprite {
+public class UISprite extends UIComponent implements Sprite {
 
     protected Texture sprite;
 

@@ -1,9 +1,12 @@
 package scripts;
 
-import entities.*;
-import gameplay.TileTypes;
-import lights.Light;
-import main.Scene;
+import board.Node;
+import board.nodes.*;
+import board.NodeType;
+import entities.Entity;
+import entities.Robber;
+import entities.Tile;
+import gameplay.ResourceType;
 import objects.GameScript;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -13,21 +16,18 @@ import resources.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static gameplay.TileTypes.*;
+import static gameplay.ResourceType.*;
 
 public class Tiles extends GameScript{
 
     private ArrayList<Tile> tiles;
-    public ArrayList<Vertex> vertices;
-    private ArrayList<Side> sides;
+    private ArrayList<Node> nodes;
 
     private Entity robber;
 
-    private int desertIndex = -1;
-
     private final int BOARD_RADIUS;
 
-    private Map<TileTypes, Integer> tileConfiguration = new HashMap<TileTypes, Integer>();
+    private Map<ResourceType, Integer> tileConfiguration = new HashMap<ResourceType, Integer>();
     private ArrayList<Integer> tokenConfig = new ArrayList<Integer>();
 
     private int SHEEP_COUNT = 4;
@@ -38,17 +38,6 @@ public class Tiles extends GameScript{
     private int DESERT_COUNT = 1;
 
     private final int SIDES = 6;
-
-    public Tiles(int boardRadius, int sheepCount, int wheatCount, int forestCount, int stoneCount, int brickCount, int desertCount) {
-        this(boardRadius);
-
-        SHEEP_COUNT = sheepCount;
-        WHEAT_COUNT = wheatCount;
-        FOREST_COUNT = forestCount;
-        STONE_COUNT = stoneCount;
-        BRICK_COUNT = brickCount;
-        DESERT_COUNT = desertCount;
-    }
 
     public Tiles(int boardRadius) {
         BOARD_RADIUS = boardRadius;
@@ -84,8 +73,7 @@ public class Tiles extends GameScript{
         tileConfiguration.put(DESERT, DESERT_COUNT);
 
         tiles = new ArrayList<Tile>();
-        vertices = new ArrayList<Vertex>();
-        sides = new ArrayList<Side>();
+        nodes = new ArrayList<Node>();
 
         // Generates the appropriate amount of types for the tiles
         Iterator tileIterator = tileConfiguration.entrySet().iterator();
@@ -94,8 +82,8 @@ public class Tiles extends GameScript{
             Map.Entry mapElement = (Map.Entry)tileIterator.next();
             for(int i = 0; i < (int)mapElement.getValue(); i ++) {
                 tiles.add(new Tile
-                        (GameResources.get(Resource.getTileModel((TileTypes) mapElement.getKey()))
-                                , (TileTypes) mapElement.getKey()));
+                        (GameResources.get(Resource.getTileModel((ResourceType) mapElement.getKey()))
+                                , (ResourceType) mapElement.getKey()));
             }
         }
 
@@ -114,82 +102,58 @@ public class Tiles extends GameScript{
         Collections.shuffle(tiles);
 
         generateTiles();
-        generateGrid();
+        generateNodes();
 
         getDesertTile().setEmbargoed(true);
         robber.setPosition(getDesertTile().getPosition());
     }
 
-    public void generateGrid() {
+    public void generateNodes() {
+        float radius;
+        double theta;
+        boolean isSide;
+        Node newNode;
+
         for(Tile t : tiles) {
-            float vZ, vX, sX, sZ;
-            double initialVAngle = Math.PI / 6;
-            double initialSAngle = 0;
+            theta = 0;
+            isSide = true;
 
-            Vertex newVertex = null;
-            Side newSide = null;
+            while(theta != 360) {
+                newNode = null;
+                radius = isSide ? 0.866f : 1.0f;
 
-            boolean vExists, sExists;
+                float nodeX = (float) (Math.cos(Math.toRadians(theta)) * radius) + t.getPositionX();
+                float nodeZ = (float) (Math.sin(Math.toRadians(theta)) * radius) + t.getPositionZ();
 
-            for(int i = 0; i < SIDES; i ++) {
-                vX = (float) Math.cos(initialVAngle - (i * Math.PI/3)) + t.getPositionX();
-                vZ = (float) Math.sin(initialVAngle - (i * Math.PI/3)) + t.getPositionZ();
-
-                sX = (float) (Math.cos(initialSAngle - (i * Math.PI/3)) * 0.866) + t.getPositionX();
-                sZ = (float) (Math.sin(initialSAngle - (i * Math.PI/3)) * 0.866) + t.getPositionZ();
-
-                vExists = false;
-                sExists = false;
-
-                for(Side s : sides)
-                    if(Math.abs(sX - s.getPositionX()) < 0.01 && Math.abs(sZ - s.getPositionZ()) < 0.01 ) {
-                        newSide = s;
-                        sExists = true;
-                    }
-
-                for(Vertex v : vertices)
-                    if(Math.abs(vX - v.getPositionX()) < 0.1 && Math.abs(vZ - v.getPositionZ()) < 0.1 ) {
-                        newVertex = v;
-                        vExists = true;
-                    }
-
-                if(!vExists) {
-                    newVertex = new Vertex(GameResources.get(Resource.MODEL_TILE_BRICK));
-                    newVertex.setPosition(new Vector3f(vX, 0.1f, vZ));
-                    vertices.add(newVertex);
+                for(Node node : nodes) {
+                    if(Math.abs(nodeX - node.getPositionX()) < 0.01 && Math.abs(nodeZ - node.getPositionZ()) < 0.01 )
+                        newNode = node;
                 }
 
-                if(!sExists) {
-                    newSide = new Side(GameResources.get(Resource.MODEL_TILE_FOREST));
-                    newSide.setPosition(new Vector3f(sX, 0.1f, sZ));
-                    sides.add(newSide);
+                if (null == newNode) {
+                    if(isSide) {
+                        newNode = Node.createNode(NodeType.SIDE);
+                    } else {
+                        newNode = Node.createNode(NodeType.VERTEX);
+                        t.addVertex(newNode);
+                    }
+
+                    newNode.setPosition(new Vector3f(nodeX, 0.1f, nodeZ));
+                    nodes.add(newNode);
                 }
 
-                t.addVertex(newVertex);
+                theta += 30;
+                isSide = !isSide;
             }
+        }
 
-            Vector3f firstV, secondV, vMatch = new Vector3f();
-
-            for(Side s : sides) {
-                firstV = null;
-                secondV = null;
-                for(Vertex v : vertices) {
-                    s.getPosition().sub(v.getPosition(), vMatch);
-                    if(vMatch.length() - 0.5 < 0.5) {
-                        if(firstV == null){
-                            firstV = v.getPosition();
-                            s.addVertex(v);
-                        }
-                        else {
-                            secondV = v.getPosition();
-                            s.addVertex(v);
-                            break;
-                        }
-                    }
+        for(Node currNode :  nodes) {
+            for(Node node : nodes) {
+                Vector3f result = new Vector3f();
+                node.getPosition().sub(currNode.getPosition(), result);
+                if(Math.abs(result.length() - 0.5) < 0.1) {
+                    currNode.addNode(node);
                 }
-                firstV.sub(secondV);
-
-                s.setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(firstV.z / firstV.x)), 0));
             }
         }
     }
@@ -210,9 +174,6 @@ public class Tiles extends GameScript{
             for(int t = 0; t < i * SIDES; t ++) {
                 tiles.get(tIndex).setHexCoords(new Vector2f(hexCoords[0], hexCoords[2]));
                 tiles.get(tIndex).scale(0.996f);
-
-                if(tiles.get(tIndex).getType() == DESERT)
-                    desertIndex = tIndex;
 
                 //update Hex coordinates and indices
                 if(hexCoords[hIndex] == 0) {
@@ -240,14 +201,11 @@ public class Tiles extends GameScript{
      * @return - Tile of type desert
      */
     public Tile getDesertTile() {
-        if(desertIndex == -1) {
-            for(Tile t : tiles)
-                System.out.println(t.getType());
-            throw new RuntimeException("Desert tile does not exist.");
-        }
+        for(Tile t : tiles)
+            if(t.getType() == DESERT)
+                return t;
 
-
-        return tiles.get(desertIndex);
+        return null;
     }
 
     public Entity getRobber(){
@@ -257,17 +215,13 @@ public class Tiles extends GameScript{
 
     @Override
     public void initialize() {
-        for(Vertex v : vertices)
-            getScene().register(v.scale(0.3f));
+        for(Node node : nodes)
+            getScene().register(node);
 
         for (Tile t : tiles) {
             getScene().register(t);
             if(t.getToken() != null)
                 getScene().register(t.getToken());
-        }
-
-        for(Side s : sides) {
-            getScene().register(s.scale(0.1f));
         }
 
         getScene().register(robber);

@@ -1,7 +1,6 @@
 package resources;
 
-import entities.Building.BuildingType;
-import gameplay.TileTypes;
+import gameplay.ResourceType;
 
 public enum Resource {
 	
@@ -73,14 +72,6 @@ public enum Resource {
 	MODEL_BOARD,
 	MODEL_TABLE;
 
-	public static Resource getBuildingMesh(BuildingType val) {
-		return switch (val) {
-			case SETTLEMENT -> MESH_SETTLEMENT;
-			case CITY -> MESH_CITY;
-			case ROAD -> MESH_ROAD;
-		};
-	}
-
 	public static Resource getToken(int val) {
 		return switch(val) {
 			case 3 -> MODEL_TOKEN_3;
@@ -96,7 +87,7 @@ public enum Resource {
 		};
 	}
 
-	public static Resource getTileModel(TileTypes t) {
+	public static Resource getTileModel(ResourceType t) {
 		return switch (t) {
 			case BRICK -> MODEL_TILE_BRICK;
 			case DESERT -> MODEL_TILE_DESERT;
@@ -104,6 +95,7 @@ public enum Resource {
 			case STONE -> MODEL_TILE_STONE;
 			case WHEAT -> MODEL_TILE_WHEAT;
 			case SHEEP -> MODEL_TILE_SHEEP;
+			default -> null;
 		};
 	}
 }

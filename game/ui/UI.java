@@ -1,18 +1,18 @@
 package ui;
 
 import entities.Player;
+import gameplay.ResourceType;
 import objects.GameScript;
-import objects.InitializeSelfAfter;
 import objects.InitializeSelfBefore;
 import objects.InjectableScript;
 import observers.GameObserver;
-import observers.GameStateEventSubject;
 import observers.PlayerEventSubject;
+import observers.PlayerHandEventSubject;
 import scripts.GameManager;
 import ui.components.GamePhase;
 
 @InitializeSelfBefore(clazz = GameManager.class)
-public class UI extends GameScript implements PlayerEventSubject, GameStateEventSubject {
+public class UI extends GameScript implements PlayerEventSubject, PlayerHandEventSubject {
 
     @InjectableScript
     GameManager gameManager;
@@ -20,12 +20,15 @@ public class UI extends GameScript implements PlayerEventSubject, GameStateEvent
     @InjectableScript
     PlayerUI playerUI;
 
+    @InjectableScript
+    PlayerHandUI playerHandUI;
+
     GamePhase gamePhaseUI = new GamePhase();
 
     @Override
     public void initialize() {
         gameManager.gameObserver.register((PlayerEventSubject)this);
-        gameManager.gameObserver.register((GameStateEventSubject)this);
+        gameManager.gameObserver.register((PlayerHandEventSubject)this);
 
         getScene().getUiManager().getContainer().add(gamePhaseUI, gamePhaseUI.getConstraints());
     }
@@ -48,13 +51,20 @@ public class UI extends GameScript implements PlayerEventSubject, GameStateEvent
         }
     }
 
-
     @Override
-    public void onGamePhaseEvent(GameManager.GamePhases eventType) {
-        gamePhaseUI.setCurrentStateName(eventType);
+    public void destroy() {
     }
 
     @Override
-    public void destroy() {
+    public void onPlayerHandEvent(GameObserver.PlayerHandEvent eventType, ResourceType type, int count) {
+        switch(eventType) {
+            case RESOURCES_ADDED -> {
+                for(int i = 0; i < count; i ++)
+                    playerHandUI.addCard(type);
+            }
+            case RESOURCES_REMOVED -> {
+
+            }
+        }
     }
 }

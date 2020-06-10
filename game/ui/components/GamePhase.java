@@ -33,13 +33,7 @@ public class GamePhase extends UIQuad {
                 .setHeight(new RelativeConstraint(0.1f));
     }
 
-    public void setCurrentStateName(GameManager.GamePhases stateCode) {
-        String state = switch(stateCode){
-            case SETTLING ->  "Settling";
-            case STEALING ->  "Stealing";
-            case SETUP -> "Setting up";
-            case ROLLING -> "Rolling";
-        };
-        this.text.setText(state);
+    public void setCurrentStateName() {
+        this.text.setText("Rolling");
     }
 }

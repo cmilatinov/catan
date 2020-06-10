@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gameplay.TileTypes;
+import board.Node;
+import gameplay.ResourceType;
 import objects.TexturedMesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -16,17 +17,17 @@ public class Tile extends Entity implements SphereCollider {
 	private Vector2f hexCoords;
 	private EntityStatic token;
 
-	private TileTypes type;
-	private ArrayList<Vertex> vertices;
+	private ResourceType type;
+	private ArrayList<Node> vertices;
 	private int value = -1;
 
 	private boolean embargoed;
 	
-	public Tile(TexturedMesh model, TileTypes type) {
+	public Tile(TexturedMesh model, ResourceType type) {
 		super(model);
 		
 		this.type = type;
-		vertices = new ArrayList<Vertex>();
+		vertices = new ArrayList<Node>();
 		embargoed = false;
 	}
 
@@ -41,18 +42,18 @@ public class Tile extends Entity implements SphereCollider {
 
 		setPosition(new Vector3f(x, 0, z));
 
-		if(type != TileTypes.DESERT) {
+		if(type != ResourceType.DESERT) {
 			token.setPosition(getPosition());
 			token.translate(new Vector3f(0, 0.1f, 0));
 			token.scale(0.2f);
 		}
 	}
 
-	public List<Vertex> getOccupiedVertices() {
+	public List<Node> getOccupiedVertices() {
 		return vertices.stream().filter(v -> v.getBuilding() != null).collect(Collectors.toList());
 	}
 
-	public void addVertex(Vertex v) {
+	public void addVertex(Node v) {
 		vertices.add(v);
 	}
 	
@@ -69,7 +70,7 @@ public class Tile extends Entity implements SphereCollider {
 		return token;
 	}
 	
-	public TileTypes getType() {
+	public ResourceType getType() {
 		return this.type;
 	}
 

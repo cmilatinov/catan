@@ -1,34 +1,43 @@
 package gameplay;
 
-import entities.Building;
+import board.BuildingType;
+import entities.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Costs {
-    private final HashMap<TileTypes, Integer> settlementCost = new HashMap<TileTypes, Integer>(){{
-        put(TileTypes.BRICK, 1);
-        put(TileTypes.FOREST, 1);
-        put(TileTypes.WHEAT, 1);
-        put(TileTypes.SHEEP, 1);
+    private final HashMap<ResourceType, Integer> settlementCost = new HashMap<ResourceType, Integer>(){{
+        put(ResourceType.BRICK, 1);
+        put(ResourceType.FOREST, 1);
+        put(ResourceType.WHEAT, 1);
+        put(ResourceType.SHEEP, 1);
     }};
-    private final HashMap<TileTypes, Integer> cityCost = new HashMap<TileTypes, Integer>(){{
-        put(TileTypes.WHEAT, 2);
-        put(TileTypes.STONE, 3);
+    private final HashMap<ResourceType, Integer> cityCost = new HashMap<ResourceType, Integer>(){{
+        put(ResourceType.WHEAT, 2);
+        put(ResourceType.STONE, 3);
     }};
 
-    private final HashMap<TileTypes, Integer> roadCost = new HashMap<TileTypes, Integer>(){{
-        put(TileTypes.BRICK, 1);
-        put(TileTypes.FOREST, 1);
+    private final HashMap<ResourceType, Integer> roadCost = new HashMap<ResourceType, Integer>(){{
+        put(ResourceType.BRICK, 1);
+        put(ResourceType.FOREST, 1);
     }};
 
     private static final Costs INSTANCE = new Costs();
 
-    public HashMap<TileTypes, Integer> getBuildingCost(Building.BuildingType type) {
+    public HashMap<ResourceType, Integer> getBuildingCost(BuildingType type) {
         return switch(type) {
             case SETTLEMENT -> settlementCost;
             case CITY -> cityCost;
             case ROAD -> roadCost;
         };
+    }
+
+    public boolean canBuyBuilding(Player player, BuildingType type) {
+        for (Map.Entry<ResourceType, Integer> resource : Costs.getInstance().getBuildingCost(type).entrySet())
+            if(player.getResourceCards(resource.getKey()) < resource.getValue())
+                return false;
+        return true;
     }
 
     public static Costs getInstance() {

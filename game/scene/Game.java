@@ -8,6 +8,7 @@ import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
+import ui.PlayerHandUI;
 import ui.PlayerUI;
 import ui.UI;
 
@@ -61,5 +62,6 @@ public class Game extends Scene {
         register(new GameManager());
         register(new UI());
         register(new PlayerUI());
+        register(new PlayerHandUI());
     }
 }

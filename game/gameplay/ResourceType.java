@@ -2,15 +2,19 @@ package gameplay;
 
 import java.util.Random;
 
-public enum TileTypes {
+public enum ResourceType {
 	SHEEP,
 	STONE,
 	BRICK,
 	WHEAT,
 	FOREST,
-	DESERT;
+	DESERT,
+
+	KNIGHT,
+	MONOPOLY,
+	VICTORY_POINT;
 	
-	public static TileTypes getRandomType() {
+	public static ResourceType getRandomType() {
         Random random = new Random();
         return values()[random.nextInt(values().length)];
     }
