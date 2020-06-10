@@ -265,6 +265,17 @@ public class MouseInput {
 	}
 
 	/**
+	 * Returns whether or not a mouse button has been released.
+	 *
+	 * @param button The mouse button to check.
+	 * @return [<b>boolean</b>] True if the specified mouse button is being held
+	 *         down, false otherwise.
+	 */
+	public boolean isMouseUp(int button) {
+		return glfwGetMouseButton(window.getHandle(), button) == GLFW_RELEASE;
+	}
+
+	/**
 	 * Returns the ray casted by the mouse at its current coordinates.
 	 * 
 	 * @param camera The camera through which to cast a ray.
@@ -277,5 +288,4 @@ public class MouseInput {
 		Vector4f worldSpace = camera.getViewMatrix().invert().transform(new Vector4f(eyeSpace.x, eyeSpace.y, -1, 0));
 		return new Vector3f(worldSpace.x, worldSpace.y, worldSpace.z).normalize();
 	}
-
 }

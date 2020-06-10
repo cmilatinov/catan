@@ -1,5 +1,7 @@
 package scene;
 
+import camera.Camera;
+import camera.PanCamera;
 import entities.*;
 import lights.Light;
 import main.Scene;
@@ -27,6 +29,11 @@ public class Game extends Scene {
 
     @Override
     public void initialize() {
+        Camera camera = new PanCamera(90f, getWindow());
+        camera.setPosition(new Vector3f(0, 7f, 10));
+        camera.setRotation(new Vector3f(20, 0,0));
+        setCamera(camera);
+
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
 

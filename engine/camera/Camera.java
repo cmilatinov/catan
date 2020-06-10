@@ -1,5 +1,6 @@
 package camera;
 
+import input.MouseInput;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -253,7 +254,7 @@ public abstract class Camera implements GameResource {
 	public Matrix4f getViewMatrix() {
 		return new Matrix4f(view);
 	}
-	
+
 	public abstract void update(double delta);
 	public abstract void destroy();
 	
