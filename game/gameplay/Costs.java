@@ -33,7 +33,7 @@ public class Costs {
         };
     }
 
-    public boolean canBuyBuilding(Player player, BuildingType type) {
+    public boolean canBuyBuilding(BuildingType type, Player player) {
         for (Map.Entry<ResourceType, Integer> resource : Costs.getInstance().getBuildingCost(type).entrySet())
             if(player.getResourceCards(resource.getKey()) < resource.getValue())
                 return false;

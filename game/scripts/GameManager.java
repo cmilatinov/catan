@@ -1,14 +1,18 @@
 package scripts;
 
+import board.Node;
+import board.nodes.Vertex;
 import entities.*;
-import states.GameState;
-import states.StateSettling;
+import gameplay.ResourceType;
+import org.joml.Vector3f;
+import states.*;
 import objects.GameScript;
 import objects.InjectableScript;
 import observers.GameObserver;
 import resources.Resource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static observers.GameObserver.*;
@@ -25,7 +29,6 @@ public class GameManager extends GameScript {
     public final GameObserver gameObserver = new GameObserver();
 
     private int turn;
-    private final int SETUP_TURNS = 2;
 
     private GameState currentState;
 
@@ -37,6 +40,17 @@ public class GameManager extends GameScript {
      */
     public void setGameState(GameState state) {
         this.currentState = state;
+        GameStates currStateEnum = GameStates.ROLLING;
+
+        if (currentState instanceof StateSettling) {
+            currStateEnum = GameStates.SETTLING;
+        } else if (currentState instanceof StateSetup) {
+            currStateEnum = GameStates.SETTING_UP;
+        } else if (currentState instanceof StateStealing) {
+            currStateEnum = GameStates.STEALING;
+        }
+
+        gameObserver.broadcast(currStateEnum);
     }
 
     /**
@@ -49,36 +63,11 @@ public class GameManager extends GameScript {
         if(action == GLFW_PRESS)
             return;
 
-        Entity clicked = getScene().physics().raycastFromCamera();
-
-        currentState.onClick(clicked);
-
-//        Entity clicked = getScene().physics().raycastFromCamera();
-//
-//        switch(currentGamePhase) {
-//            case SETUP:
-//                settingUp.onClick(clicked, getCurrentPlayer());
-//                if(settingUp.isTurnDone()) {
-//                    turn ++;
-//                    if(turn == SETUP_TURNS * players.size())
-//                        setCurrentGamePhase(GamePhases.ROLLING);
-//
-//                    gameObserver.broadcast(PlayerEvent.PLAYER_TURN, getCurrentPlayer());
-//                }
-//                break;
-//            case SETTLING:
-//                settling.onClick(clicked, getCurrentPlayer());
-//                break;
-//            case STEALING:
-//                stealing.onClick(clicked, getCurrentPlayer());
-//                if(stealing.isTurnDone())
-//                    setCurrentGamePhase(GamePhases.SETTLING);
-//                break;
-//        }
+        currentState.onClick(this, getScene().physics().raycastFromCamera(), getCurrentPlayer());
     }
 
     public void onSpaceReleased(int mods) {
-        currentState.onSpace();
+        currentState.onSpace(this);
     }
 
     public int getPlayerCount() {
@@ -88,6 +77,21 @@ public class GameManager extends GameScript {
     public void reversePlayers() {
         Collections.reverse(players);
         playersReversed = !playersReversed;
+    }
+
+    public void rewardPlayerNearTile(int roll) {
+        for(Tile t : tiles.getTiles(roll))
+            for(Vertex v : t.getOccupiedVertices())
+                v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
+    }
+
+    public void rewardPlayerOnNode(Vector3f nodePosition, Player player) {
+        for(Tile t : tiles.getTilesNearVertex(nodePosition))
+            if(t.getType() != ResourceType.DESERT) {
+                player.addResourceCard(t.getType(), 1);
+                if(player.getColor() == Resource.TEXTURE_COLOR_BLUE)
+                    gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), 1);
+            }
     }
 
     public boolean isPlayersReversed() {
@@ -101,7 +105,6 @@ public class GameManager extends GameScript {
     @Override
     public void initialize() {
         turn = 0;
-        currentState = new StateSettling();
 
         for(int i = 0; i < 4; i ++) {
             Player newPlayer = new Player();
@@ -117,6 +120,8 @@ public class GameManager extends GameScript {
         players.get(3).setColor(Resource.TEXTURE_COLOR_RED);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(3));
 
+        setGameState(new StateSetup(players.size()));
+
         getScene().registerMouseClickAction(this::onClick);
         getScene().registerKeyUpAction(GLFW_KEY_SPACE, this::onSpaceReleased);
 
@@ -125,6 +130,11 @@ public class GameManager extends GameScript {
 
     public Player getCurrentPlayer() {
         return players.get(turn % 4);
+    }
+
+    public void updateRobber(Vector3f pos) {
+        tiles.resetEmbargoedTile();
+        tiles.getRobber().setPosition(pos).translate(new Vector3f(0, 0, 0.3f));
     }
 
     @Override

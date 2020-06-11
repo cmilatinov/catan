@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import board.Node;
+import board.nodes.Vertex;
 import gameplay.ResourceType;
 import objects.TexturedMesh;
 import org.joml.Vector2f;
@@ -18,7 +19,7 @@ public class Tile extends Entity implements SphereCollider {
 	private EntityStatic token;
 
 	private ResourceType type;
-	private ArrayList<Node> vertices;
+	private ArrayList<Node> nodes;
 	private int value = -1;
 
 	private boolean embargoed;
@@ -27,7 +28,7 @@ public class Tile extends Entity implements SphereCollider {
 		super(model);
 		
 		this.type = type;
-		vertices = new ArrayList<Node>();
+		nodes = new ArrayList<Node>();
 		embargoed = false;
 	}
 
@@ -49,12 +50,12 @@ public class Tile extends Entity implements SphereCollider {
 		}
 	}
 
-	public List<Node> getOccupiedVertices() {
-		return vertices.stream().filter(v -> v.getBuilding() != null).collect(Collectors.toList());
+	public List<Vertex> getOccupiedVertices() {
+		return nodes.stream().filter(n -> n.getBuilding() != null && n instanceof Vertex).map(n -> (Vertex) n).collect(Collectors.toList());
 	}
 
 	public void addVertex(Node v) {
-		vertices.add(v);
+		nodes.add(v);
 	}
 	
 	public int getValue() {
@@ -78,7 +79,7 @@ public class Tile extends Entity implements SphereCollider {
 		return true;
 	}
 
-	public boolean isEmbargoed() {return embargoed;}
+	public boolean isEmbargoed() { return embargoed; }
 
 	public void setEmbargoed(boolean embargoed) {
 		this.embargoed = embargoed;

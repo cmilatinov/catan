@@ -44,7 +44,14 @@ public class Tiles extends GameScript{
     }
 
     public List<Tile> getTiles(int val) {
-        return tiles.stream().filter(t -> t.getValue() == val).collect(Collectors.toList());
+        return tiles.stream().filter(t -> t.getValue() == val && !t.isEmbargoed()).collect(Collectors.toList());
+    }
+
+    public void resetEmbargoedTile() {
+        tiles.forEach(t -> {
+            if(t.isEmbargoed())
+                t.setEmbargoed(false);
+        });
     }
 
     /**
@@ -147,6 +154,7 @@ public class Tiles extends GameScript{
             }
         }
 
+        // TODO: rotate the sides properly
         for(Node currNode :  nodes) {
             for(Node node : nodes) {
                 Vector3f result = new Vector3f();
@@ -155,7 +163,21 @@ public class Tiles extends GameScript{
                     currNode.addNode(node);
                 }
             }
+            if(currNode instanceof Side) {
+                Vector3f pos = new Vector3f(currNode.getNearbyNodes().get(0).getPosition());
+                pos.sub(currNode.getNearbyNodes().get(1).getPosition());
+
+                currNode.setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(pos.z / pos.x)), 0));
+            }
         }
+    }
+
+    public List<Tile> getTilesNearVertex(Vector3f position) {
+        return tiles.stream().filter(t -> {
+            Vector3f result = new Vector3f();
+            t.getPosition().sub(position, result);
+            return result.length() - 1 < 0.1;
+        }).collect(Collectors.toList());
     }
 
     public void generateTiles() {

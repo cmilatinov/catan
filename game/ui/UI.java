@@ -6,13 +6,14 @@ import objects.GameScript;
 import objects.InitializeSelfBefore;
 import objects.InjectableScript;
 import observers.GameObserver;
+import observers.GameStateEventSubject;
 import observers.PlayerEventSubject;
 import observers.PlayerHandEventSubject;
 import scripts.GameManager;
 import ui.components.GamePhase;
 
 @InitializeSelfBefore(clazz = GameManager.class)
-public class UI extends GameScript implements PlayerEventSubject, PlayerHandEventSubject {
+public class UI extends GameScript implements PlayerEventSubject, PlayerHandEventSubject, GameStateEventSubject {
 
     @InjectableScript
     GameManager gameManager;
@@ -29,6 +30,7 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
     public void initialize() {
         gameManager.gameObserver.register((PlayerEventSubject)this);
         gameManager.gameObserver.register((PlayerHandEventSubject)this);
+        gameManager.gameObserver.register((GameStateEventSubject)this);
 
         getScene().getUiManager().getContainer().add(gamePhaseUI, gamePhaseUI.getConstraints());
     }
@@ -66,5 +68,10 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
 
             }
         }
+    }
+
+    @Override
+    public void onGamePhaseEvent(GameObserver.GameStates eventType) {
+        gamePhaseUI.setCurrentStateName(eventType);
     }
 }

@@ -22,9 +22,11 @@ public class Side extends Node {
      * @return True if there is a building on a nearby vertex owned by the player that wants to place a road down.
      */
     public boolean isAlliedBuildingNearby(Player player) {
-        for(Node node : getNearbyNodes())
-            if(node.getOwner() == player)
+        for(Node node : getNearbyNodes()) {
+            if(node.getOwner()== player)
                 return true;
+        }
+
         return false;
     }
 
@@ -44,7 +46,7 @@ public class Side extends Node {
 
     @Override
     public void settle(Player owner) {
-        if(!isNodeEmpty())
+        if(!isNodeFree())
             return;
 
         setOwner(owner);

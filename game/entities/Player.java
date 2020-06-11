@@ -10,7 +10,7 @@ public class Player {
 	private Resource color;
 
 	public final int SETTLEMENTS = 5, ROADS = 15, CITIES = 4;
-	private int freeSettlements = 0, freeRoads = 0;
+	private int freeRoads = 0;
 
 	public Player(Resource color) {
 		clearHand();
@@ -18,8 +18,7 @@ public class Player {
 	}
 
 	public Player() {
-		clearHand();
-		color = Resource.TEXTURE_COLOR_BLUE;
+		this(Resource.TEXTURE_COLOR_BLUE);
 	}
 
 	public void addResourceCard(ResourceType resource, int val) {
@@ -30,7 +29,6 @@ public class Player {
 		return resourceCards.get(type);
 	}
 
-
 	public void clearHand() {
 		resourceCards.put(ResourceType.BRICK, 0);
 		resourceCards.put(ResourceType.SHEEP, 0);
@@ -39,13 +37,7 @@ public class Player {
 		resourceCards.put(ResourceType.WHEAT, 0);
 	}
 
-	public void reduceFreeSettlements() { freeSettlements --;}
-
 	public void reduceFreeRoads () { freeRoads --; }
-
-	public void addFreeSettlement() {
-		freeSettlements ++;
-	}
 
 	public void addFreeRoad() {
 		freeRoads ++;
@@ -53,10 +45,6 @@ public class Player {
 
 	public int getFreeRoads() {
 		return freeRoads;
-	}
-
-	public int getFreeSettlements() {
-		return freeSettlements;
 	}
 
 	public Resource getColor() {

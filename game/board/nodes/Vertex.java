@@ -42,19 +42,32 @@ public class Vertex extends Node {
         return false;
     }
 
+    public int getBuildingValue() {
+        return switch(getBuilding().getType()) {
+            case CITY -> 2;
+            case SETTLEMENT -> 1;
+            case ROAD -> 0;
+        };
+    }
+
+    public void upgrade() {
+        Building building = Building.create(BuildingType.CITY, getOwner().getColor());
+        building.setPosition(getPosition());
+        building.scale(0.07f);
+
+        setBuilding(building);
+    }
+
     @Override
     public void settle(Player owner) {
+        if(!isNodeFree())
+            return;
+
         setOwner(owner);
 
-        Building building;
-        if(isNodeEmpty()) {
-            building = Building.create(BuildingType.SETTLEMENT, owner.getColor());
-        } else {
-            building = Building.create(BuildingType.CITY, owner.getColor());
-        }
-
+        Building building = Building.create(BuildingType.SETTLEMENT, owner.getColor());
         building.setPosition(getPosition());
-        building.scale(0.45f);
+        building.scale(0.06f);
 
         setBuilding(building);
     }

@@ -22,9 +22,6 @@ public abstract class Node extends EntityToggleable implements SphereCollider {
     // Player owning the node
     private Player owner;
 
-    // Boolean to determine whether or not the node has links to the neighboring nodes
-    private boolean linked;
-
     /**
      * Node constructor.
      * @param model - Textured mesh for the Node.
@@ -51,22 +48,11 @@ public abstract class Node extends EntityToggleable implements SphereCollider {
         return nearbyNodes;
     }
 
-    public int getLinkSize() {
-        return nearbyNodes.size();
-    }
-
-    /**
-     * Getter that returns whether or not the node is linked to the data structure.
-     * @return True if node is linked.
-     */
-    public boolean isLinked(){ return linked; }
-
     /**
      * Adds a neighboring node.
      * @param node - Node to be added to the neighboring nodes list.
      */
     public void addNode(Node node) {
-        linked = true;
         nearbyNodes.add(node);
     }
 
@@ -74,7 +60,7 @@ public abstract class Node extends EntityToggleable implements SphereCollider {
      * Method to check if the node has a building set.
      * @return True if there's no building.
      */
-    public boolean isNodeEmpty() {
+    public boolean isNodeFree() {
         return null == building;
     }
 

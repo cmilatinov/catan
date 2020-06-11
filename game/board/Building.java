@@ -11,7 +11,6 @@ public class Building extends EntityStatic {
 
 	private Building(TexturedMesh model) {
 		super(model);
-		scale(0.05f);
 	}
 
 	public static Building create(BuildingType type, Resource color) {
@@ -27,6 +26,10 @@ public class Building extends EntityStatic {
 
 	public void setType(BuildingType type) {
 		this.type = type;
+	}
+
+	public BuildingType getType() {
+		return type;
 	}
 
 	@Override

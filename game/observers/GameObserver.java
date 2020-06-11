@@ -23,9 +23,17 @@ public class GameObserver {
         RESOURCES_REMOVED
     }
 
+    public enum GameStates {
+        SETTING_UP,
+        ROLLING,
+        SETTLING,
+        STEALING
+    }
+
     ArrayList<PlayerEventSubject> playerSubscribers = new ArrayList<>();
     ArrayList<DiceEventSubject> diceSubjects = new ArrayList<>();
     ArrayList<PlayerHandEventSubject> playerHandEventSubjects = new ArrayList<>();
+    ArrayList<GameStateEventSubject> gameStateEventSubjects = new ArrayList<>();
 
     /**
      * Broadcast a player game event to any subscribers
@@ -51,6 +59,11 @@ public class GameObserver {
         }
     }
 
+    public void broadcast(GameStates event) {
+        for(GameStateEventSubject subject : gameStateEventSubjects)
+            subject.onGamePhaseEvent(event);
+    }
+
     public void broadcast(PlayerHandEvent event, ResourceType type, int count) {
         for(PlayerHandEventSubject subject: playerHandEventSubjects) {
             subject.onPlayerHandEvent(event, type, count);
@@ -71,6 +84,11 @@ public class GameObserver {
     {
         playerSubscribers.add(subject);
         return playerSubscribers.size() - 1;
+    }
+
+    public int register(GameStateEventSubject subject) {
+        gameStateEventSubjects.add(subject);
+        return gameStateEventSubjects.size() - 1;
     }
 
     /**

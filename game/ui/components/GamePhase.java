@@ -1,8 +1,7 @@
 package ui.components;
 
-import scripts.GameManager;
+import observers.GameObserver.GameStates;
 import ui.*;
-import ui.constraints.AspectConstraint;
 import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
@@ -33,7 +32,12 @@ public class GamePhase extends UIQuad {
                 .setHeight(new RelativeConstraint(0.1f));
     }
 
-    public void setCurrentStateName() {
-        this.text.setText("Rolling");
+    public void setCurrentStateName(GameStates event) {
+        switch(event) {
+            case ROLLING -> this.text.setText("Rolling");
+            case STEALING -> this.text.setText("Stealing");
+            case SETTING_UP -> this.text.setText("Setting up");
+            case SETTLING -> this.text.setText("Settling");
+        }
     }
 }
