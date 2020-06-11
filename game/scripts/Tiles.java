@@ -1,7 +1,6 @@
 package scripts;
 
 import board.Node;
-import board.nodes.*;
 import board.NodeType;
 import entities.Entity;
 import entities.Robber;
@@ -119,16 +118,15 @@ public class Tiles extends GameScript{
             isSide = true;
 
             while(theta != 360) {
-                newNode = null;
                 radius = isSide ? 0.866f : 1.0f;
 
                 float nodeX = (float) (Math.cos(Math.toRadians(theta)) * radius) + t.getPositionX();
                 float nodeZ = (float) (Math.sin(Math.toRadians(theta)) * radius) + t.getPositionZ();
 
-                for(Node node : nodes) {
-                    if(Math.abs(nodeX - node.getPositionX()) < 0.01 && Math.abs(nodeZ - node.getPositionZ()) < 0.01 )
-                        newNode = node;
-                }
+                newNode = nodes.stream()
+                        .filter(node -> Math.abs(nodeX - node.getPositionX()) < 0.01 && Math.abs(nodeZ - node.getPositionZ()) < 0.01)
+                        .reduce((o, n) -> n)
+                        .orElse(null);
 
                 if (null == newNode) {
                     if(isSide) {
@@ -201,11 +199,10 @@ public class Tiles extends GameScript{
      * @return - Tile of type desert
      */
     public Tile getDesertTile() {
-        for(Tile t : tiles)
-            if(t.getType() == DESERT)
-                return t;
-
-        return null;
+        return tiles.stream()
+                .filter(t -> t.getType() == DESERT)
+                .findFirst()
+                .orElse(null);
     }
 
     public Entity getRobber(){
@@ -215,15 +212,12 @@ public class Tiles extends GameScript{
 
     @Override
     public void initialize() {
-        for(Node node : nodes)
-            getScene().register(node);
+        nodes.forEach(n -> getScene().register(n));
 
-        for (Tile t : tiles) {
-            getScene().register(t);
-            if(t.getToken() != null)
-                getScene().register(t.getToken());
-        }
-
+        tiles.stream()
+                .peek(t -> getScene().register(t))
+                .filter(t -> t.getToken() != null)
+                .forEach(t -> getScene().register(t.getToken()));
         getScene().register(robber);
     }
     @Override

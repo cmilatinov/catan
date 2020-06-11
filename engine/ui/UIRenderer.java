@@ -150,6 +150,8 @@ public class UIRenderer {
 				.filter(component -> component instanceof UIText)
 				.map(uiComponent -> (UIText)uiComponent)
 				.collect(Collectors.toList());
+
+
 		if (root instanceof UIText) {
 			textsToRender.add((UIText) root);
 		}
