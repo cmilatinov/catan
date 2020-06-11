@@ -54,9 +54,7 @@ public class GameObserver {
      */
     public void broadcast(DiceEvents event, int context)
     {
-        for (DiceEventSubject subject: diceSubjects) {
-            subject.onDiceEvent(event, context);
-        }
+        diceSubjects.forEach(s -> s.onDiceEvent(event, context));
     }
 
     public void broadcast(GameStates event) {
@@ -65,9 +63,7 @@ public class GameObserver {
     }
 
     public void broadcast(PlayerHandEvent event, ResourceType type, int count) {
-        for(PlayerHandEventSubject subject: playerHandEventSubjects) {
-            subject.onPlayerHandEvent(event, type, count);
-        }
+        playerHandEventSubjects.forEach(s -> s.onPlayerHandEvent(event, type, count));
     }
 
     public int register(PlayerHandEventSubject subject) {
