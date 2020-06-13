@@ -85,6 +85,4 @@ public class PlayerPortrait extends UIQuad {
             default -> PortraitColor.UNKNOWN;
         };
     }
-
-
 }

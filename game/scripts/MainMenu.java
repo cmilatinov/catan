@@ -24,6 +24,7 @@ public class MainMenu extends GameScript {
                 .setWidth(new RelativeConstraint(1.0f))
                 .setHeight(new RelativeConstraint(1.0f));
         getScene().getUiManager().getContainer().add(mainMenuSprite, backgroundConstraints);
+
         var loadGameButton = new UIButton() {
             @Override
             public void onMouseHoverExit() {

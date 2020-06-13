@@ -3,6 +3,7 @@ package scene;
 import camera.Camera;
 import camera.PanCamera;
 import entities.*;
+import gameplay.DevelopmentCards;
 import lights.Light;
 import main.Scene;
 import org.joml.Vector3f;
@@ -10,9 +11,7 @@ import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
-import ui.PlayerHandUI;
-import ui.PlayerUI;
-import ui.UI;
+import ui.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -57,6 +56,9 @@ public class Game extends Scene {
 
         register(table);
 
+        Entity devCards = DevelopmentCards.create().scale(0.1f).translate(new Vector3f(4f, 0, 5f));
+        register(devCards);
+
         Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
         register(sun);
@@ -70,5 +72,6 @@ public class Game extends Scene {
         register(new UI());
         register(new PlayerUI());
         register(new PlayerHandUI());
+        register(new TradeMenuUI());
     }
 }

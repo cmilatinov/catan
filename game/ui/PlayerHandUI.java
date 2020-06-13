@@ -22,8 +22,6 @@ public class PlayerHandUI extends GameScript {
                 .setHeight(new PixelConstraint(200))
                 .setWidth(new AspectConstraint(1));
 
-        System.out.println(card.getDimensions());
-
         cards.add(card);
         getScene().getUiManager().getContainer().add(card, constraints);
     }

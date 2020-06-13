@@ -23,6 +23,12 @@ public class Costs {
         put(ResourceType.FOREST, 1);
     }};
 
+    private final HashMap<ResourceType, Integer> devCardCost = new HashMap<ResourceType, Integer>() {{
+       put(ResourceType.SHEEP, 1);
+       put(ResourceType.STONE, 1);
+       put(ResourceType.WHEAT, 1);
+    }};
+
     private static final Costs INSTANCE = new Costs();
 
     public HashMap<ResourceType, Integer> getBuildingCost(BuildingType type) {

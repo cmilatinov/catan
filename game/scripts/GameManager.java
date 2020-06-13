@@ -10,6 +10,7 @@ import objects.GameScript;
 import objects.InjectableScript;
 import observers.GameObserver;
 import resources.Resource;
+import ui.components.TradeButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;

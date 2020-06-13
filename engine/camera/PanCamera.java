@@ -14,18 +14,29 @@ public class PanCamera extends Camera {
     private final Window window;
     private final int mouseMoveCallback;
     private final int mouseScrollCallback;
+    private final int mouseClickCallback;
 
-    private Vector3f dragStart = null;
+    private Vector3f dragStart = null, dragEnd = null;
 
     double delta = 0;
-    float speed = 50f;
+    float speed = 25f;
 
     public PanCamera(float fov, Window window) {
         super((float) window.getWidth() / (float) window.getHeight(), fov);
         this.window = window;
         this.mouseMoveCallback = window.mouse().registerMouseMoveCallback(this::onMouseMove);
         this.mouseScrollCallback = window.mouse().registerMouseScrollCallback(this::onMouseScroll);
+        this.mouseClickCallback = window.mouse().registerMouseClickCallback(this::onMouseClick);
         window.mouse().setSensitivity(0.2f);
+    }
+
+    private void onMouseClick(int button, int action, int mods) {
+        if(button == GLFW_MOUSE_BUTTON_LEFT)
+            if(action == GLFW_PRESS) {
+                dragStart = window.mouse().getRayAtMouseCoords(this);
+            } else {
+                dragStart = null;
+            }
     }
 
     private void onMouseScroll(double x, double y) {
@@ -37,21 +48,12 @@ public class PanCamera extends Camera {
         }
     }
 
-
     protected void onMouseMove(double x, double y, double dx, double dy) {
-        if(dragStart == null && window.mouse().isMouseDown(GLFW_MOUSE_BUTTON_LEFT)) {
-            dragStart = window.mouse().getRayAtMouseCoords(this);
-        }
+
         if(dragStart != null) {
-            Vector3f dragPos = window.mouse().getRayAtMouseCoords(this);
-            Vector3f direction = dragPos.sub(dragStart).mul(-1).mul((float)delta * speed);
-            direction.y = 0;
-            new Matrix4f().translate(direction)
-                    .transformPosition(pos);
+            dragEnd = new Vector3f((float)dx, 0, (float)dy);
         }
-        if(window.mouse().isMouseUp(GLFW_MOUSE_BUTTON_LEFT)) {
-            dragStart = null;
-        }
+
         if (window.mouse().isMouseDown(GLFW_MOUSE_BUTTON_RIGHT)) {
             rotate(new Vector3f((float) dy, (float) dx, 0));
             rot.x = clamp(rot.x, 10, 60);
@@ -71,6 +73,7 @@ public class PanCamera extends Camera {
     @Override
     public void update(double delta) {
         this.delta = delta;
+
         var dest = new Vector3f(pos);
         if (window.keyboard().isKeyDown(GLFW_KEY_W)) {
             var up = forward();
@@ -93,6 +96,15 @@ public class PanCamera extends Camera {
         if (window.keyboard().isKeyDown(GLFW_KEY_D)) {
             dest.add(right().normalize().mul(speed));
         }
+
+        if (isDragging() && dragEnd != null) {
+            Vector3f result = dragEnd.sub(dragStart).mul(-3);
+            result.y = 0;
+
+            dragEnd = null;
+
+            dest.add(result);
+        }
         pos.lerp(dest, (float)delta);
     }
 
@@ -100,5 +112,6 @@ public class PanCamera extends Camera {
     public void destroy() {
         window.mouse().removeMouseMoveCallback(mouseMoveCallback);
         window.mouse().removeMouseScrollCallback(mouseScrollCallback);
+        window.mouse().removeMouseClickCallback(mouseClickCallback);
     }
 }

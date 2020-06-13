@@ -9,8 +9,10 @@ import observers.GameObserver;
 import observers.GameStateEventSubject;
 import observers.PlayerEventSubject;
 import observers.PlayerHandEventSubject;
+import org.lwjgl.system.CallbackI;
 import scripts.GameManager;
 import ui.components.GamePhase;
+import ui.components.TradeButton;
 
 @InitializeSelfBefore(clazz = GameManager.class)
 public class UI extends GameScript implements PlayerEventSubject, PlayerHandEventSubject, GameStateEventSubject {
@@ -24,7 +26,11 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
     @InjectableScript
     PlayerHandUI playerHandUI;
 
+    @InjectableScript
+    TradeMenuUI tradeMenuUI;
+
     GamePhase gamePhaseUI = new GamePhase();
+    TradeButton tButton = new TradeButton();
 
     @Override
     public void initialize() {
@@ -33,6 +39,13 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
         gameManager.gameObserver.register((GameStateEventSubject)this);
 
         getScene().getUiManager().getContainer().add(gamePhaseUI, gamePhaseUI.getConstraints());
+        getScene().getUiManager().getContainer().add(tButton, tButton.getConstraints());
+
+        tButton.setOnMouseClickEvent(this::openTradeMenu);
+    }
+
+    public void openTradeMenu() {
+        tradeMenuUI.openTradingMenu();
     }
 
     @Override

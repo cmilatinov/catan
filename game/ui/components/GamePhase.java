@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class GamePhase extends UIQuad {
 
-    UIText text = new UIText(new Font("Arial", Font.PLAIN, 26), "");
+    UIText text = new UIText(new Font("TimesRoman", Font.PLAIN, 26), "");
 
     public GamePhase() {
         text.setColor(UIColor.WHITE);

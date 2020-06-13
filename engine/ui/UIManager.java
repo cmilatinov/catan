@@ -6,6 +6,9 @@ import ui.constraints.PixelConstraint;
 import java.awt.*;
 import java.util.Iterator;
 
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+
 public class UIManager {
 
     private final UIText framerate;
@@ -49,6 +52,9 @@ public class UIManager {
     }
 
     private void onMouseClick(int button, int action, int mods) {
+        if(action == GLFW_PRESS)
+            return;
+
         var mouseCords = window.mouse().getMousePosition();
         UIComponent uiComponent = findUIComponentFromCoords(mouseCords.first, mouseCords.second);
         if (uiComponent != null) {

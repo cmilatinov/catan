@@ -12,6 +12,8 @@ public enum ResourceType {
 
 	KNIGHT,
 	MONOPOLY,
+	ROAD_BUILDING,
+	YEAR_OF_PLENTY,
 	VICTORY_POINT;
 	
 	public static ResourceType getRandomType() {

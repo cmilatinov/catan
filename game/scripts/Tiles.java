@@ -2,6 +2,7 @@ package scripts;
 
 import board.Node;
 import board.NodeType;
+import board.nodes.Side;
 import entities.Entity;
 import entities.Robber;
 import entities.Tile;
@@ -152,7 +153,6 @@ public class Tiles extends GameScript{
             }
         }
 
-        // TODO: rotate the sides properly
         for(Node currNode :  nodes) {
             for(Node node : nodes) {
                 Vector3f result = new Vector3f();
