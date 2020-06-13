@@ -1,14 +1,11 @@
 package network.packets;
 
-import java.nio.ByteBuffer;
-
 import network.Packet;
 
 public class PacketDisconnect extends Packet {
-	
-	
+
 	/**
-	 * Creates a new connection closing packet with a no key.
+	 * Creates a new connection closing packet.
 	 */
 	public PacketDisconnect() {
 		super(PacketType.DISCONNECT);
@@ -20,15 +17,6 @@ public class PacketDisconnect extends Packet {
 	 */
 	public PacketDisconnect(byte[] data) {
 		super(PacketType.DISCONNECT);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public byte[] serialize() {
-		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE);
-		serializeHeader(data);
-		return data.array();
 	}
 
 }

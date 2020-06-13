@@ -1,7 +1,10 @@
 package test;
 
-import network.GameClient;
 import network.NetworkModule;
+import network.events.EventTest;
+import network.managers.GameClient;
+
+import java.util.Scanner;
 
 public class Client {
 	
@@ -13,7 +16,21 @@ public class Client {
 		
 		client.start();
 		client.onConnect(() -> System.out.println("Connected"));
-		client.connect("localhost", 50000, "rednite");
+
+		Scanner scanner = new Scanner(System.in);
+		while (client.isRunning()) {
+			try {
+				int next = scanner.nextInt();
+				switch (next) {
+					case 0 -> client.halt();
+					case 1 -> {
+						System.out.println("SENDING");
+						client.sendEvent(new EventTest());
+					}
+					case 2 -> client.connect("localhost", 50000, "rednite");
+				}
+			} catch (Exception ignored) {}
+		}
 	}
 	
 }

@@ -15,7 +15,8 @@ public class GameObserver {
     public enum PlayerEvent {
         PLAYER_REMOVED,
         PLAYER_ADDED,
-        PLAYER_COLOR_CHANGED, PLAYER_TURN,
+        PLAYER_COLOR_CHANGED,
+        PLAYER_TURN;
     }
 
     public enum PlayerHandEvent {

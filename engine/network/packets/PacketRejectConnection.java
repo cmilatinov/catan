@@ -1,13 +1,16 @@
 package network.packets;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-
 import network.Packet;
 import utils.StringUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 public class PacketRejectConnection extends Packet {
-	
+
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
+
 	/**
 	 * The reason for the connection rejection.
 	 */
@@ -36,16 +39,16 @@ public class PacketRejectConnection extends Packet {
 	 */
 	public PacketRejectConnection(byte[] data) {
 		super(PacketType.REJECT_CONNECTION);
-		this.reason = StringUtils.createFromBytes(toPayload(data).array(), StandardCharsets.UTF_8);
+		this.reason = StringUtils.createFromBytes(data, ENCODING);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public byte[] serialize() {
-		byte[] bReason = StringUtils.getBytes(reason, StandardCharsets.UTF_8);
+		byte[] bReason = StringUtils.getBytes(reason, ENCODING);
 		ByteBuffer data = ByteBuffer.allocate(Packet.HEADER_SIZE + bReason.length);
-		serializeHeader(data);
+		writeHeader(data);
 		data.put(bReason);
 		return data.array();
 	}

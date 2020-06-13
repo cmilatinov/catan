@@ -1,11 +1,11 @@
 package network.packets;
 
+import network.Packet;
+import network.RSA;
+
 import java.nio.ByteBuffer;
 import java.security.PublicKey;
 import java.util.Arrays;
-
-import network.Packet;
-import network.RSA;
 
 public class PacketKey extends Packet {
 	
@@ -45,9 +45,8 @@ public class PacketKey extends Packet {
 	 */
 	public PacketKey(byte[] data) {
 		super(PacketType.KEY);
-		byte[] bKey = Arrays.copyOfRange(data, HEADER_SIZE + 1, data.length);
-		this.requestKey = data[HEADER_SIZE] > 0;
-		this.key = RSA.toPublicKey(bKey);
+		this.requestKey = data[0] > 0;
+		this.key = RSA.toPublicKey(Arrays.copyOfRange(data, 1, data.length));
 	}
 	
 	/**
@@ -57,13 +56,13 @@ public class PacketKey extends Packet {
 		if(key != null) {
 			byte[] bKey = key.getEncoded();
 			ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 1 + bKey.length);
-			serializeHeader(data);
+			writeHeader(data);
 			data.put(requestKey ? (byte) 1 : (byte) 0)
 				.put(bKey);
 			return data.array();
 		} else {
 			ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 1);
-			serializeHeader(data);
+			writeHeader(data);
 			data.put(requestKey ? (byte) 1 : (byte) 0);
 			return data.array();
 		}
