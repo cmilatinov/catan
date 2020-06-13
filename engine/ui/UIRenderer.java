@@ -119,7 +119,7 @@ public class UIRenderer {
 		var quadsToRender = root.children
 				.stream()
 				.flatMap(UIComponent::flatten)
-				.filter(uiComponent -> uiComponent instanceof UIQuad)
+				.filter(uiComponent -> uiComponent instanceof UIQuad && uiComponent.isVisible())
 				.map(uiComponent -> (UIQuad)uiComponent)
 				.collect(Collectors.toList());
 		if (root instanceof UIQuad) {
@@ -133,7 +133,7 @@ public class UIRenderer {
 		List<UISprite> spritesToRender = root.children
 				.stream()
 				.flatMap(UIComponent::flatten)
-				.filter(component -> component instanceof UISprite)
+				.filter(component -> component instanceof UISprite && component.isVisible())
 				.map(uiComponent -> (UISprite)uiComponent)
 				.collect(Collectors.toList());
 		if (root instanceof UISprite) {
@@ -147,7 +147,7 @@ public class UIRenderer {
 		List<UIText> textsToRender = root.children
 				.stream()
 				.flatMap(UIComponent::flatten)
-				.filter(component -> component instanceof UIText)
+				.filter(component -> component instanceof UIText && component.isVisible())
 				.map(uiComponent -> (UIText)uiComponent)
 				.collect(Collectors.toList());
 
