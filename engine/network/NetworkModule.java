@@ -1,7 +1,6 @@
 package network;
 
-import network.events.EventTest;
-import network.events.NetworkEventType;
+import events.EventType;
 import network.events.NetworkEvents;
 import network.packets.*;
 
@@ -27,8 +26,6 @@ public class NetworkModule {
 		Packets.register(PacketType.PING, PacketPing.class);
 		Packets.register(PacketType.EVENT, PacketEvent.class);
 		Packets.register(PacketType.EVENT_CONFIRMATION, PacketEventConfirmation.class);
-
-		NetworkEvents.register(NetworkEventType.TEST, EventTest.class);
 		
 		READY = true;
 	}

@@ -15,9 +15,4 @@ public enum ResourceType {
 	ROAD_BUILDING,
 	YEAR_OF_PLENTY,
 	VICTORY_POINT;
-	
-	public static ResourceType getRandomType() {
-        Random random = new Random();
-        return values()[random.nextInt(values().length)];
-    }
 }
