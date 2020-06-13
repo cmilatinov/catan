@@ -21,7 +21,7 @@ public class PacketConnect extends Packet {
 	 */
 	public PacketConnect() {
 		super(PacketType.CONNECT);
-		this.username = "";
+		this.username = "username";
 	}
 	
 	/**
@@ -39,13 +39,7 @@ public class PacketConnect extends Packet {
 	 */
 	public PacketConnect(byte[] data) {
 		super(PacketType.CONNECT);
-		ByteBuffer buffer = toPayload(data);
-		
-		byte usernameSize = buffer.get();
-		byte[] usernameBytes = new byte[usernameSize];
-		buffer.get(usernameBytes);
-
-		username = StringUtils.createFromBytes(usernameBytes, ENCODING);
+		username = StringUtils.createFromBytes(data, ENCODING);
 	}
 	
 	/**
@@ -54,7 +48,7 @@ public class PacketConnect extends Packet {
 	public byte[] serialize() {
 		byte[] bUsername = StringUtils.getBytes(username, ENCODING);
 		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 1 + bUsername.length);
-		serializeHeader(data);
+		writeHeader(data);
 		data.put((byte) bUsername.length)
 			.put(bUsername);
 		return data.array();

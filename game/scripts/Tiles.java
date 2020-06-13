@@ -2,6 +2,7 @@ package scripts;
 
 import board.Node;
 import board.NodeType;
+import board.nodes.Side;
 import entities.Entity;
 import entities.Robber;
 import entities.Tile;

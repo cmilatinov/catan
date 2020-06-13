@@ -2,8 +2,6 @@ package network.packets;
 
 import network.Packet;
 
-import java.nio.ByteBuffer;
-
 public class PacketAcceptConnection extends Packet {
 	
 	/**
@@ -19,15 +17,6 @@ public class PacketAcceptConnection extends Packet {
 	 */
 	public PacketAcceptConnection(byte[] data) {
 		super(PacketType.ACCEPT_CONNECTION);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public byte[] serialize() {
-		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE);
-		serializeHeader(data);
-		return data.array();
 	}
 
 }

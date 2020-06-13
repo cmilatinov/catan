@@ -1,7 +1,10 @@
 package test;
 
-import network.GameServer;
 import network.NetworkModule;
+import network.events.EventTest;
+import network.managers.GameServer;
+
+import java.util.Scanner;
 
 public class Server {
 
@@ -12,6 +15,18 @@ public class Server {
 			return;
 		
 		server.start();
+
+		Scanner scanner = new Scanner(System.in);
+		while (server.isRunning()) {
+			try {
+				int next = scanner.nextInt();
+				switch (next) {
+					case 0 -> server.halt();
+					case 1 -> server.broadcastEvent(new EventTest());
+				}
+			} catch (Exception ignored) {}
+		}
+
 	}
 	
 }

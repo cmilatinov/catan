@@ -1,8 +1,9 @@
 package scene;
 
 import camera.Camera;
-import camera.PanCamera;
-import entities.*;
+import camera.CameraPan;
+import entities.Entity;
+import entities.Table;
 import lights.Light;
 import main.Scene;
 import org.joml.Vector3f;
@@ -18,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_FILL;
 
 public class Game extends Scene {
     private Tiles tiles;
@@ -29,7 +29,7 @@ public class Game extends Scene {
 
     @Override
     public void initialize() {
-        Camera camera = new PanCamera(90f, getWindow());
+        Camera camera = new CameraPan(90f, getWindow());
         camera.setPosition(new Vector3f(0, 7f, 10));
         camera.setRotation(new Vector3f(20, 0,0));
         setCamera(camera);

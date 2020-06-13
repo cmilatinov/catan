@@ -1,5 +1,8 @@
-package network;
+package network.managers;
 
+import network.*;
+import network.events.EventManager;
+import network.events.NetworkEvent;
 import network.packets.*;
 import utils.Pair;
 
@@ -61,11 +64,16 @@ public class GameServer extends Thread {
 		 * The packet queue to serve for this client.
 		 */
 		private final LinkedBlockingDeque<Packet> packets = new LinkedBlockingDeque<Packet>();
-		
+
 		/**
 		 * The client this handler is serving.
 		 */
 		private final RemoteClient client;
+
+		/**
+		 * The event manager associated to this client handler.
+		 */
+		private final EventManager eventManager;
 		
 		/**
 		 * The operational state of this handler (running or not).
@@ -78,6 +86,17 @@ public class GameServer extends Thread {
 		 */
 		public ClientHandler(RemoteClient client) {
 			this.client = client;
+			this.eventManager = new EventManager(sender, this::onTriggerEvent).setRemoteAddress(client.address);
+		}
+
+		/**
+		 * Sends an event to the remote client.
+		 * @param event The event to send.
+		 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+		 */
+		public ClientHandler sendEvent(NetworkEvent event) {
+			eventManager.sendEvent(event);
+			return this;
 		}
 		
 		/**
@@ -98,25 +117,35 @@ public class GameServer extends Thread {
 				try {
 					
 					// Get next packet
-					Packet p = packets.poll(1, TimeUnit.SECONDS);
+					Packet p = packets.poll(500, TimeUnit.MILLISECONDS);
 					if(p == null) continue;
 					
 					// Reset timeout
 					client.timeout = CLIENT_TIMEOUT;
 					
 					// Handle packet
-					switch(p.getType()) {
-							
-						case PacketType.PING:
+					switch (p.getType()) {
+						case PacketType.PING -> {
 							PacketPing pPing = Packets.cast(p);
 							handlePacket(pPing);
-							break;
-					
+						}
+						case PacketType.EVENT -> {
+							PacketEvent pEvent = Packets.cast(p);
+							handlePacket(pEvent);
+						}
+						case PacketType.EVENT_CONFIRMATION -> {
+							PacketEventConfirmation pEvent = Packets.cast(p);
+							handlePacket(pEvent);
+						}
 					}
+
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+
+				// Update event manager
+				eventManager.update();
 				
 			}
 		}
@@ -145,6 +174,18 @@ public class GameServer extends Thread {
 				packet.setShouldReturnPing(false);
 				sender.send(packet, client.address, client.key);
 			}
+		}
+
+		private void handlePacket(PacketEvent packet) {
+			eventManager.handlePacket(packet);
+		}
+
+		private void handlePacket(PacketEventConfirmation packet) {
+			eventManager.handlePacket(packet);
+		}
+
+		private void onTriggerEvent(NetworkEvent event) {
+			System.out.println("Received event : " + event + "(" + client.address + ")");
 		}
 		
 	}
@@ -212,13 +253,30 @@ public class GameServer extends Thread {
 		if(receiver.isReady() && sender.isReady())
 			ready = true;
 	}
+
+	/**
+	 * Broadcast an event to every client currently connected to the server.
+	 * @param event The event to send.
+	 */
+	public void broadcastEvent(NetworkEvent event) {
+		for (var key : clients.keySet())
+			clients.get(key).handler.sendEvent(event);
+	}
 	
 	/**
-	 * Returns whether this server is ready to be started.
+	 * Returns whether this server is ready to be started or not.
 	 * @return [<d>boolean</b>] True if this server is ready to operate, false otherwise.
 	 */
 	public boolean isReady() {
 		return ready;
+	}
+
+	/**
+	 * Returns whether this server is currently running or not.
+	 * @return [<d>boolean</b>] True if this server is currently running, false otherwise.
+	 */
+	public boolean isRunning() {
+		return running;
 	}
 	
 	/**
@@ -233,30 +291,29 @@ public class GameServer extends Thread {
 			
 			try {
 				
-				Pair<InetSocketAddress, Packet> addrPacket = packetQueue.poll(1, TimeUnit.SECONDS);
+				Pair<InetSocketAddress, Packet> addrPacket = packetQueue.poll(3, TimeUnit.SECONDS);
 				if(addrPacket == null) 
 					continue;
 				
 				InetSocketAddress sourceAddress = addrPacket.first;
 				Packet p = addrPacket.second;
-				
-				switch(p.getType()) {
-				
-					case PacketType.KEY:
+
+				switch (p.getType()) {
+					case PacketType.KEY -> {
 						PacketKey pKey = Packets.cast(p);
 						handlePacket(sourceAddress, pKey);
 						continue;
-					
-					case PacketType.CONNECT:
+					}
+					case PacketType.CONNECT -> {
 						PacketConnect pConnect = Packets.cast(p);
 						handlePacket(sourceAddress, pConnect);
 						continue;
-						
-					case PacketType.DISCONNECT:
+					}
+					case PacketType.DISCONNECT -> {
 						PacketDisconnect pDisconnect = Packets.cast(p);
 						handlePacket(sourceAddress, pDisconnect);
 						continue;
-						
+					}
 				}
 					
 				RemoteClient client = clients.get(sourceAddress);

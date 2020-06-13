@@ -1,5 +1,8 @@
-package network;
+package network.managers;
 
+import network.*;
+import network.events.EventManager;
+import network.events.NetworkEvent;
 import network.packets.*;
 
 import java.net.InetAddress;
@@ -40,6 +43,11 @@ public class GameClient extends Thread {
 	 * The sender handling packet dispatch and encryption.
 	 */
 	private final UDPSender sender;
+
+	/**
+	 * The event manager used to trigger events sent over the network.
+	 */
+	private final EventManager eventManager;
 	
 	/**
 	 * The server's remote IP address.
@@ -52,19 +60,24 @@ public class GameClient extends Thread {
 	private String username = null;
 	
 	/**
-	 * This client's password credential.
-	 */
-	private String password = null;
-	
-	/**
 	 * The packet queue filled with incoming packets.
 	 */
-	private volatile LinkedBlockingDeque<Packet> packetQueue = new LinkedBlockingDeque<Packet>();
+	private final LinkedBlockingDeque<Packet> packetQueue = new LinkedBlockingDeque<Packet>();
 	
 	/**
 	 * The callback to execute once a connection is made.
 	 */
 	private Runnable onConnect = null;
+
+	/**
+	 * The callback to execute once a connection is terminated.
+	 */
+	private Runnable onDisconnect = null;
+
+	/**
+	 * The callback to execute once a connection has timed out.
+	 */
+	private Runnable onTimeout = null;
 	
 	/**
 	 * A countdown timer managing server timeout.
@@ -90,6 +103,11 @@ public class GameClient extends Thread {
 	 * Indicates whether the client is currently connected to a remote server.
 	 */
 	private boolean connected = false;
+
+	/**
+	 * Indicates latency between the client and server in milliseconds.
+	 */
+	private long ping = 0;
 	
 	/**
 	 * Initializes the client to an operational state.
@@ -101,12 +119,29 @@ public class GameClient extends Thread {
 				packetQueue.add(packet);
 		});
 		sender = new UDPSender(receiver.getSocket());
+		eventManager = new EventManager(sender, this::onTriggerEvent);
 		
-		if(keys != null && receiver.isReady() && sender.isReady()) {
+		if (receiver.isReady() && sender.isReady()) {
 			receiver.start();
 			sender.start();
 			ready = true;
 		}
+	}
+
+	/**
+	 * Returns whether this client is ready to be started.
+	 * @return [<d>boolean</b>] True if this client is ready to operate, false otherwise.
+	 */
+	public boolean isReady() {
+		return ready;
+	}
+
+	/**
+	 * Returns whether this client is currently running or not.
+	 * @return [<d>boolean</b>] True if this client is currently running, false otherwise.
+	 */
+	public boolean isRunning() {
+		return running;
 	}
 	
 	/**
@@ -133,7 +168,7 @@ public class GameClient extends Thread {
 			// Attempt to process pending packets
 			out:
 			try {
-				Packet p = packetQueue.poll(1, TimeUnit.SECONDS);
+				Packet p = packetQueue.poll(300, TimeUnit.MILLISECONDS);
 				if(p == null)
 					break out;
 				
@@ -157,12 +192,24 @@ public class GameClient extends Thread {
 						PacketPing pPing = Packets.cast(p);
 						handlePacket(pPing);
 					}
+					case PacketType.EVENT -> {
+						PacketEvent pEvent = Packets.cast(p);
+						handlePacket(pEvent);
+					}
+					case PacketType.EVENT_CONFIRMATION -> {
+						PacketEventConfirmation pEvent = Packets.cast(p);
+						handlePacket(pEvent);
+					}
 				}
+
 			} catch(Exception ignored) {}
 			
 			// Server has timed out
 			if(timeout <= 0 && connected)
 				timeOut();
+
+			// Update event manager
+			eventManager.update();
 			
 			// Set last timestamp to current
 			lastTime = currentTime;
@@ -206,8 +253,8 @@ public class GameClient extends Thread {
 		if(!ready) return this;
 		try {
 			remoteAddress = new InetSocketAddress(InetAddress.getByName(address), port);
+			eventManager.setRemoteAddress(remoteAddress);
 			this.username = username;
-			this.password = password;
 			if(remoteKey != null) {
 				sender.send(new PacketConnect(username), remoteAddress, remoteKey);
 			} else {
@@ -221,6 +268,19 @@ public class GameClient extends Thread {
 		}
 		return this;
 	}
+
+	/**
+	 * Disconnects the client from the remote server it is currently connected to.
+	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 */
+	public GameClient disconnect() {
+		if (!ready || !connected) return this;
+		sender.send(new PacketDisconnect(), remoteAddress);
+		connected = false;
+		if (this.onDisconnect != null)
+			this.onDisconnect.run();
+		return this;
+	}
 	
 	/**
 	 * Sets the callback to invoke when a connection to a remote server is made.
@@ -231,6 +291,38 @@ public class GameClient extends Thread {
 		this.onConnect = callback;
 		return this;
 	}
+
+	/**
+	 * Sets the callback to invoke when a connection to a remote server is terminated.
+	 * @param callback The new callback to run once a connection is terminated.
+	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 */
+	public GameClient onDisconnect(Runnable callback) {
+		this.onDisconnect = callback;
+		return this;
+	}
+
+	/**
+	 * Sets the callback to invoke when a connection to a remote server has timed out.
+	 * @param callback The new callback to run once a connection has timed out.
+	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 */
+	public GameClient onTimeout(Runnable callback) {
+		this.onTimeout = callback;
+		return this;
+	}
+
+	/**
+	 * Sends an event to the remote peer.
+	 * @param event The event to send.
+	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 */
+	public GameClient sendEvent(NetworkEvent event) {
+		if (!ready && !connected)
+			return this;
+		eventManager.sendEvent(event);
+		return this;
+	}
 	
 	/**
 	 * Returns whether or not this client is currently connected to a remote server.
@@ -238,14 +330,6 @@ public class GameClient extends Thread {
 	 */
 	public boolean isConnected() {
 		return connected;
-	}
-	
-	/**
-	 * Returns whether this client is ready to be started.
-	 * @return [<d>boolean</b>] True if this client is ready to operate, false otherwise.
-	 */
-	public boolean isReady() {
-		return ready;
 	}
 	
 	private void handlePacket(PacketKey packet) {
@@ -268,12 +352,38 @@ public class GameClient extends Thread {
 	}
 	
 	private void handlePacket(PacketPing packet) {
-		System.out.println("Ping: " + (System.currentTimeMillis() - packet.getTimestamp()));
+		ping = (System.currentTimeMillis() - packet.getTimestamp()) / 2;
+		System.out.println("Ping: " + ping);
+	}
+
+	private void handlePacket(PacketEvent packet) {
+		eventManager.handlePacket(packet);
+	}
+
+	private void handlePacket(PacketEventConfirmation packet) {
+		eventManager.handlePacket(packet);
 	}
 	
 	private void timeOut() {
 		connected = false;
 		remoteAddress = null;
+		if (this.onTimeout != null)
+			this.onTimeout.run();
 		System.out.println("Server timed out.");
 	}
+
+	private void onTriggerEvent(NetworkEvent event) {
+		System.out.println("Received event: " + event);
+	}
+
+	/**
+	 * Returns the latency between the client and server in milliseconds.
+	 * @return [<b>long</b>] The latency between the client and server in milliseconds.
+	 */
+	public long getPing() {
+		if (!ready || !connected)
+			return 0;
+		return ping;
+	}
+
 }

@@ -1,43 +1,16 @@
 package network;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Packets {
 	
 	/**
-	 * Hashmap containing all packet types possible.
+	 * Hashmap containing all possible packet types.
 	 */
 	private static final Map<Integer, Class<? extends Packet>> packets = new HashMap<Integer, Class<? extends Packet>>();
-	
-	/**
-	 * Creates a new instance of the provided packet type.
-	 * @param type The packet type.
-	 * @return [{@link Packet}] The newly created packet instance.
-	 */
-	public static Packet createOfType(int type) {
-		
-		try {
-			
-			// Get the packet type
-			Class<? extends Packet> packetType = packets.get(type);
-			
-			// If it does not exist return null reference
-			if(packetType == null)
-				return null;
-			
-			// Create a new instance of it
-			return packetType.getConstructor().newInstance();
-			
-		} catch (Exception e) {
-			
-			// Return a null reference in case of exceptions
-			return null;
-			
-		}
-		
-	}
 	
 	/**
 	 * Creates a new packet instance with the given serialized data.
@@ -61,11 +34,12 @@ public class Packets {
 			if(packetType == null)
 				return null;
 			
-			// Create a new instance of it
-			return packetType.getConstructor(byte[].class).newInstance(data);
+			// Create a new instance of it with the rest of the data
+			return packetType.getConstructor(byte[].class)
+					.newInstance(Arrays.copyOfRange(data, Packet.HEADER_SIZE, data.length));
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+
 			// Return a null reference in case of exceptions
 			return null;
 			

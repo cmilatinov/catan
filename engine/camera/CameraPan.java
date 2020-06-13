@@ -5,11 +5,10 @@ import input.MouseMoveCallback;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.system.MathUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class PanCamera extends Camera {
+public class CameraPan extends Camera {
 
     private final Window window;
     private final int mouseMoveCallback;
@@ -20,7 +19,7 @@ public class PanCamera extends Camera {
     double delta = 0;
     float speed = 50f;
 
-    public PanCamera(float fov, Window window) {
+    public CameraPan(float fov, Window window) {
         super((float) window.getWidth() / (float) window.getHeight(), fov);
         this.window = window;
         this.mouseMoveCallback = window.mouse().registerMouseMoveCallback(this::onMouseMove);

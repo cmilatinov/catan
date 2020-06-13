@@ -38,11 +38,11 @@ public class PacketPing extends Packet {
 	
 	/**
 	 * Parses a ping packet from the given packet data.
-	 * @param data
+	 * @param data The packet data to parse.
 	 */
 	public PacketPing(byte[] data) {
 		super(PacketType.PING);
-		ByteBuffer buffer = toPayload(data);
+		ByteBuffer buffer = ByteBuffer.wrap(data);
 		this.timestamp = buffer.getLong();
 		this.returnPing = buffer.get() > 0;
 	}
@@ -52,7 +52,7 @@ public class PacketPing extends Packet {
 	 */
 	public byte[] serialize() {
 		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 9);
-		serializeHeader(data);
+		writeHeader(data);
 		data.putLong(timestamp)
 			.put(returnPing ? (byte)1 : (byte)0);
 		return data.array();
