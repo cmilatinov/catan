@@ -7,12 +7,13 @@ import entities.Entity;
 import entities.Table;
 import lights.Light;
 import main.Scene;
+import objects.InjectableScript;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
-import settings.Settings;
+import settings.SettingsManager;
 import ui.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,7 +23,9 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Game extends Scene {
     private Tiles tiles;
-    private Settings settings;
+
+    @InjectableScript
+    private SettingsManager settings;
 
     public Game() {
 
@@ -34,8 +37,6 @@ public class Game extends Scene {
         camera.setPosition(new Vector3f(0, 7f, 10));
         camera.setRotation(new Vector3f(20, 0,0));
         setCamera(camera);
-
-        settings = new Settings("./config/config.xml");
 
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
@@ -67,8 +68,6 @@ public class Game extends Scene {
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
         register(sun);
         register(sun2);
-
-        register(settings);
 
         tiles = new Tiles(3);
         tiles.generateMap();

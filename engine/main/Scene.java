@@ -256,7 +256,7 @@ public abstract class Scene {
      * Register a gamescript to persist across all scenes
      * @param object the global gamescript to register
      */
-    public static void globalRegister(GameScript object)
+    public static void registerGlobal(GameScript object)
     {
         // we set the context when the scene is switched
         registerGameScript(object, globalGameScripts);
