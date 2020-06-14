@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
     <libelement value="jar://$MODULE_DIR$/lib/joml-1.9.24.jar!/" />
     <libelement value="jar://$MODULE_DIR$/lib/lwjgl-assimp.jar!/" />
@@ -16,156 +16,32 @@
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
     </src_description>
   </component>
-  <component name="NewModuleRootManager">
-    <output url="file://$MODULE_DIR$/bin" />
-    <exclude-output />
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_14">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/game" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/engine" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library">
-      <library name="joml-1.9.24.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/joml-1.9.24.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar:platform:/resource/3D%20Engine/lib/joml-1.9.24-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/joml-1.9.24-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-assimp.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-assimp.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar:platform:/resource/3D%20Engine/lib/lwjgl-assimp-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-assimp-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-glfw.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-glfw.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar:platform:/resource/3D%20Engine/lib/lwjgl-glfw-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-glfw-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-openal.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-openal.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar:platform:/resource/3D%20Engine/lib/lwjgl-openal-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-openal-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-opengl.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-opengl.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar:platform:/resource/3D%20Engine/lib/lwjgl-opengl-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-opengl-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl.jar!/" />
-        </CLASSES>
-        <JAVADOC>
-          <root url="jar:platform:/resource/3D%20Engine/lib/lwjgl-javadoc.jar!/" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-assimp-natives-windows.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-assimp-natives-windows.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-glfw-natives-windows.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-glfw-natives-windows.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-openal-natives-windows.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-openal-natives-windows.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-opengl-natives-windows.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-opengl-natives-windows.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="lwjgl-natives-windows.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/lwjgl-natives-windows.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="jdk" jdkName="openjdk-14" jdkType="JavaSDK" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-assimp:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-glfw:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-openal:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-opengl:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-stb:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:natives-windows:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-assimp:natives-windows:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-glfw:natives-windows:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-openal:natives-windows:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-opengl:natives-windows:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.lwjgl:lwjgl-stb:natives-windows:3.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
+    <orderEntry type="library" name="Maven: org.joml:joml:1.9.25" level="project" />
   </component>
 </module>

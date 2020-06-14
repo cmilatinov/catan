@@ -161,12 +161,12 @@ public class Tiles extends GameScript{
                     currNode.addNode(node);
                 }
             }
-            if(currNode instanceof Side) {
-                Vector3f pos = new Vector3f(currNode.getNearbyNodes().get(0).getPosition());
-                pos.sub(currNode.getNearbyNodes().get(1).getPosition());
-
-                currNode.setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(pos.z / pos.x)), 0));
-            }
+//            if(currNode instanceof Side) {
+//                Vector3f pos = new Vector3f(currNode.getNearbyNodes().get(0).getPosition());
+//                pos.sub(currNode.getNearbyNodes().get(1).getPosition());
+//
+//                currNode.setRotation(new Vector3f(0, -(float)Math.toDegrees(Math.atan(pos.z / pos.x)), 0));
+//            }
         }
     }
 
