@@ -39,9 +39,6 @@ public class SettingsGame implements Settings{
     }
 
     public int getBoardRadius() {
-        if(null == null) {
-            System.out.println("fsdf");
-        }
         return boardRadius;
     }
 
