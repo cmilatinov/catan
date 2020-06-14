@@ -18,10 +18,13 @@ public class SettingsManager extends GameScript {
     // Properties object to load, manage and save data from xml files.
     private final Properties properties = new Properties();
 
-    private final String GAME_PREFIX = "^game_";
-    private final Pattern WINDOW_PREFIX = Pattern.compile("^window_");
+    private final String GAME_PREFIX = "^game.";
+    private final String WINDOW_PREFIX = "^window.";
+    private final String AUDIO_PREFIX = "^audio.";
 
-    private SettingsGame gameSettings = new SettingsGame();
+    private final SettingsGame gameSettings = new SettingsGame();
+    private final SettingsAudio audioSettings = new SettingsAudio();
+    private final SettingsWindow windowSettings = new SettingsWindow();
 
     /**
      * Constructor for Settings object.
@@ -31,6 +34,9 @@ public class SettingsManager extends GameScript {
         PATH = path;
     }
 
+    /**
+     * Method to load the settings from an xml file.
+     */
     public void loadSettings() {
         try {
             properties.loadFromXML(new FileInputStream(PATH));
@@ -39,9 +45,14 @@ public class SettingsManager extends GameScript {
                 Settings newSettings = null;
                 if(Pattern.matches(GAME_PREFIX, key.toString())) {
                     newSettings = gameSettings;
+                } else if (Pattern.matches(WINDOW_PREFIX, key.toString())) {
+                    newSettings = windowSettings;
+                } else if (Pattern.matches(AUDIO_PREFIX, key.toString())) {
+                    newSettings = audioSettings;
                 }
 
                 try {
+                    assert newSettings != null : "Type of settings does not exist.";
                     newSettings.setProperty(key.toString(), value.toString());
                 } catch (Exception e) {
                     Engine.log(Logger.ERROR,"Failed to create setting: ");
@@ -75,5 +86,13 @@ public class SettingsManager extends GameScript {
 
     public SettingsGame getGameSettings() {
         return gameSettings;
+    }
+
+    public SettingsAudio getAudioSettings() {
+        return audioSettings;
+    }
+
+    public SettingsWindow getWindowSettings() {
+        return windowSettings;
     }
 }

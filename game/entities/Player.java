@@ -18,6 +18,10 @@ public class Player {
 		this(Resource.TEXTURE_COLOR_BLUE);
 	}
 
+	public void removeResourceCards(ResourceType resource, int val) {
+		resourceCards.put(resource, resourceCards.get(resource) - val);
+	}
+
 	public void addResourceCard(ResourceType resource, int val) {
 		resourceCards.put(resource, resourceCards.get(resource) + val);
 	}

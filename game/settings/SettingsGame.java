@@ -5,8 +5,8 @@ import main.Engine;
 import java.util.HashMap;
 
 public class SettingsGame implements Settings{
-    private int boardRadius;
-    private GameModes gameMode;
+    private int boardRadius = 3;
+    private GameModes gameMode = GameModes.VANILLA;
 
     private enum GameModes {
         VANILLA
@@ -24,6 +24,10 @@ public class SettingsGame implements Settings{
     private void setBoardRadius(String value) {
         boardRadius = Integer.parseInt(value);
         Engine.log("GAME SETTINGS : Board radius has been set to " + boardRadius);
+    }
+
+    public void setBoardRadius(int radius) {
+        boardRadius = radius;
     }
 
     private void setGameMode(String value) {
