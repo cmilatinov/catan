@@ -7,11 +7,13 @@ import entities.Entity;
 import entities.Table;
 import lights.Light;
 import main.Scene;
+import objects.InjectableScript;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
+import settings.SettingsManager;
 import ui.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,6 +23,9 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Game extends Scene {
     private Tiles tiles;
+
+    @InjectableScript
+    private SettingsManager settings;
 
     public Game() {
 

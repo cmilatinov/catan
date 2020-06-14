@@ -26,6 +26,9 @@ public abstract class Scene {
     private final ArrayList<Entity> allEntities = new ArrayList<>();
     private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
     private final List<Light> lights = new ArrayList<>();
+    @SuppressWarnings("rawtypes")
+    private static final ListOrderedMap<Class, GameScript> globalGameScripts = new ListOrderedMap<>();
+    @SuppressWarnings("rawtypes")
     private final ListOrderedMap<Class, GameScript> gameScripts = new ListOrderedMap<>();
 
     // Manager
@@ -38,7 +41,6 @@ public abstract class Scene {
     protected SceneManager sceneManager;
 
     // Other
-    private final HashMap<Class<GameScript>, List<GameScript>> deferred = new HashMap<>();
     private Window attachedWindow;
     private Texture skybox = null;
     private Camera camera;
@@ -67,6 +69,7 @@ public abstract class Scene {
      * @param window the window to attach to the scene
      */
     public void setup(Window window, SceneManager sceneManager) {
+
         this.attachedWindow = window;
         this.sceneManager = sceneManager;
         this.uiManager = new UIManager(window);
@@ -173,29 +176,11 @@ public abstract class Scene {
                     if (handleDependencies(gameScript)) {
                         gameScript.initialize();
                         gameScript.setState(State.TO_UPDATE);
-                        handleDependents(gameScript);
                     }
                 }
                 case RE_INITIALIZE -> {
                     gameScript.initialize();
                     gameScript.setState(State.TO_UPDATE);
-                }
-            }
-        }
-    }
-
-    /**
-     * Handle any other scripts which were waiting upon this script
-     * @param gameScript Script Object to check dependents
-     */
-    protected void handleDependents(GameScript gameScript)
-    {
-        List<GameScript> dependentScripts = deferred.get(gameScript.getClass());
-        if (null != dependentScripts) {
-            for (GameScript script : dependentScripts) {
-                if (script.getCurrentState() == State.TO_INITIALIZE) {
-                    script.initialize();
-                    script.setState(State.TO_UPDATE);
                 }
             }
         }
@@ -218,25 +203,14 @@ public abstract class Scene {
             }
             // Injection of the GameScript
             InjectableScript annotation = field.getAnnotation(InjectableScript.class);
-            GameScript classToInject = gameScripts.get(field.getType());
-            if(null != annotation && null != classToInject) {
-                field.setAccessible(true);
-                field.set(gameScript, classToInject);
+            GameScript toInject = globalGameScripts.get(field.getType());
+            if(null == toInject) {
+                toInject = gameScripts.get(field.getType());
             }
-            // TODO: MICHAEL FIX THIS
-//            // Check if we need to defer
-//            InitializeSelfAfter deferAnnotation = field.getAnnotation(InitializeSelfAfter.class);
-//            boolean dependencyNotInitialized = gameScripts.get(field.getType()).getCurrentState() == State.TO_INITIALIZE;
-//            if (null != deferAnnotation && dependencyNotInitialized) {
-//               List<GameScript> deferredList = deferred.get(field.getClass());
-//               if (null == deferredList) {
-//                  deferredList = new ArrayList<>();
-//               }
-//               deferredList.add(gameScript);
-//               //noinspection unchecked, we already know it's a GameScript object
-//               deferred.put((Class<GameScript>) field.getType(), deferredList);
-//               return false;
-//            }
+            if(null != annotation && null != toInject) {
+                field.setAccessible(true);
+                field.set(gameScript, toInject);
+            }
         }
         return true;
     }
@@ -279,24 +253,40 @@ public abstract class Scene {
     }
 
     /**
+     * Register a gamescript to persist across all scenes
+     * @param object the global gamescript to register
+     */
+    public static void registerGlobal(GameScript object)
+    {
+        // we set the context when the scene is switched
+        registerGameScript(object, globalGameScripts);
+    }
+
+    /**
      * Register a Game Script to be ran during the Scene
      * @param object the Gamescript to register
      */
     public void register(GameScript object) {
         object.setContext(this);
+        registerGameScript(object, gameScripts);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static void registerGameScript(GameScript object, ListOrderedMap<Class, GameScript> source)
+    {
         //Check if we have to modify the order
         InitializeSelfBefore[] annotations = object.getClass().getAnnotationsByType(InitializeSelfBefore.class);
         for(InitializeSelfBefore annotation : annotations) {
             if(null != annotation) {
-                int scriptIndex = gameScripts.indexOf(annotation.clazz());
+                int scriptIndex = source.indexOf(annotation.clazz());
                 if (scriptIndex != -1) {
-                    gameScripts.put(scriptIndex, object.getClass(), object);
+                    source.put(scriptIndex, object.getClass(), object);
                     return;
                 }
             }
         }
         // Insert the game script normally
-        gameScripts.put(object.getClass(), object);
+        source.put(object.getClass(), object);
     }
 
     /**
@@ -371,6 +361,11 @@ public abstract class Scene {
      */
     public void setSkyboxTexture(Texture skybox) {
         this.skybox = skybox;
+    }
+
+    public static Collection<GameScript> getGlobals()
+    {
+        return globalGameScripts.values();
     }
 
     /**

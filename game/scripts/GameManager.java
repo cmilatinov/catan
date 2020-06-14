@@ -1,19 +1,17 @@
 package scripts;
 
-import board.Node;
 import board.nodes.Vertex;
 import entities.*;
 import gameplay.ResourceType;
 import org.joml.Vector3f;
+import settings.SettingsManager;
 import states.*;
 import objects.GameScript;
 import objects.InjectableScript;
 import observers.GameObserver;
 import resources.Resource;
-import ui.components.TradeButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static observers.GameObserver.*;
@@ -23,6 +21,9 @@ public class GameManager extends GameScript {
     // Entities registered in the scene that we need access to
     @InjectableScript
     private Tiles tiles;
+
+    @InjectableScript
+    private SettingsManager settings;
 
     private final ArrayList<Player> players = new ArrayList<>();
     private boolean playersReversed = false;

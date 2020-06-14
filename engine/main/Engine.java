@@ -4,6 +4,7 @@ import display.DisplayMode;
 import display.Window;
 import log.Logger;
 import objects.FBO;
+import objects.GameScript;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import resources.GameResources;
 
@@ -59,6 +60,12 @@ public final class Engine {
 
     public void setCurrentScene(Scene currentScene) {
         this.currentScene = currentScene;
+        // Have to set the context of any globals here since
+        // this is the only point where the transfer of a new scene happens
+        for(GameScript script : Scene.getGlobals())
+        {
+            script.setContext(currentScene);
+        }
     }
 
     public Window getWindow()
