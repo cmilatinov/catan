@@ -21,7 +21,17 @@ public class GameServer extends Thread {
 	 * Represents a remote client.
 	 */
 	private class RemoteClient {
-		
+
+		/**
+		 * This client's identifier.
+		 */
+		public final int id;
+
+		/**
+		 * This client's username.
+		 */
+		private final String username;
+
 		/**
 		 * The remote IP address and port from which the client is responding.
 		 */
@@ -47,7 +57,9 @@ public class GameServer extends Thread {
 		 * @param address The remote IP address and port from which the client is responding.
 		 * @param key The client's public RSA key.
 		 */
-		public RemoteClient(InetSocketAddress address, PublicKey key) {
+		public RemoteClient(int id, String username, InetSocketAddress address, PublicKey key) {
+			this.id = id;
+			this.username = username;
 			this.address = address;
 			this.key = key;
 			this.handler = new ClientHandler(this);
@@ -229,6 +241,11 @@ public class GameServer extends Thread {
 	 * Temporarily store RSA keys in a hashmap.
 	 */
 	private final Map<InetSocketAddress, PublicKey> remoteKeys = new HashMap<InetSocketAddress, PublicKey>();
+
+	/**
+	 * The next ID to be assigned to a client.
+	 */
+	private int nextID = 0;
 	
 	/**
 	 * Indicates whether the server is ready to be started.
@@ -389,10 +406,10 @@ public class GameServer extends Thread {
 			return;
 		}
 		
-		RemoteClient newClient = new RemoteClient(source, remoteKeys.get(source));
+		RemoteClient newClient = new RemoteClient(nextID++, packet.getUsername(), source, remoteKeys.get(source));
 		onConnect(newClient);
 		
-		sender.send(new PacketAcceptConnection(), source, newClient.key);
+		sender.send(new PacketAcceptConnection(newClient.id), source, newClient.key);
 	}
 	
 	/**

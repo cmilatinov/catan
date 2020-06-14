@@ -53,7 +53,13 @@ public class GameClient extends Thread {
 	 * The server's remote IP address.
 	 */
 	private InetSocketAddress remoteAddress = null;
-	
+
+	/**
+	 * This client's identifier received from the server it connects to.
+	 * This client's identifier received from the server it connects to.
+	 */
+	private int clientID = -1;
+
 	/**
 	 * This client's username credential.
 	 */
@@ -342,6 +348,7 @@ public class GameClient extends Thread {
 	
 	private void handlePacket(PacketAcceptConnection packet) {
 		connected = true;
+		clientID = packet.getID();
 		if(this.onConnect != null)
 			onConnect.run();
 		System.out.println("Connected to server.");
