@@ -39,6 +39,11 @@ public class Costs {
         };
     }
 
+    public void purchaseBuilding(BuildingType type, Player player) {
+        for (Map.Entry<ResourceType, Integer> resource : Costs.getInstance().getBuildingCost(type).entrySet())
+            player.removeResourceCards(resource.getKey(), resource.getValue());
+    }
+
     public boolean canBuyBuilding(BuildingType type, Player player) {
         for (Map.Entry<ResourceType, Integer> resource : Costs.getInstance().getBuildingCost(type).entrySet())
             if(player.getResourceCards(resource.getKey()) < resource.getValue())

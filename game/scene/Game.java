@@ -7,11 +7,13 @@ import entities.Entity;
 import entities.Table;
 import lights.Light;
 import main.Scene;
+import objects.InjectableScript;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
+import settings.SettingsManager;
 import ui.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -63,6 +65,10 @@ public class Game extends Scene {
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));
         register(sun);
         register(sun2);
+
+        SettingsManager settingsManager = (SettingsManager)getGlobalInstance(SettingsManager.class);
+
+        System.out.println(settingsManager.getGameSettings().getBoardRadius());
 
         tiles = new Tiles(3);
         tiles.generateMap();

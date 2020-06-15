@@ -13,16 +13,22 @@ public class EventResource extends NetworkEvent {
     }
 
     private PlayerHandEvent event;
-    private ResourceType resourceType;
-
+    private ResourceType resource;
     private int count;
 
     public EventResource() {
         super(EventType.RESOURCE);
 
         event = PlayerHandEvent.RESOURCES_ADDED;
-        resourceType = ResourceType.WHEAT;
+        resource = ResourceType.WHEAT;
         count = 0;
+    }
+
+    public EventResource(PlayerHandEvent event, ResourceType resource, int count) {
+        super(EventType.RESOURCE);
+        this.event = event;
+        this.resource = resource;
+        this.count = count;
     }
 
     public EventResource(byte[] data) {
@@ -30,14 +36,14 @@ public class EventResource extends NetworkEvent {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(data);
         event = PlayerHandEvent.values()[byteBuffer.getInt()];
-        resourceType = ResourceType.values()[byteBuffer.getInt()];
+        resource = ResourceType.values()[byteBuffer.getInt()];
         count = byteBuffer.getInt();
     }
 
     public byte[] serialize() {
         ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES + 3 * Integer.BYTES);
         writeHeader(byteBuffer);
-        byteBuffer.putInt(event.ordinal()).putInt(resourceType.ordinal()).putInt(count);
+        byteBuffer.putInt(event.ordinal()).putInt(resource.ordinal()).putInt(count);
         return byteBuffer.array();
     }
 
@@ -45,8 +51,8 @@ public class EventResource extends NetworkEvent {
         return event;
     }
 
-    public ResourceType getResourceType() {
-        return resourceType;
+    public ResourceType getResource() {
+        return resource;
     }
 
     public int getCount() {
@@ -57,8 +63,8 @@ public class EventResource extends NetworkEvent {
         this.event = event;
     }
 
-    public void setResourceType(ResourceType resourceType) {
-        this.resourceType = resourceType;
+    public void setResource(ResourceType resource) {
+        this.resource = resource;
     }
 
     public void setCount(int count) {

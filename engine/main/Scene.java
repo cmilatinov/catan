@@ -13,6 +13,7 @@ import org.joml.Vector3f;
 import physics.PhysicsManager;
 import render.EntityRenderer;
 import render.SkyboxRenderer;
+import settings.SettingsManager;
 import ui.UIManager;
 
 import java.lang.reflect.Field;
@@ -159,6 +160,32 @@ public abstract class Scene {
         }
 
         camera.update(delta);
+        for (GameScript globalScripts : globalGameScripts.values()) {
+            switch (globalScripts.getCurrentState()) {
+                case TO_START -> {
+                    globalScripts.start();
+                    globalScripts.setState(State.TO_UPDATE);
+                }
+                case TO_STOP -> {
+                    globalScripts.stop();
+                    globalScripts.setState(State.STOPPED);
+                }
+                case TO_UPDATE -> {
+                    globalScripts.update(delta);
+                }
+                case TO_INITIALIZE -> {
+                    if (handleDependencies(globalScripts)) {
+                        globalScripts.initialize();
+                        globalScripts.setState(State.TO_UPDATE);
+                    }
+                }
+                case RE_INITIALIZE -> {
+                    globalScripts.initialize();
+                    globalScripts.setState(State.TO_UPDATE);
+                }
+            }
+        }
+
         for (GameScript gameScript : gameScripts.values()) {
             switch (gameScript.getCurrentState()) {
                 case TO_START -> {
@@ -256,7 +283,7 @@ public abstract class Scene {
      * Register a gamescript to persist across all scenes
      * @param object the global gamescript to register
      */
-    public static void globalRegister(GameScript object)
+    public static void registerGlobal(GameScript object)
     {
         // we set the context when the scene is switched
         registerGameScript(object, globalGameScripts);
@@ -366,6 +393,10 @@ public abstract class Scene {
     public static Collection<GameScript> getGlobals()
     {
         return globalGameScripts.values();
+    }
+
+    public static GameScript getGlobalInstance(Class c) {
+        return globalGameScripts.get(c);
     }
 
     /**
