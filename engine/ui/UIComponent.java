@@ -43,6 +43,8 @@ public class UIComponent {
 	
 	public UIComponent setVisible(boolean visible) {
 		this.visible = visible;
+		// Set all the children to it's parent's visibility
+		children.stream().flatMap(UIComponent::flatten).forEach((e -> e.setVisible(visible)));
 		return this;
 	}
 	
