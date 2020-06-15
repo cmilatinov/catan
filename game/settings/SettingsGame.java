@@ -5,8 +5,10 @@ import main.Engine;
 import java.util.HashMap;
 
 public class SettingsGame implements Settings{
-    private int boardRadius = 3;
-    private GameModes gameMode = GameModes.VANILLA;
+    private int boardRadius;
+    private GameModes gameMode;
+
+    public final String prefix = "game";
 
     private enum GameModes {
         VANILLA

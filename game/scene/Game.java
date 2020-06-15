@@ -24,9 +24,6 @@ import static org.lwjgl.opengl.GL11.*;
 public class Game extends Scene {
     private Tiles tiles;
 
-    @InjectableScript
-    private SettingsManager settings;
-
     public Game() {
 
     }

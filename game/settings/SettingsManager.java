@@ -18,9 +18,9 @@ public class SettingsManager extends GameScript {
     // Properties object to load, manage and save data from xml files.
     private final Properties properties = new Properties();
 
-    private final String GAME_PREFIX = "^game.";
-    private final String WINDOW_PREFIX = "^window.";
-    private final String AUDIO_PREFIX = "^audio.";
+    private final String GAME_PREFIX = "game.";
+    private final String WINDOW_PREFIX = "window.";
+    private final String AUDIO_PREFIX = "audio.";
 
     private final SettingsGame gameSettings = new SettingsGame();
     private final SettingsAudio audioSettings = new SettingsAudio();
@@ -43,17 +43,21 @@ public class SettingsManager extends GameScript {
 
             properties.forEach((key, value) -> {
                 Settings newSettings = null;
-                if(Pattern.matches(GAME_PREFIX, key.toString())) {
+                String currPrefix = "";
+                if(Pattern.matches("^" + GAME_PREFIX, key.toString())) {
+                    currPrefix = GAME_PREFIX;
                     newSettings = gameSettings;
-                } else if (Pattern.matches(WINDOW_PREFIX, key.toString())) {
+                } else if (Pattern.matches("^" + WINDOW_PREFIX, key.toString())) {
+                    currPrefix = WINDOW_PREFIX;
                     newSettings = windowSettings;
-                } else if (Pattern.matches(AUDIO_PREFIX, key.toString())) {
+                } else if (Pattern.matches("^" + AUDIO_PREFIX, key.toString())) {
+                    currPrefix = AUDIO_PREFIX;
                     newSettings = audioSettings;
                 }
 
                 try {
                     assert newSettings != null : "Type of settings does not exist.";
-                    newSettings.setProperty(key.toString(), value.toString());
+                    newSettings.setProperty(key.toString().replace(currPrefix, ""), value.toString());
                 } catch (Exception e) {
                     Engine.log(Logger.ERROR,"Failed to create setting: ");
                     Engine.log(Logger.ERROR, e.toString());
