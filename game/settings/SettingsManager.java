@@ -44,13 +44,14 @@ public class SettingsManager extends GameScript {
             properties.forEach((key, value) -> {
                 Settings newSettings = null;
                 String currPrefix = "";
-                if(Pattern.matches("^" + GAME_PREFIX, key.toString())) {
+
+                if(key.toString().matches(".*" + GAME_PREFIX + ".*")) {
                     currPrefix = GAME_PREFIX;
                     newSettings = gameSettings;
-                } else if (Pattern.matches("^" + WINDOW_PREFIX, key.toString())) {
+                } else if (key.toString().matches(".*" + WINDOW_PREFIX + ".*")) {
                     currPrefix = WINDOW_PREFIX;
                     newSettings = windowSettings;
-                } else if (Pattern.matches("^" + AUDIO_PREFIX, key.toString())) {
+                } else if (key.toString().matches(".*" + AUDIO_PREFIX + ".*")) {
                     currPrefix = AUDIO_PREFIX;
                     newSettings = audioSettings;
                 }

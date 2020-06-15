@@ -66,6 +66,10 @@ public class Game extends Scene {
         register(sun);
         register(sun2);
 
+        SettingsManager settingsManager = (SettingsManager)getGlobalInstance(SettingsManager.class);
+
+        System.out.println(settingsManager.getGameSettings().getBoardRadius());
+
         tiles = new Tiles(3);
         tiles.generateMap();
         register(tiles);

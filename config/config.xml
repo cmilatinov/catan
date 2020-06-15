@@ -1,3 +1,4 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="game.board_radius">3</entry>
     <entry key="game.mode">0</entry>

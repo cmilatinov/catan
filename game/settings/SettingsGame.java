@@ -37,7 +37,7 @@ public class SettingsGame implements Settings{
         Engine.log("GAME SETTINGS : Game mode has been set to " +
                 switch(gameMode) {
                     case VANILLA -> "vanilla";
-                });
+                } + " mode");
     }
 
     public int getBoardRadius() {
