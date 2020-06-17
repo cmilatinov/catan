@@ -84,13 +84,13 @@ public class GameManager extends GameScript {
     public void rewardPlayerNearTile(int roll) {
         for(Tile t : tiles.getTiles(roll))
             for(Vertex v : t.getOccupiedVertices())
-                v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
+                v.getOwner().addCards(t.getType(), v.getBuildingValue());
     }
 
     public void rewardPlayerOnNode(Vector3f nodePosition, Player player) {
         for(Tile t : tiles.getTilesNearVertex(nodePosition))
             if(t.getType() != ResourceType.DESERT) {
-                player.addResourceCard(t.getType(), 1);
+                player.addCards(t.getType(), 1);
                 if(player.getColor() == Resource.TEXTURE_COLOR_BLUE)
                     gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), 1);
             }

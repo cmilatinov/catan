@@ -53,7 +53,7 @@ public class StateSettling implements GameState {
             DevelopmentCards deck = ((DevelopmentCards) clicked);
 
             if(!deck.isEmpty()) {
-                player.addResourceCard(deck.drawCard(), 1);
+                player.addCards(deck.drawCard(), 1);
             }
         }
     }

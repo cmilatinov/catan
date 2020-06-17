@@ -3,8 +3,7 @@ package events;
 import entities.Player;
 import network.events.NetworkEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.ByteBuffer;
 
 public class EventGameStart extends NetworkEvent {
 
@@ -16,11 +15,28 @@ public class EventGameStart extends NetworkEvent {
         super(EventType.GAME_START);
         boardSize = 3;
         boardSeed = 0;
-
+        playerList = new Player[0];
     }
 
     public EventGameStart(byte[] data) {
         super(EventType.GAME_START);
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        this.boardSize = buffer.getInt();
+        this.boardSeed = buffer.getLong();
+        this.playerList = new Player[buffer.getInt()];
+        for (int i = 0; i < playerList.length; i++)
+            playerList[i] = new Player(buffer);
+    }
+
+    public byte[] serialize() {
+        ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 2 * Integer.BYTES + Long.BYTES + playerList.length * Player.BYTES);
+        writeHeader(data);
+        data.putInt(boardSize)
+            .putLong(boardSeed)
+            .putInt(playerList.length);
+        for (Player player : playerList)
+            data.put(player.serialize());
+        return data.array();
     }
 
     public int getBoardSize() {

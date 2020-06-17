@@ -1,33 +1,48 @@
 package entities;
 
-import java.util.HashMap;
-
 import gameplay.ResourceType;
 import resources.Resource;
 
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+
 public class Player {
+
+	public static final int BYTES = 2 * Integer.BYTES;
+
+	private final int id;
+	private final Resource color;
 	private final HashMap<ResourceType, Integer> resourceCards = new HashMap<ResourceType, Integer>();
-	private Resource color;
 
-	public Player(Resource color) {
-		clearHand();
+	public Player(int id, Resource color) {
+		this.id = id;
 		this.color = color;
+		clearHand();
 	}
 
-	public Player() {
-		this(Resource.TEXTURE_COLOR_BLUE);
+	public Player(ByteBuffer buffer) {
+		this.id = buffer.getInt();
+		this.color = Resource.values()[buffer.getInt()];
 	}
 
-	public void removeResourceCards(ResourceType resource, int val) {
-		resourceCards.put(resource, resourceCards.get(resource) - val);
+	public int getID() {
+		return id;
 	}
 
-	public void addResourceCard(ResourceType resource, int val) {
-		resourceCards.put(resource, resourceCards.get(resource) + val);
+	public Resource getColor() {
+		return color;
 	}
 
 	public int getResourceCards(ResourceType type) {
 		return resourceCards.get(type);
+	}
+
+	public void removeCards(ResourceType resource, int val) {
+		resourceCards.put(resource, resourceCards.get(resource) - val);
+	}
+
+	public void addCards(ResourceType resource, int val) {
+		resourceCards.put(resource, resourceCards.get(resource) + val);
 	}
 
 	public void clearHand() {
@@ -38,16 +53,11 @@ public class Player {
 		resourceCards.put(ResourceType.WHEAT, 0);
 	}
 
-	public Resource getColor() {
-		return color;
+	public byte[] serialize() {
+		ByteBuffer data = ByteBuffer.allocate(BYTES);
+		data.putInt(id)
+			.putInt(color.ordinal());
+		return data.array();
 	}
 
-	public void setColor(Resource color) {
-		this.color = color;
-	}
-	
-	public void giveCards(ResourceType type, int value) {
-		resourceCards.put(type, resourceCards.get(type) + value);
-	}
-	
 }

@@ -13,9 +13,9 @@ public abstract class Packet {
 	protected static final short PACKET_BEGIN = 0x0420;
 	
 	/**
-	 * The size, in bytes, of a packet header (2 + 4 + 8).
+	 * The size, in bytes, of a packet header (2 + 4).
 	 */
-	public static final int HEADER_SIZE = 6;
+	public static final int HEADER_SIZE = Short.BYTES + Integer.BYTES;
 	
 	/*
 	 * Four byte integer used to indicate the type of packet.
