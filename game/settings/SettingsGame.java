@@ -8,8 +8,6 @@ public class SettingsGame implements Settings{
     private int boardRadius;
     private GameModes gameMode;
 
-    public final String prefix = "game";
-
     private enum GameModes {
         VANILLA
     }

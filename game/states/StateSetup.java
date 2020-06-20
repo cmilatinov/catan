@@ -5,6 +5,7 @@ import board.nodes.Side;
 import board.nodes.Vertex;
 import entities.Entity;
 import entities.Player;
+import observers.GameObserver.GameStates;
 import org.joml.Vector3f;
 import scripts.GameManager;
 
@@ -73,5 +74,10 @@ public class StateSetup implements GameState {
     @Override
     public void onSpace(GameManager context) {
 
+    }
+
+    @Override
+    public GameStates getStateName() {
+        return GameStates.SETTING_UP;
     }
 }

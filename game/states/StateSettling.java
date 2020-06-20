@@ -7,6 +7,7 @@ import entities.Entity;
 import entities.Player;
 import gameplay.Costs;
 import gameplay.DevelopmentCards;
+import observers.GameObserver.GameStates;
 import scripts.GameManager;
 
 public class StateSettling implements GameState {
@@ -62,5 +63,10 @@ public class StateSettling implements GameState {
     public void onSpace(GameManager context) {
         context.nextTurn();
         context.setGameState(new StateRolling());
+    }
+
+    @Override
+    public GameStates getStateName() {
+        return GameStates.SETTLING;
     }
 }

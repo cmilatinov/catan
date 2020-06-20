@@ -3,6 +3,7 @@ package states;
 import entities.Entity;
 import entities.Player;
 import entities.Tile;
+import observers.GameObserver.GameStates;
 import scripts.GameManager;
 
 public class StateStealing implements GameState {
@@ -24,5 +25,10 @@ public class StateStealing implements GameState {
     @Override
     public void onSpace(GameManager context) {
 
+    }
+
+    @Override
+    public GameStates getStateName() {
+        return GameStates.STEALING;
     }
 }

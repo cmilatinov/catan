@@ -18,13 +18,10 @@ public class SettingsManager extends GameScript {
     // Properties object to load, manage and save data from xml files.
     private final Properties properties = new Properties();
 
-    private final String GAME_PREFIX = "game.";
-    private final String WINDOW_PREFIX = "window.";
-    private final String AUDIO_PREFIX = "audio.";
-
     private final SettingsGame gameSettings = new SettingsGame();
     private final SettingsAudio audioSettings = new SettingsAudio();
     private final SettingsWindow windowSettings = new SettingsWindow();
+    private final SettingsNetwork networkSettings = new SettingsNetwork();
 
     /**
      * Constructor for Settings object.
@@ -32,6 +29,7 @@ public class SettingsManager extends GameScript {
      */
     public SettingsManager(String path) {
         PATH = path;
+        loadSettings();
     }
 
     /**
@@ -42,25 +40,17 @@ public class SettingsManager extends GameScript {
             properties.loadFromXML(new FileInputStream(PATH));
 
             properties.forEach((key, value) -> {
-                Settings newSettings = null;
-                String currPrefix = "";
-
-                if(key.toString().matches(".*" + GAME_PREFIX + ".*")) {
-                    currPrefix = GAME_PREFIX;
-                    newSettings = gameSettings;
-                } else if (key.toString().matches(".*" + WINDOW_PREFIX + ".*")) {
-                    currPrefix = WINDOW_PREFIX;
-                    newSettings = windowSettings;
-                } else if (key.toString().matches(".*" + AUDIO_PREFIX + ".*")) {
-                    currPrefix = AUDIO_PREFIX;
-                    newSettings = audioSettings;
-                }
-
                 try {
-                    assert newSettings != null : "Type of settings does not exist.";
-                    newSettings.setProperty(key.toString().replace(currPrefix, ""), value.toString());
+                    String keyPrefix = key.toString().substring(0, key.toString().indexOf('.'));
+                    switch(keyPrefix){
+                        case SettingsPrefix.GAME -> gameSettings.setProperty(key.toString().replace(SettingsPrefix.GAME + ".", ""), value.toString());
+                        case SettingsPrefix.WINDOW ->  windowSettings.setProperty(key.toString().replace(SettingsPrefix.WINDOW + ".", ""), value.toString());
+                        case SettingsPrefix.NETWORK ->  networkSettings.setProperty(key.toString().replace(SettingsPrefix.NETWORK + ".", ""), value.toString());
+                        case SettingsPrefix.AUDIO ->  audioSettings.setProperty(key.toString().replace(SettingsPrefix.AUDIO + ".", ""), value.toString());
+                        default -> throw new Exception("Settings handler for prefix \"" + keyPrefix + "\" does not exist.");
+                    }
                 } catch (Exception e) {
-                    Engine.log(Logger.ERROR,"Failed to create setting: ");
+                    Engine.log(Logger.ERROR, "Failed to parse settings: ");
                     Engine.log(Logger.ERROR, e.toString());
                 }
             });
@@ -77,11 +67,6 @@ public class SettingsManager extends GameScript {
             Engine.log(Logger.ERROR,"Failed to save settings: ");
             Engine.log(Logger.ERROR, e.toString());
         }
-    }
-
-    @Override
-    public void initialize() {
-        loadSettings();
     }
 
     @Override

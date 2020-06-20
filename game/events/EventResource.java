@@ -18,7 +18,6 @@ public class EventResource extends NetworkEvent {
 
     public EventResource() {
         super(EventType.RESOURCE);
-
         event = PlayerHandEvent.RESOURCES_ADDED;
         resource = ResourceType.WHEAT;
         count = 0;

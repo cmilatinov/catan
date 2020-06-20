@@ -22,9 +22,6 @@ public class GameManager extends GameScript {
     @InjectableScript
     private Tiles tiles;
 
-    @InjectableScript
-    private SettingsManager settings;
-
     private final ArrayList<Player> players = new ArrayList<>();
     private boolean playersReversed = false;
 
@@ -42,17 +39,7 @@ public class GameManager extends GameScript {
      */
     public void setGameState(GameState state) {
         this.currentState = state;
-        GameStates currStateEnum = GameStates.ROLLING;
-
-        if (currentState instanceof StateSettling) {
-            currStateEnum = GameStates.SETTLING;
-        } else if (currentState instanceof StateSetup) {
-            currStateEnum = GameStates.SETTING_UP;
-        } else if (currentState instanceof StateStealing) {
-            currStateEnum = GameStates.STEALING;
-        }
-
-        gameObserver.broadcast(currStateEnum);
+        gameObserver.broadcast(currentState.getStateName());
     }
 
     /**
@@ -83,8 +70,11 @@ public class GameManager extends GameScript {
 
     public void rewardPlayerNearTile(int roll) {
         for(Tile t : tiles.getTiles(roll))
-            for(Vertex v : t.getOccupiedVertices())
+            for(Vertex v : t.getOccupiedVertices()) {
                 v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
+                gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), v.getBuildingValue());
+            }
+
     }
 
     public void rewardPlayerOnNode(Vector3f nodePosition, Player player) {
@@ -113,6 +103,7 @@ public class GameManager extends GameScript {
             players.add(newPlayer);
             gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         }
+
         players.get(0).setColor(Resource.TEXTURE_COLOR_BLUE);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(0));
         players.get(1).setColor(Resource.TEXTURE_COLOR_GREEN);

@@ -7,7 +7,6 @@ import entities.Entity;
 import entities.Table;
 import lights.Light;
 import main.Scene;
-import objects.InjectableScript;
 import org.joml.Vector3f;
 import resources.GameResources;
 import resources.Resource;
@@ -35,6 +34,8 @@ public class Game extends Scene {
         camera.setRotation(new Vector3f(20, 0,0));
         setCamera(camera);
 
+        SettingsManager settingsManager = (SettingsManager)getGlobalInstance(SettingsManager.class);
+
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
 
@@ -55,7 +56,6 @@ public class Game extends Scene {
         Entity table = Table.create()
                 .scale(10)
                 .translate(new Vector3f(0, -0.07f, 0));
-
         register(table);
 
         Entity devCards = DevelopmentCards.create().scale(0.1f).translate(new Vector3f(4f, 0, 5f));
@@ -66,11 +66,7 @@ public class Game extends Scene {
         register(sun);
         register(sun2);
 
-        SettingsManager settingsManager = (SettingsManager)getGlobalInstance(SettingsManager.class);
-
-        System.out.println(settingsManager.getGameSettings().getBoardRadius());
-
-        tiles = new Tiles(3);
+        tiles = new Tiles(settingsManager.getGameSettings().getBoardRadius());
         tiles.generateMap();
         register(tiles);
 
