@@ -74,7 +74,6 @@ public class GameManager extends GameScript {
                 v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
                 gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), v.getBuildingValue());
             }
-
     }
 
     public void rewardPlayerOnNode(Vector3f nodePosition, Player player) {
@@ -98,19 +97,24 @@ public class GameManager extends GameScript {
     public void initialize() {
         turn = 0;
 
-        for(int i = 0; i < 4; i ++) {
-            Player newPlayer = new Player();
-            players.add(newPlayer);
-            gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
-        }
-
-        players.get(0).setColor(Resource.TEXTURE_COLOR_BLUE);
+        Player newPlayer = new Player(0, Resource.TEXTURE_COLOR_BLUE);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(0));
-        players.get(1).setColor(Resource.TEXTURE_COLOR_GREEN);
+
+        newPlayer = new Player(1, Resource.TEXTURE_COLOR_ORANGE);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(1));
-        players.get(2).setColor(Resource.TEXTURE_COLOR_PURPLE);
+
+        newPlayer = new Player(2, Resource.TEXTURE_COLOR_PURPLE);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(2));
-        players.get(3).setColor(Resource.TEXTURE_COLOR_RED);
+
+        newPlayer = new Player(3, Resource.TEXTURE_COLOR_GREEN);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(3));
 
         setGameState(new StateSetup(players.size()));

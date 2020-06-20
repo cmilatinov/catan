@@ -32,7 +32,6 @@ public class EventResource extends NetworkEvent {
 
     public EventResource(byte[] data) {
         super(EventType.RESOURCE);
-
         ByteBuffer byteBuffer = ByteBuffer.wrap(data);
         event = PlayerHandEvent.values()[byteBuffer.getInt()];
         resource = ResourceType.values()[byteBuffer.getInt()];
@@ -40,10 +39,12 @@ public class EventResource extends NetworkEvent {
     }
 
     public byte[] serialize() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES + 3 * Integer.BYTES);
-        writeHeader(byteBuffer);
-        byteBuffer.putInt(event.ordinal()).putInt(resource.ordinal()).putInt(count);
-        return byteBuffer.array();
+        ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 3 * Integer.BYTES);
+        writeHeader(data);
+        data.putInt(event.ordinal())
+            .putInt(resource.ordinal())
+            .putInt(count);
+        return data.array();
     }
 
     public PlayerHandEvent getEvent() {

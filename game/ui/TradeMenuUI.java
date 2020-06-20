@@ -1,11 +1,12 @@
 package ui;
 
 import objects.GameScript;
-import ui.components.PlayerPortrait;
 import ui.components.TradeMenu;
 
 public class TradeMenuUI extends GameScript {
     TradeMenu menu;
+
+
 
     @Override
     public void initialize() {
@@ -13,12 +14,8 @@ public class TradeMenuUI extends GameScript {
         getScene().getUiManager().getContainer().add(menu, menu.getConstraints());
     }
 
-    public void openTradingMenu() {
-        menu.setActiveBorder(true);
-    }
-
-    public void closeTradingMenu() {
-        menu.setActiveBorder(false);
+    public void toggleTradingMenu() {
+        menu.toggle();
     }
 
     @Override

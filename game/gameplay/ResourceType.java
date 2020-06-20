@@ -1,7 +1,5 @@
 package gameplay;
 
-import java.util.Random;
-
 public enum ResourceType {
 	SHEEP,
 	STONE,

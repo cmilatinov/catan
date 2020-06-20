@@ -4,6 +4,11 @@ import java.nio.ByteBuffer;
 
 public abstract class NetworkEvent {
 
+    /**
+     * The size, in bytes, of an event header (4).
+     */
+    public static final int HEADER_SIZE = Integer.BYTES;
+
     /*
      * Four byte integer used to indicate the type of packet.
      */

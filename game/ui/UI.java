@@ -9,7 +9,6 @@ import observers.GameObserver;
 import observers.GameStateEventSubject;
 import observers.PlayerEventSubject;
 import observers.PlayerHandEventSubject;
-import org.lwjgl.system.CallbackI;
 import scripts.GameManager;
 import ui.components.GamePhase;
 import ui.components.TradeButton;
@@ -41,11 +40,11 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
         getScene().getUiManager().getContainer().add(gamePhaseUI, gamePhaseUI.getConstraints());
         getScene().getUiManager().getContainer().add(tButton, tButton.getConstraints());
 
-        tButton.setOnMouseClickEvent(this::openTradeMenu);
+        tButton.setOnMouseClickEvent(this::toggleTradeMenu);
     }
 
-    public void openTradeMenu() {
-        tradeMenuUI.openTradingMenu();
+    public void toggleTradeMenu() {
+        tradeMenuUI.toggleTradingMenu();
     }
 
     @Override
