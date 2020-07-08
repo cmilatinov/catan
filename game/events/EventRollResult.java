@@ -1,6 +1,5 @@
 package events;
 
-import gameplay.ResourceType;
 import network.events.NetworkEvent;
 
 import java.nio.ByteBuffer;
@@ -28,7 +27,7 @@ public class EventRollResult extends NetworkEvent {
     }
 
     public byte[] serialize() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES + 2 * Integer.BYTES);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(HEADER_SIZE + 2 * Integer.BYTES);
         writeHeader(byteBuffer);
         byteBuffer.putInt(die1).putInt(die2);
         return byteBuffer.array();

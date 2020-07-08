@@ -7,11 +7,6 @@ import java.nio.ByteBuffer;
 public class EventTradeResult extends NetworkEvent {
     private boolean tradeResult;
 
-    /**
-     * Creates a new event of given type.
-     *
-     * @param type The event type.
-     */
     public EventTradeResult(int type) {
         super(type);
         tradeResult = false;
