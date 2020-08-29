@@ -1,10 +1,14 @@
 package gameplay;
 
+import entities.Player;
+
 import java.util.HashMap;
 
 public class TradeContext {
     private final HashMap<ResourceType, Integer> offer = new HashMap<ResourceType, Integer>();
     private final HashMap<ResourceType, Integer> request = new HashMap<ResourceType, Integer>();
+
+    private Player tradeOwner;
 
     public void addToOffer(ResourceType resource, int count) {
         if(ResourceType.isResource(resource)) {
@@ -37,4 +41,8 @@ public class TradeContext {
             }
         }
     }
+
+    public HashMap getOffer() { return offer; }
+    public HashMap getRequest() { return request; }
+    public Player getTradeOwner() { return tradeOwner; }
 }

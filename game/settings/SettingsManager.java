@@ -18,10 +18,10 @@ public class SettingsManager extends GameScript {
     // Properties object to load, manage and save data from xml files.
     private final Properties properties = new Properties();
 
-    private final SettingsGame gameSettings = new SettingsGame();
-    private final SettingsAudio audioSettings = new SettingsAudio();
-    private final SettingsWindow windowSettings = new SettingsWindow();
-    private final SettingsNetwork networkSettings = new SettingsNetwork();
+    private final SettingsGame gameSettings = new SettingsGame(this);
+    private final SettingsAudio audioSettings = new SettingsAudio(this);
+    private final SettingsWindow windowSettings = new SettingsWindow(this);
+    private final SettingsNetwork networkSettings = new SettingsNetwork(this);
 
     /**
      * Constructor for Settings object.
@@ -67,6 +67,10 @@ public class SettingsManager extends GameScript {
             Engine.log(Logger.ERROR,"Failed to save settings: ");
             Engine.log(Logger.ERROR, e.toString());
         }
+    }
+
+    public void updateProperty(String key, String value) {
+        properties.setProperty(key, value);
     }
 
     @Override

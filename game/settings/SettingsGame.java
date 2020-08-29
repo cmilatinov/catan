@@ -8,8 +8,14 @@ public class SettingsGame implements Settings{
     private int boardRadius;
     private GameModes gameMode;
 
+    private SettingsManager manager;
+
     private enum GameModes {
         VANILLA
+    }
+
+    public SettingsGame(SettingsManager manager) {
+        this.manager = manager;
     }
 
     @Override
@@ -21,6 +27,11 @@ public class SettingsGame implements Settings{
         }
     }
 
+    @Override
+    public void update(String key, String value) {
+        manager.updateProperty(SettingsPrefix.GAME + "." + key, value);
+    }
+
     private void setBoardRadius(String value) {
         boardRadius = Integer.parseInt(value);
         Engine.log("GAME SETTINGS : Board radius has been set to " + boardRadius);
@@ -28,6 +39,7 @@ public class SettingsGame implements Settings{
 
     public void setBoardRadius(int radius) {
         boardRadius = radius;
+        update("board_radius", Integer.toString(radius));
     }
 
     private void setGameMode(String value) {
