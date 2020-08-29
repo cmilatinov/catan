@@ -1,5 +1,7 @@
 package network;
 
+import network.packets.Packet;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;

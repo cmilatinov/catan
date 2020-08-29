@@ -13,10 +13,10 @@ public class DisplayMode {
 			DisplayMode.MAX_SIZE,	// Max width
 			DisplayMode.MAX_SIZE,	// Max height
 			GLFW_CURSOR_NORMAL,		// Normal cursor
-			false,					// Not decorated
-			true,					// Use VSYNC
-			false,					// Not always on top
-			true					// Fullscreen
+			false,			// Not decorated
+			true,				// Use VSYNC
+			false,		// Not always on top
+			true			// Fullscreen
 		);
 	
 	public static final DisplayMode BORDERLESS_FULLSCREEN = new DisplayMode(
@@ -25,22 +25,22 @@ public class DisplayMode {
 			DisplayMode.MAX_SIZE,	// Max width
 			DisplayMode.MAX_SIZE,	// Max height
 			GLFW_CURSOR_NORMAL,		// Normal cursor
-			false,					// Not decorated
-			true,					// Use VSYNC
-			false,					// Not always on top
-			false					// Not fullscreen
+			false,			// Not decorated
+			true,				// Use VSYNC
+			false,		// Not always on top
+			false			// Not fullscreen
 		);
 	
 	public static final DisplayMode DEFAULT = new DisplayMode(
 			DisplayMode.CENTER, 	// Center X
 			DisplayMode.CENTER, 	// Center Y
-			1280, 					// Width
-			720, 					// Height
+			1280, 			// Width
+			720, 				// Height
 			GLFW_CURSOR_NORMAL,		// Normal cursor
-			true, 					// Decorated
-			true, 					// Use VSYNC
-			false,					// Not always on top
-			false					// Not fullscreen
+			true, 			// Decorated
+			true, 			// Use VSYNC
+			false,		// Not always on top
+			false			// Not fullscreen
 		);
 	
 	private final int x, y;

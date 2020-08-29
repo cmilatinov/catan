@@ -42,8 +42,8 @@ public class PhysicsManager {
         Vector3f oc = origin.sub(sphereCenter);
         float a = direction.dot(direction);
         float b = (float) (2.0 * oc.dot(direction));
-        float c = oc.dot(oc) - radius*radius;
-        float discriminant =  b*b - 4*a*c;
+        float c = oc.dot(oc) - radius * radius;
+        float discriminant =  b * b - 4 * a * c;
         return discriminant > 0;
     }
 }

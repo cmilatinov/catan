@@ -231,7 +231,6 @@ public class Tiles extends GameScript{
         return robber;
     }
 
-
     @Override
     public void initialize() {
         nodes.forEach(n -> getScene().register(n));
@@ -242,8 +241,10 @@ public class Tiles extends GameScript{
                 .forEach(t -> getScene().register(t.getToken()));
         getScene().register(robber);
     }
+
     @Override
     public void destroy() {
 
     }
+    
 }

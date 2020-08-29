@@ -1,4 +1,4 @@
-package network;
+package network.packets;
 
 import java.nio.ByteBuffer;
 

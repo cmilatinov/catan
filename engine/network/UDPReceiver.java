@@ -1,5 +1,8 @@
 package network;
 
+import network.packets.Packet;
+import network.packets.Packets;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

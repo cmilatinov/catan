@@ -1,7 +1,5 @@
 package network.packets;
 
-import network.Packet;
-
 import java.nio.ByteBuffer;
 
 public class PacketPing extends Packet {

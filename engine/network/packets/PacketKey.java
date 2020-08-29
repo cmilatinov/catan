@@ -1,6 +1,5 @@
 package network.packets;
 
-import network.Packet;
 import network.RSA;
 
 import java.nio.ByteBuffer;

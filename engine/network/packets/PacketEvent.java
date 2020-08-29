@@ -1,6 +1,5 @@
 package network.packets;
 
-import network.Packet;
 import network.events.NetworkEvent;
 import network.events.NetworkEvents;
 
