@@ -1,7 +1,5 @@
 package network.packets;
 
-import network.Packet;
-
 public class PacketDisconnect extends Packet {
 
 	/**

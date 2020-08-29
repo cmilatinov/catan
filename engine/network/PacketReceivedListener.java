@@ -1,5 +1,7 @@
 package network;
 
+import network.packets.Packet;
+
 import java.net.InetSocketAddress;
 
 /**

@@ -1,7 +1,5 @@
 package network.packets;
 
-import network.Packet;
-
 public class PacketAcceptConnection extends Packet {
 
 	private int id;

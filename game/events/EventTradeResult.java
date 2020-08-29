@@ -5,23 +5,24 @@ import network.events.NetworkEvent;
 import java.nio.ByteBuffer;
 
 public class EventTradeResult extends NetworkEvent {
+
     private boolean tradeResult;
 
-    public EventTradeResult(int type) {
-        super(type);
+    public EventTradeResult() {
+        super(EventType.TRADE_RESULT);
         tradeResult = false;
     }
 
     public EventTradeResult(byte[] data) {
-        super(EventType.ROLL_RESULT);
+        super(EventType.TRADE_RESULT);
         ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-        tradeResult = byteBuffer.getInt() != 0;
+        tradeResult = byteBuffer.get() > 0;
     }
 
     public byte[] serialize() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES * Integer.BYTES);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(HEADER_SIZE + Byte.BYTES);
         writeHeader(byteBuffer);
-        byteBuffer.putInt(tradeResult ? 1 : 0);
+        byteBuffer.put(tradeResult ? (byte)1 : (byte)0);
         return byteBuffer.array();
     }
 

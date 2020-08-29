@@ -1,7 +1,5 @@
 package network;
 
-import events.EventType;
-import network.events.NetworkEvents;
 import network.packets.*;
 
 public class NetworkModule {

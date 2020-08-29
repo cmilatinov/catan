@@ -1,6 +1,5 @@
 package network.packets;
 
-import network.Packet;
 import utils.StringUtils;
 
 import java.nio.ByteBuffer;
