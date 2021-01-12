@@ -3,48 +3,19 @@ package network.serializers;
 import network.annotations.SerializableField;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ObjectSerializer {
 
-    private static final List<FieldSerializer<?>> serializerList = List.of(
-            new StringSerializer(),
-            new ShortSerializer(),
-            new IntegerSerializer(),
-            new LongSerializer(),
-            new FloatSerializer(),
-            new DoubleSerializer()
-    );
-
-    private static final List<Class<?>> classFromId =
-            serializerList.stream()
-            .map(ObjectSerializer::serializerType)
-            .collect(Collectors.toList());
-
-    private static final Map<Class<?>, Integer> classToId =
-            classFromId.stream()
-            .collect(Collectors.toMap(clazz -> clazz, classFromId::indexOf));
-
-    private static final Map<Class<?>, FieldSerializer<?>> serializers =
-            serializerList.stream()
-            .collect(Collectors.toMap(
-                ObjectSerializer::serializerType,
-                serializer -> serializer
-            ));
-
     @SuppressWarnings("unchecked")
     public static <T> byte[] serialize(Object object) {
         // Get list of annotated fields
-        List<Field> fields = Arrays.stream(((Object)object).getClass().getFields())
-                .filter(f -> f.isAnnotationPresent(SerializableField.class))
-                .collect(Collectors.toList());
+        List<Field> fields = collectFields(object.getClass());
 
         // Calculate total buffer size and serialize each field
         AtomicInteger totalSize = new AtomicInteger();
@@ -52,12 +23,20 @@ public class ObjectSerializer {
         List<byte[]> fieldBuffers = fields.stream()
                 .map(field -> {
                     try {
-                        FieldSerializer<T> serializer = (FieldSerializer<T>) serializers.get(field.getType());
+                        // Find appropriate serializer for field, otherwise send empty field
+                        FieldSerializer<T> serializer = (FieldSerializer<T>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(field.getType());
+                        if (serializer == null)
+                            return ByteBuffer.allocate(2 * Integer.BYTES)
+                                    .putInt(Serializers.FIELD_ID_FROM_TYPE.get(field.getType()))
+                                    .putInt(0)
+                                    .array();
+
+                        // Serialize field and create byte array starting with the field type and size
                         byte[] bytes = serializer.serialize((T) field.get(object));
                         int bufferSize = 2 * Integer.BYTES + bytes.length;
                         totalSize.addAndGet(bufferSize);
                         return ByteBuffer.allocate(bufferSize)
-                                .putInt(classToId.get(field.getType()))
+                                .putInt(Serializers.FIELD_ID_FROM_TYPE.get(field.getType()))
                                 .putInt(bytes.length)
                                 .put(bytes)
                                 .array();
@@ -79,25 +58,42 @@ public class ObjectSerializer {
         return serialized.array();
     }
 
-    private static Class<?> serializerType(FieldSerializer<?> serializer) {
-        Class<?> type = (Class<?>)((ParameterizedType) serializer.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        if (type == Byte.class)
-            return byte.class;
-        else if (type == Short.class)
-            return short.class;
-        else if (type == Integer.class)
-            return int.class;
-        else if (type == Long.class)
-            return long.class;
-        else if (type == Float.class)
-            return float.class;
-        else if (type == Double.class)
-            return double.class;
-        else if (type == Boolean.class)
-            return boolean.class;
-        else if (type == Character.class)
-            return char.class;
-        return type;
+    @SuppressWarnings("unchecked")
+    public static <T, F> T deserialize(Class<T> classType, byte[] data) {
+
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        int numFields = buffer.getInt();
+
+        List<Field> classFields = collectFields(classType);
+        if (numFields != classFields.size())
+            return null;
+
+        try {
+            T instance = classType.getConstructor().newInstance();
+
+            for (int fieldIndex = 0; fieldIndex < numFields; fieldIndex++) {
+                Field field = classFields.get(fieldIndex);
+                int fieldSize = buffer.getInt();
+                byte[] fieldBuffer = new byte[fieldSize];
+                buffer.get(fieldBuffer);
+
+                FieldSerializer<F> serializer = (FieldSerializer<F>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(field.getType());
+                F value = serializer.deserialize(fieldBuffer);
+
+                field.set(instance, value);
+            }
+            
+        } catch (Exception e) {
+            return null;
+        }
+
+        return null;
+    }
+
+    private static List<Field> collectFields(Class<?> classType) {
+        return Arrays.stream(classType.getFields())
+                .filter(f -> f.isAnnotationPresent(SerializableField.class))
+                .collect(Collectors.toList());
     }
 
 }
