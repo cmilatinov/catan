@@ -6,16 +6,16 @@ import network.serializers.ObjectSerializer;
 public class Test {
 
     @SerializableField
-    private int testInt = 0;
+    private final int testInt = 0;
 
     @SerializableField
-    private String testStr = "hehe xd";
+    private final String testStr = "hehe xd";
 
     @SerializableField
-    private long testLong = 2;
+    private final long testLong = 2;
 
     @SerializableField
-    private double testDouble = 4.3;
+    private final double testDouble = 4.3;
 
     public static void main(String[] args) {
         byte[] array = ObjectSerializer.serialize(new Test());
