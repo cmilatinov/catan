@@ -1,17 +1,27 @@
 package test;
 
-import network.serializers.FieldSerializer;
-import network.serializers.StringSerializer;
+import network.annotations.SerializableField;
+import network.serializers.ObjectSerializer;
 
-import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 
 public class Test {
 
-    private static final FieldSerializer<?>[] serializers = new FieldSerializer[1];
+    @SerializableField
+    public final int testInt = 0;
+
+    @SerializableField
+    public final String testStr = "hehe xd";
+
+    @SerializableField
+    public final long testLong = 2;
+
+    @SerializableField
+    public final double testDouble = 4.3;
 
     public static void main(String[] args) {
-        serializers[0] = new StringSerializer();
-        System.out.println(((ParameterizedType) serializers[0].getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        byte[] array = ObjectSerializer.serialize(new Test());
+        System.out.println(Arrays.toString(array));
     }
 
 }
