@@ -16,7 +16,7 @@ public class PacketConnect extends Packet {
 	private String username;
 	
 	/**
-	 * Creates a new connection request packet with an empty username and password set.
+	 * Creates a new connection request packet with an empty username.
 	 */
 	public PacketConnect() {
 		super(PacketType.CONNECT);
@@ -46,10 +46,9 @@ public class PacketConnect extends Packet {
 	 */
 	public byte[] serialize() {
 		byte[] bUsername = StringUtils.getBytes(username, ENCODING);
-		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 1 + bUsername.length);
+		ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + bUsername.length);
 		writeHeader(data);
-		data.put((byte) bUsername.length)
-			.put(bUsername);
+		data.put(bUsername);
 		return data.array();
 	}
 	

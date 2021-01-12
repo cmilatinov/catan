@@ -1,5 +1,6 @@
 package test;
 
+import network.events.EventTest;
 import network.NetworkModule;
 import network.managers.GameClient;
 
@@ -12,8 +13,15 @@ public class Client {
 		GameClient client = new GameClient();
 		if(!client.isReady())
 			return;
+
+		final Runnable exit = () -> {
+			client.halt();
+			System.exit(0);
+		};
 		
 		client.start();
+		client.onDisconnect(exit);
+		client.onTimeout(exit);
 		client.onConnect(() -> System.out.println("Connected"));
 
 		Scanner scanner = new Scanner(System.in);
@@ -21,14 +29,15 @@ public class Client {
 			try {
 				int next = scanner.nextInt();
 				switch (next) {
-					case 0 -> client.halt();
+					case 0 -> client.connect("localhost", 50000, "rednite");
 					case 1 -> {
 						System.out.println("SENDING");
+						client.sendEvent(new EventTest("Hello from client"));
 					}
-					case 2 -> client.connect("localhost", 50000, "rednite");
+					case 2 -> client.halt();
+					case 3 -> client.disconnect();
 				}
 			} catch (Exception ignored) {}
 		}
 	}
-	
 }

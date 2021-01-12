@@ -23,7 +23,7 @@ public class TradeContext {
     }
 
     public void removeFromOffer(ResourceType resource, int count) {
-        if(offer.get(resource) != null) {
+        if (offer.get(resource) != null) {
             if(offer.get(resource) - count > 0) {
                 offer.merge(resource, -count, Integer::sum);
             } else if (offer.get(resource) - count == 0) {
@@ -33,8 +33,8 @@ public class TradeContext {
     }
 
     public void removeFromRequest(ResourceType resource, int count) {
-        if(request.get(resource) != null) {
-            if(request.get(resource) - count > 0) {
+        if (request.get(resource) != null) {
+            if (request.get(resource) - count > 0) {
                 request.merge(resource, -count, Integer::sum);
             } else if (request.get(resource) - count == 0) {
                 request.remove(resource);
@@ -42,7 +42,7 @@ public class TradeContext {
         }
     }
 
-    public HashMap getOffer() { return offer; }
-    public HashMap getRequest() { return request; }
+    public HashMap<ResourceType, Integer> getOffer() { return offer; }
+    public HashMap<ResourceType, Integer> getRequest() { return request; }
     public Player getTradeOwner() { return tradeOwner; }
 }

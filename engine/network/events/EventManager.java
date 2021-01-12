@@ -44,10 +44,10 @@ public class EventManager {
     }
 
     private long nextSendingEventID = 0;
-    private final ArrayList<EventSent> eventsSent = new ArrayList<EventSent>(10);
+    private final ArrayList<EventSent> eventsSent = new ArrayList<>(10);
 
     private long nextReceivingEventID = 0;
-    private final ArrayList<Long> unreceivedEvents = new ArrayList<Long>(10);
+    private final ArrayList<Long> unreceivedEvents = new ArrayList<>(10);
 
     private final UDPSender sender;
     private InetSocketAddress remote = null;

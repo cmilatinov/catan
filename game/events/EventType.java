@@ -11,4 +11,7 @@ public class EventType {
 
     public static final int ROLL_REQUEST = 4;
     public static final int ROLL_RESULT = 5;
+
+    public static final int TEST = Integer.MAX_VALUE;
+
 }

@@ -10,7 +10,16 @@ public class Packets {
 	/**
 	 * Hashmap containing all possible packet types.
 	 */
-	private static final Map<Integer, Class<? extends Packet>> packets = new HashMap<Integer, Class<? extends Packet>>();
+	private static final Map<Integer, Class<? extends Packet>> packets = new HashMap<>() {{
+		put(PacketType.KEY, PacketKey.class);
+		put(PacketType.CONNECT, PacketConnect.class);
+		put(PacketType.DISCONNECT, PacketDisconnect.class);
+		put(PacketType.ACCEPT_CONNECTION, PacketAcceptConnection.class);
+		put(PacketType.REJECT_CONNECTION, PacketRejectConnection.class);
+		put(PacketType.PING, PacketPing.class);
+		put(PacketType.EVENT, PacketEvent.class);
+		put(PacketType.EVENT_CONFIRMATION, PacketEventConfirmation.class);
+	}};
 	
 	/**
 	 * Creates a new packet instance with the given serialized data.

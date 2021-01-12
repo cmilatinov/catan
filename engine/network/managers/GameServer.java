@@ -197,7 +197,7 @@ public class GameServer extends Thread {
 		}
 
 		private void onTriggerEvent(NetworkEvent event) {
-			System.out.println("Received event : " + event + "(" + client.address + ")");
+			System.out.println("Received event : " + event + " (" + client.address + ")");
 		}
 		
 	}
@@ -428,7 +428,7 @@ public class GameServer extends Thread {
 	 * @param client The client having disconnected.
 	 */
 	private void onConnect(RemoteClient client) {
-		System.out.println("Client " + client.address + " has connected.");
+		System.out.println("User " + client.username + " (" + client.address + ") has connected.");
 		clients.put(client.address, client);
 		client.handler.start();
 	}
@@ -438,7 +438,7 @@ public class GameServer extends Thread {
 	 * @param client The client having timed out.
 	 */
 	private void onTimeout(RemoteClient client) {
-		System.out.println("Client " + client.address + " has timed out.");
+		System.out.println("User " + client.username + " (" + client.address + ") has timed out.");
 		clients.remove(client.address);
 		client.handler.halt();
 	}
@@ -448,7 +448,7 @@ public class GameServer extends Thread {
 	 * @param client The client having disconnected.
 	 */
 	private void onDisconnect(RemoteClient client) {
-		System.out.println("Client " + client.address + " has disconnected.");
+		System.out.println("User " + client.username + " (" + client.address + ") has disconnected.");
 		clients.remove(client.address);
 		client.handler.halt();
 	}

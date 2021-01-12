@@ -1,6 +1,8 @@
 package network;
 
-import network.packets.*;
+import events.EventType;
+import network.events.EventTest;
+import network.events.NetworkEvents;
 
 public class NetworkModule {
 	
@@ -15,15 +17,8 @@ public class NetworkModule {
 	public static void initialize() {
 		if(READY)
 			return;
-		
-		Packets.register(PacketType.KEY, PacketKey.class);
-		Packets.register(PacketType.CONNECT, PacketConnect.class);
-		Packets.register(PacketType.DISCONNECT, PacketDisconnect.class);
-		Packets.register(PacketType.ACCEPT_CONNECTION, PacketAcceptConnection.class);
-		Packets.register(PacketType.REJECT_CONNECTION, PacketRejectConnection.class);
-		Packets.register(PacketType.PING, PacketPing.class);
-		Packets.register(PacketType.EVENT, PacketEvent.class);
-		Packets.register(PacketType.EVENT_CONFIRMATION, PacketEventConfirmation.class);
+
+		NetworkEvents.register(EventType.TEST, EventTest.class);
 		
 		READY = true;
 	}
