@@ -7,7 +7,6 @@ import java.awt.*;
 import java.util.Iterator;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 public class UIManager {
 
@@ -19,8 +18,7 @@ public class UIManager {
 
     private final Window window;
 
-    private int mouseMoveHandle = -1;
-    private int mouseClickHandle = -1;
+    private int mouseMoveHandle;
 
     UIComponent lastHoveredComponent = null;
 
@@ -28,8 +26,7 @@ public class UIManager {
     private int fps = 0;
 
     public UIManager(Window window) {
-        mouseMoveHandle = window.mouse().registerMouseMoveCallback(this::onMouseMove);
-        mouseClickHandle = window.mouse().registerMouseClickCallback(this::onMouseClick);
+        this.mouseMoveHandle = window.mouse().registerMouseMoveCallback(this::onMouseMove);
         this.root = new UIComponent(new UIDimensions()
                 .setX(0)
                 .setY(0)
@@ -51,15 +48,16 @@ public class UIManager {
         root.add(framerate, fpsConstraints);
     }
 
-    private void onMouseClick(int button, int action, int mods) {
-        if(action == GLFW_PRESS)
-            return;
-
+    public boolean onMouseClick(int button, int action, int mods) {
         var mouseCords = window.mouse().getMousePosition();
         UIComponent uiComponent = findUIComponentFromCoords(mouseCords.first, mouseCords.second);
-        if (uiComponent != null) {
+        if (uiComponent == null)
+            return false;
+
+        if (action == GLFW_PRESS)
             uiComponent.onMouseClick();
-        }
+
+        return true;
     }
 
     private void onMouseMove(double x, double y, double dx, double dy) {
@@ -73,11 +71,11 @@ public class UIManager {
         }
     }
 
-    protected UIComponent findUIComponentFromCoords(int x, int y) {
+    public UIComponent findUIComponentFromCoords(int x, int y) {
         UIComponent found = null;
-        Iterator iterator = root.children.iterator();
+        Iterator<UIComponent> iterator = root.children.iterator();
         while (iterator.hasNext()) {
-            UIComponent uiComponent = (UIComponent) iterator.next();
+            UIComponent uiComponent = iterator.next();
 
             if (!uiComponent.isInteractable()) {
                 continue;
@@ -120,12 +118,7 @@ public class UIManager {
     }
 
     public void cleanup() {
-        if (mouseClickHandle != -1) {
-            window.mouse().removeMouseClickCallback(mouseClickHandle);
-        }
-        if (mouseMoveHandle != -1) {
-            window.mouse().removeMouseMoveCallback(mouseMoveHandle);
-        }
+        window.mouse().removeMouseMoveCallback(mouseMoveHandle);
     }
 }
 

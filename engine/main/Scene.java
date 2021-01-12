@@ -13,13 +13,12 @@ import org.joml.Vector3f;
 import physics.PhysicsManager;
 import render.EntityRenderer;
 import render.SkyboxRenderer;
-import settings.SettingsManager;
 import ui.UIManager;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static objects.GameScript.*;
+import static objects.GameScript.State;
 
 public abstract class Scene {
 
@@ -46,6 +45,8 @@ public abstract class Scene {
     private Texture skybox = null;
     private Camera camera;
 
+    private MouseClickCallback onSceneClick;
+
     public Scene() {
         entityRenderer = new EntityRenderer();
         skyboxRenderer = new SkyboxRenderer();
@@ -70,12 +71,12 @@ public abstract class Scene {
      * @param window the window to attach to the scene
      */
     public void setup(Window window, SceneManager sceneManager) {
-
         this.attachedWindow = window;
         this.sceneManager = sceneManager;
         this.uiManager = new UIManager(window);
         this.physics = new PhysicsManager(this);
-        camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
+        this.camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
+        window.mouse().registerMouseClickCallback(this::onClick);
     }
 
     /**
@@ -85,6 +86,7 @@ public abstract class Scene {
 
     /**
      * Get the scene manager attached to this scene
+     *
      * @return the scene manager
      */
     public SceneManager getSceneManager() {
@@ -128,6 +130,15 @@ public abstract class Scene {
             this.camera.destroy();
         }
         this.camera = camera;
+    }
+
+    /**
+     * Set the callback invoked when a scene click occurs (click passed through UI)
+     *
+     * @param callback The new callback
+     */
+    public void setOnSceneClick(MouseClickCallback callback) {
+        this.onSceneClick = callback;
     }
 
     /**
@@ -213,17 +224,23 @@ public abstract class Scene {
         }
     }
 
+    private void onClick(int button, int action, int mods) {
+        if (!uiManager.onMouseClick(button, action, mods) && onSceneClick != null)
+            onSceneClick.invoke(button, action, mods);
+    }
+
     /**
      * Handle dependency injection of other scripts and deferring the initialization
      * NOTE: only really handles one level of dependencies, will have to come back to this is we need
      * a more robust solution
+     *
      * @param gameScript Script Object to handle
      * @return true if there is no need to defer
      * @throws IllegalAccessException if we fail to inject the dependency
      */
     protected boolean handleDependencies(GameScript gameScript) throws IllegalAccessException {
         Field[] fields = gameScript.getClass().getDeclaredFields();
-        for (Field field: fields ) {
+        for (Field field : fields) {
             // Skip over things which are not GameScripts
             if (!(GameScript.class.isAssignableFrom(field.getType()))) {
                 continue;
@@ -231,10 +248,10 @@ public abstract class Scene {
             // Injection of the GameScript
             InjectableScript annotation = field.getAnnotation(InjectableScript.class);
             GameScript toInject = globalGameScripts.get(field.getType());
-            if(null == toInject) {
+            if (null == toInject) {
                 toInject = gameScripts.get(field.getType());
             }
-            if(null != annotation && null != toInject) {
+            if (null != annotation && null != toInject) {
                 field.setAccessible(true);
                 field.set(gameScript, toInject);
             }
@@ -273,6 +290,7 @@ public abstract class Scene {
 
     /**
      * Shortcut to register mouse click actions
+     *
      * @param callback the callback to register
      */
     public void registerMouseClickAction(MouseClickCallback callback) {
@@ -281,16 +299,17 @@ public abstract class Scene {
 
     /**
      * Register a gamescript to persist across all scenes
+     *
      * @param object the global gamescript to register
      */
-    public static void registerGlobal(GameScript object)
-    {
+    public static void registerGlobal(GameScript object) {
         // we set the context when the scene is switched
         registerGameScript(object, globalGameScripts);
     }
 
     /**
      * Register a Game Script to be ran during the Scene
+     *
      * @param object the Gamescript to register
      */
     public void register(GameScript object) {
@@ -299,12 +318,11 @@ public abstract class Scene {
     }
 
     @SuppressWarnings("rawtypes")
-    private static void registerGameScript(GameScript object, ListOrderedMap<Class, GameScript> source)
-    {
+    private static void registerGameScript(GameScript object, ListOrderedMap<Class, GameScript> source) {
         //Check if we have to modify the order
         InitializeSelfBefore[] annotations = object.getClass().getAnnotationsByType(InitializeSelfBefore.class);
-        for(InitializeSelfBefore annotation : annotations) {
-            if(null != annotation) {
+        for (InitializeSelfBefore annotation : annotations) {
+            if (null != annotation) {
                 int scriptIndex = source.indexOf(annotation.clazz());
                 if (scriptIndex != -1) {
                     source.put(scriptIndex, object.getClass(), object);
@@ -390,8 +408,7 @@ public abstract class Scene {
         this.skybox = skybox;
     }
 
-    public static Collection<GameScript> getGlobals()
-    {
+    public static Collection<GameScript> getGlobals() {
         return globalGameScripts.values();
     }
 

@@ -1,18 +1,12 @@
 package network;
 
+import javax.crypto.Cipher;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import javax.crypto.Cipher;
 
 /**
  * Provides helper methods permitting RSA encryption.
@@ -26,10 +20,10 @@ public class RSA {
 
 	/**
 	 * Generates a key pair (public and private key) using the RSA algorithm.
-	 * @param keysize The size of the keys in bytes.
+	 * @param keySize The size of the keys in bytes.
 	 * @return [{@link KeyPair}] The generated key pair.
 	 */
-	public static final KeyPair generateKeyPair(int keysize) {
+	public static KeyPair generateKeyPair(int keySize) {
 		
 		try {
 			
@@ -37,7 +31,7 @@ public class RSA {
 			KeyPairGenerator keygen = KeyPairGenerator.getInstance(RSA);
 			
 			// Init the keygen with the specified size.
-			keygen.initialize(keysize);
+			keygen.initialize(keySize);
 			
 			// Generate the key pair.
 			return keygen.generateKeyPair();
@@ -57,7 +51,7 @@ public class RSA {
 	 * @param data The data to encrypt.
 	 * @return [<b>byte[]</b>] The encrypted data.
 	 */
-	public static final byte[] encrypt(PublicKey key, byte[] data) {
+	public static byte[] encrypt(PublicKey key, byte[] data) {
 		
 		try {
 			
@@ -86,7 +80,7 @@ public class RSA {
 	 * @param data The data to decrypt.
 	 * @return [<b>byte[]</b>] The decrypted data.
 	 */
-	public static final byte[] decrypt(PrivateKey key, byte[] data) {
+	public static byte[] decrypt(PrivateKey key, byte[] data) {
 		
 		try {
 			
@@ -112,7 +106,7 @@ public class RSA {
 	 * Creates an RSA public key from its encoded byte array format.
 	 * @return {@link PublicKey} The public key.
 	 */
-	public static final PublicKey toPublicKey(byte[] bytes) {
+	public static PublicKey toPublicKey(byte[] bytes) {
 		try {
 			return KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(bytes));
 		} catch (Exception e) {
@@ -124,7 +118,7 @@ public class RSA {
 	 * Creates an RSA private key from its encoded byte array format.
 	 * @return {@link PrivateKey} The public key.
 	 */
-	public static final PrivateKey toPrivateKey(byte[] bytes) {
+	public static PrivateKey toPrivateKey(byte[] bytes) {
 		try {
 			return KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(bytes));
 		} catch (Exception e) {
@@ -234,7 +228,7 @@ public class RSA {
 	 * @param fileName The name of the file to import.
 	 * @return [{@link PublicKey}] The resulting {@link PublicKey}.
 	 */
-	public static final PublicKey importPublicKeyFromFile(String fileName) {
+	public static PublicKey importPublicKeyFromFile(String fileName) {
 		
 		try {
 			
@@ -264,7 +258,7 @@ public class RSA {
 	 * @param fileName The name of the file to import.
 	 * @return [{@link PrivateKey}] The resulting {@link PrivateKey}.
 	 */
-	public static final PrivateKey importPrivateKeyFromFile(String fileName) {
+	public static PrivateKey importPrivateKeyFromFile(String fileName) {
 		
 		try {
 			
@@ -294,7 +288,7 @@ public class RSA {
 	 * @param fileName The name of the files to import (file extensions are .public and .private).
 	 * @return [{@link KeyPair}] The resulting {@link KeyPair}.
 	 */
-	public static final KeyPair importKeyPairFromFiles(String fileName) {
+	public static KeyPair importKeyPairFromFiles(String fileName) {
 		
 		try {
 			

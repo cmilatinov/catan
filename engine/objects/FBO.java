@@ -1,35 +1,20 @@
 package objects;
 
-import static org.lwjgl.opengl.GL11.GL_BACK;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL20.glDrawBuffers;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT31;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
-import static org.lwjgl.opengl.GL30.glBindRenderbuffer;
-import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
-import static org.lwjgl.opengl.GL30.glDeleteRenderbuffers;
-import static org.lwjgl.opengl.GL30.glFramebufferRenderbuffer;
-import static org.lwjgl.opengl.GL30.glFramebufferTexture2D;
-import static org.lwjgl.opengl.GL30.glGenFramebuffers;
-import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
-import static org.lwjgl.opengl.GL30.glRenderbufferStorage;
-import static org.lwjgl.opengl.GL30.glRenderbufferStorageMultisample;
-import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
-import static org.lwjgl.opengl.GL32.*;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.glDrawBuffers;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL32.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL32.GL_DRAW_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL32.GL_FRAMEBUFFER_COMPLETE;
+import static org.lwjgl.opengl.GL32.GL_READ_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL32.glBlitFramebuffer;
+import static org.lwjgl.opengl.GL32.glCheckFramebufferStatus;
+import static org.lwjgl.opengl.GL32.glDrawBuffer;
+import static org.lwjgl.opengl.GL32.glReadBuffer;
+import static org.lwjgl.opengl.GL32.*;
 
 public class FBO implements FreeableObject {
 
@@ -47,7 +32,7 @@ public class FBO implements FreeableObject {
 			if (isTexture) {
 				this.id = glGenTextures();
 				this.glAttachment = glAttachment;
-				this.isTexture = isTexture;
+				this.isTexture = true;
 				glBindTexture(GL_TEXTURE_2D, id);
 				glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, pixelFormat, dataType,
 						(ByteBuffer) null);
@@ -58,7 +43,7 @@ public class FBO implements FreeableObject {
 			} else {
 				this.id = glGenRenderbuffers();
 				this.glAttachment = glAttachment;
-				this.isTexture = isTexture;
+				this.isTexture = false;
 				glBindRenderbuffer(GL_RENDERBUFFER, id);
 				glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, width, height);
 				glFramebufferRenderbuffer(GL_FRAMEBUFFER, glAttachment, GL_RENDERBUFFER, id);
@@ -73,7 +58,7 @@ public class FBO implements FreeableObject {
 			if (isTexture) {
 				this.id = glGenTextures();
 				this.glAttachment = glAttachment;
-				this.isTexture = isTexture;
+				this.isTexture = true;
 				glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, id);
 				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, false);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, GL_TEXTURE_2D_MULTISAMPLE, id, 0);
@@ -81,7 +66,7 @@ public class FBO implements FreeableObject {
 			} else {
 				this.id = glGenRenderbuffers();
 				this.glAttachment = glAttachment;
-				this.isTexture = isTexture;
+				this.isTexture = false;
 				glBindRenderbuffer(GL_RENDERBUFFER, id);
 				glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalFormat, width, height);
 				glFramebufferRenderbuffer(GL_FRAMEBUFFER, glAttachment, GL_RENDERBUFFER, id);

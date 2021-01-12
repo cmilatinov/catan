@@ -1,38 +1,18 @@
 package shaders;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL20.glAttachShader;
-import static org.lwjgl.opengl.GL20.glBindAttribLocation;
-import static org.lwjgl.opengl.GL20.glCompileShader;
-import static org.lwjgl.opengl.GL20.glCreateProgram;
-import static org.lwjgl.opengl.GL20.glCreateShader;
-import static org.lwjgl.opengl.GL20.glDeleteProgram;
-import static org.lwjgl.opengl.GL20.glDeleteShader;
-import static org.lwjgl.opengl.GL20.glDetachShader;
-import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
-import static org.lwjgl.opengl.GL20.glGetProgramiv;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
-import static org.lwjgl.opengl.GL20.glGetShaderiv;
-import static org.lwjgl.opengl.GL20.glLinkProgram;
-import static org.lwjgl.opengl.GL20.glShaderSource;
-import static org.lwjgl.opengl.GL20.glValidateProgram;
-import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
-
-import static org.lwjgl.opengl.GL33.*;
+import log.Logger;
+import main.Engine;
+import objects.FreeableObject;
+import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.IntBuffer;
 
-import objects.FreeableObject;
-import org.lwjgl.BufferUtils;
-
-import log.Logger;
-import main.Engine;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
+import static org.lwjgl.opengl.GL33.glUseProgram;
 
 public abstract class Shader implements FreeableObject {
 
@@ -42,13 +22,15 @@ public abstract class Shader implements FreeableObject {
 	private static final int SHADER_GEOMETRY = 0b100;
 
 	// Holds this program's ID.
-	private int program;
+	private final int program;
 
 	// Holds which types of shaders belong to this program.
 	private final int shaders;
 
 	// The integers hold the shader IDs used for this shader.
-	private int vertexShader, fragmentShader, geometryShader;
+	private final int vertexShader;
+	private final int fragmentShader;
+	private int geometryShader;
 
 	// Used to indicate compilation errors.
 	private String error = null;
@@ -61,7 +43,6 @@ public abstract class Shader implements FreeableObject {
 	 *                     shader.
 	 * @param fragmentFile The file to compile as this shader program's fragment
 	 *                     shader.
-	 * @param uniforms     The uniform variables used in this shader program.
 	 */
 	public Shader(String vertexFile, String fragmentFile) {
 
@@ -119,7 +100,6 @@ public abstract class Shader implements FreeableObject {
 	 *                     shader.
 	 * @param fragmentFile The file to compile as this shader program's fragment
 	 *                     shader.
-	 * @param uniforms     The uniform variables used in this shader program.
 	 */
 	public Shader(String vertexFile, String fragmentFile, String geometryFile) {
 
@@ -194,7 +174,7 @@ public abstract class Shader implements FreeableObject {
 			StringBuilder sb = new StringBuilder();
 			String line = "";
 			while ((line = br.readLine()) != null)
-				sb.append(line + "\n");
+				sb.append(line).append("\n");
 
 			// Create the shader object
 			int shader = glCreateShader(type);

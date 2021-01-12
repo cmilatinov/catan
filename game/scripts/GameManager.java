@@ -1,21 +1,26 @@
 package scripts;
 
 import board.nodes.Vertex;
-import entities.*;
+import entities.Entity;
+import entities.EntityToggleable;
+import entities.Player;
+import entities.Tile;
 import gameplay.ResourceType;
-import org.joml.Vector3f;
-import settings.SettingsManager;
-import states.*;
 import objects.GameScript;
 import objects.InjectableScript;
 import observers.GameObserver;
+import org.joml.Vector3f;
 import resources.Resource;
+import states.GameState;
+import states.StateSetup;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static observers.GameObserver.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static observers.GameObserver.PlayerEvent;
+import static observers.GameObserver.PlayerHandEvent;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class GameManager extends GameScript {
     // Entities registered in the scene that we need access to
@@ -119,7 +124,7 @@ public class GameManager extends GameScript {
 
         setGameState(new StateSetup(players.size()));
 
-        getScene().registerMouseClickAction(this::onClick);
+        getScene().setOnSceneClick(this::onClick);
         getScene().registerKeyUpAction(GLFW_KEY_SPACE, this::onSpaceReleased);
 
         gameObserver.broadcast(PlayerEvent.PLAYER_TURN, getCurrentPlayer());

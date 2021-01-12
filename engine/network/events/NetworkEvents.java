@@ -36,7 +36,7 @@ public class NetworkEvents {
 
             // Create a new instance of the event with the rest of the data
             return eventType.getConstructor(byte[].class)
-                    .newInstance(Arrays.copyOfRange(data, Integer.BYTES, data.length));
+                    .newInstance((Object)Arrays.copyOfRange(data, Integer.BYTES, data.length));
 
         } catch (Exception e) {
 

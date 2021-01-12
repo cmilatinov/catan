@@ -56,7 +56,6 @@ public class GameClient extends Thread {
 
 	/**
 	 * This client's identifier received from the server it connects to.
-	 * This client's identifier received from the server it connects to.
 	 */
 	private int clientID = -1;
 
@@ -244,7 +243,7 @@ public class GameClient extends Thread {
 		running = false;
 		try {
 			join();
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException ignored) {}
 	}
 	
 	/**
