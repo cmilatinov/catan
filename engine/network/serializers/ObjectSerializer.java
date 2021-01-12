@@ -32,7 +32,9 @@ public class ObjectSerializer {
                                     .array();
 
                         // Serialize field and create byte array starting with the field type and size
+                        field.setAccessible(true);
                         byte[] bytes = serializer.serialize((T) field.get(object));
+                        field.setAccessible(false);
                         int bufferSize = 2 * Integer.BYTES + bytes.length;
                         totalSize.addAndGet(bufferSize);
                         return ByteBuffer.allocate(bufferSize)
@@ -73,25 +75,31 @@ public class ObjectSerializer {
 
             for (int fieldIndex = 0; fieldIndex < numFields; fieldIndex++) {
                 Field field = classFields.get(fieldIndex);
+
+                int fieldType = buffer.getInt();
                 int fieldSize = buffer.getInt();
                 byte[] fieldBuffer = new byte[fieldSize];
                 buffer.get(fieldBuffer);
 
-                FieldSerializer<F> serializer = (FieldSerializer<F>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(field.getType());
-                F value = serializer.deserialize(fieldBuffer);
+                FieldSerializer<F> serializer = (FieldSerializer<F>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(Serializers.FIELD_TYPE_FROM_ID.get(fieldType));
+                if (serializer == null)
+                    continue;
 
+                F value = serializer.deserialize(fieldBuffer);
+                field.setAccessible(true);
                 field.set(instance, value);
+                field.setAccessible(false);
             }
-            
+
+            return instance;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
-
-        return null;
     }
 
     private static List<Field> collectFields(Class<?> classType) {
-        return Arrays.stream(classType.getFields())
+        return Arrays.stream(classType.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(SerializableField.class))
                 .collect(Collectors.toList());
     }
