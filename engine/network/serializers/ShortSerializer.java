@@ -10,8 +10,8 @@ public class ShortSerializer extends FieldSerializer<Short> {
     }
 
     public Short deserialize(byte[] data) {
-        return  (short)(((data[2] & 0xFF) << 8) |
-                ((data[3] & 0xFF)));
+        return  (short)(((data[0] & 0xFF) << 8) |
+                ((data[1] & 0xFF)));
     }
 
 }

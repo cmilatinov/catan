@@ -8,12 +8,13 @@ import java.util.stream.Collectors;
 public class Serializers {
 
     public static final List<FieldSerializer<?>> FIELD_SERIALIZERS = List.of(
-            new StringSerializer(),
+            new BooleanSerializer(),
             new ShortSerializer(),
             new IntegerSerializer(),
             new LongSerializer(),
             new FloatSerializer(),
-            new DoubleSerializer()
+            new DoubleSerializer(),
+            new StringSerializer()
     );
 
     public static final List<Class<?>> FIELD_TYPE_FROM_ID =

@@ -25,11 +25,13 @@ public class ObjectSerializer {
                     try {
                         // Find appropriate serializer for field, otherwise send empty field
                         FieldSerializer<T> serializer = (FieldSerializer<T>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(field.getType());
-                        if (serializer == null)
+                        if (serializer == null) {
+                            totalSize.addAndGet(2 * Integer.BYTES);
                             return ByteBuffer.allocate(2 * Integer.BYTES)
-                                    .putInt(Serializers.FIELD_ID_FROM_TYPE.get(field.getType()))
+                                    .putInt(-1)
                                     .putInt(0)
                                     .array();
+                        }
 
                         // Serialize field and create byte array starting with the field type and size
                         field.setAccessible(true);
@@ -62,29 +64,32 @@ public class ObjectSerializer {
 
     @SuppressWarnings("unchecked")
     public static <T, F> T deserialize(Class<T> classType, byte[] data) {
-
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        int numFields = buffer.getInt();
-
-        List<Field> classFields = collectFields(classType);
-        if (numFields != classFields.size())
-            return null;
-
         try {
+            // Wrap buffer and get number of fields
+            ByteBuffer buffer = ByteBuffer.wrap(data);
+            int numFields = buffer.getInt();
+
+            // Check number of fields matches
+            List<Field> classFields = collectFields(classType);
+            if (numFields != classFields.size())
+                return null;
+
+            // Create instance using empty constructor
             T instance = classType.getConstructor().newInstance();
 
-            for (int fieldIndex = 0; fieldIndex < numFields; fieldIndex++) {
-                Field field = classFields.get(fieldIndex);
-
+            for (Field field : classFields) {
+                // Get field type and data
                 int fieldType = buffer.getInt();
                 int fieldSize = buffer.getInt();
                 byte[] fieldBuffer = new byte[fieldSize];
                 buffer.get(fieldBuffer);
 
-                FieldSerializer<F> serializer = (FieldSerializer<F>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(Serializers.FIELD_TYPE_FROM_ID.get(fieldType));
-                if (serializer == null)
+                // Not a supported serializable type
+                if (fieldType < 0)
                     continue;
 
+                // Find serializer and use to deserialize data
+                FieldSerializer<F> serializer = (FieldSerializer<F>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(Serializers.FIELD_TYPE_FROM_ID.get(fieldType));
                 F value = serializer.deserialize(fieldBuffer);
                 field.setAccessible(true);
                 field.set(instance, value);
@@ -93,7 +98,6 @@ public class ObjectSerializer {
 
             return instance;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
