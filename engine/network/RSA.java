@@ -21,7 +21,7 @@ public class RSA {
 	/**
 	 * Generates a key pair (public and private key) using the RSA algorithm.
 	 * @param keySize The size of the keys in bytes.
-	 * @return [{@link KeyPair}] The generated key pair.
+	 * @return {@link KeyPair} The generated key pair.
 	 */
 	public static KeyPair generateKeyPair(int keySize) {
 		
@@ -130,7 +130,7 @@ public class RSA {
 	 * Exports a public key into a binary file.
 	 * @param key The {@link PublicKey} to export.
 	 * @param fileName The name of the file in which the {@link PublicKey} is to be saved.
-	 * @return [<b>boolean</b>] Whether or not the export has succeeded.
+	 * @return <b>boolean</b> Whether or not the export has succeeded.
 	 */
 	public static boolean exportToFile(PublicKey key, String fileName) {
 		
@@ -160,7 +160,7 @@ public class RSA {
 	 * Exports a private key into a binary file.
 	 * @param key The {@link PrivateKey} to export.
 	 * @param fileName The name of the file in which the {@link PrivateKey} is to be saved.
-	 * @return [<b>boolean</b>] Whether or not the export has succeeded.
+	 * @return <b>boolean</b> Whether or not the export has succeeded.
 	 */
 	public static boolean exportToFile(PrivateKey key, String fileName) {
 		
@@ -190,7 +190,7 @@ public class RSA {
 	 * Exports a private key into a binary file.
 	 * @param keypair The {@link KeyPair} to export.
 	 * @param fileName The name of the files in which the keys to be saved (file extensions are .public and .private).
-	 * @return [<b>boolean</b>] Whether or not the export has succeeded.
+	 * @return <b>boolean</b> Whether or not the export has succeeded.
 	 */
 	public static boolean exportToFile(KeyPair keypair, String fileName) {
 		
@@ -226,7 +226,7 @@ public class RSA {
 	/**
 	 * Imports a public key from a binary file.
 	 * @param fileName The name of the file to import.
-	 * @return [{@link PublicKey}] The resulting {@link PublicKey}.
+	 * @return {@link PublicKey} The resulting {@link PublicKey}.
 	 */
 	public static PublicKey importPublicKeyFromFile(String fileName) {
 		
@@ -256,7 +256,7 @@ public class RSA {
 	/**
 	 * Imports a private key from a binary file.
 	 * @param fileName The name of the file to import.
-	 * @return [{@link PrivateKey}] The resulting {@link PrivateKey}.
+	 * @return {@link PrivateKey} The resulting {@link PrivateKey}.
 	 */
 	public static PrivateKey importPrivateKeyFromFile(String fileName) {
 		
@@ -286,7 +286,7 @@ public class RSA {
 	/**
 	 * Imports a key pair from a set of binary files.
 	 * @param fileName The name of the files to import (file extensions are .public and .private).
-	 * @return [{@link KeyPair}] The resulting {@link KeyPair}.
+	 * @return {@link KeyPair} The resulting {@link KeyPair}.
 	 */
 	public static KeyPair importKeyPairFromFiles(String fileName) {
 		

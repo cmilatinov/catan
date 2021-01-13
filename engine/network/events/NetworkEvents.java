@@ -15,7 +15,7 @@ public class NetworkEvents {
     /**
      * Creates a new event instance with the given serialized data.
      * @param data The serialized event data.
-     * @return [{@link NetworkEvent}] The newly created event instance.
+     * @return {@link NetworkEvent} The newly created event instance.
      */
     public static NetworkEvent createFromData(byte[] data) {
 
@@ -60,7 +60,7 @@ public class NetworkEvents {
      * Casts an event to its specific subtype.
      * @param <E> The event subtype class to cast to.
      * @param event The event object to cast.
-     * @return [<b>P</b>] The casted event object or null if event is not of class E.
+     * @return <b>P</b> The casted event object or null if event is not of class E.
      */
     @SuppressWarnings("unchecked")
     public static <E extends NetworkEvent> E cast(NetworkEvent event) {

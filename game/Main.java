@@ -6,7 +6,7 @@ import scene.MainMenu;
 import settings.SettingsManager;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         var engine = new Engine();
         Scene.registerGlobal(new SettingsManager("./config/config.xml"));
 

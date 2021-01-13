@@ -40,7 +40,9 @@ public final class Engine {
                 false,              // Not always on top
                 false                 // Not fullscreen
         );
-        window = new Window("Hello", mode).create().requestFocus();
+        window = new Window("Hello", mode)
+                .create()
+                .requestFocus();
 
         // Load resources
         log("Loading assets ...");
@@ -49,7 +51,6 @@ public final class Engine {
         currentScene = new Scene() {
             @Override
             public void initialize() {
-
             }
         };
     }
@@ -62,14 +63,12 @@ public final class Engine {
         this.currentScene = currentScene;
         // Have to set the context of any globals here since
         // this is the only point where the transfer of a new scene happens
-        for(GameScript script : Scene.getGlobals())
-        {
+        for (GameScript script : Scene.getGlobals()) {
             script.setContext(currentScene);
         }
     }
 
-    public Window getWindow()
-    {
+    public Window getWindow() {
         return window;
     }
 
@@ -98,7 +97,6 @@ public final class Engine {
         while (!window.shouldClose()) {
             // Time elapsed since last frame
             long currentTime = System.nanoTime();
-
             double delta = (currentTime - lastTime) * 1e-9;
 
             // Update

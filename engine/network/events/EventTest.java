@@ -56,7 +56,7 @@ public class EventTest extends NetworkEvent {
 
     /**
      * Returns the stored message.
-     * @return [{@link String}] The stored message in string format.
+     * @return {@link String} The stored message in string format.
      */
     public String getMessage() {
         return msg;
@@ -65,7 +65,7 @@ public class EventTest extends NetworkEvent {
     /**
      * Sets this packet's stored message.
      * @param msg The new message this packet is to hold.
-     * @return [{@link PacketConnect}] This same {@link PacketConnect} instance to allow for method chaining.
+     * @return {@link PacketConnect} This same {@link PacketConnect} instance to allow for method chaining.
      */
     public EventTest setMessage(String msg) {
         this.msg = msg;

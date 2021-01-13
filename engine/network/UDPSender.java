@@ -158,7 +158,7 @@ public class UDPSender extends Thread {
 	
 	/**
 	 * Returns the bind port of this sender.
-	 * @return [<b>int</b>] The local port number to which this sender is bound to.
+	 * @return <b>int</b> The local port number to which this sender is bound to.
 	 */
 	public int getPort() {
 		return port;

@@ -40,7 +40,7 @@ public abstract class NetworkEvent {
 
     /**
      * Returns this event's type as an integer.
-     * @return [<b>int</b>] This event's type integer-encoded value.
+     * @return <b>int</b> This event's type integer-encoded value.
      */
     public int getType() {
         return type;

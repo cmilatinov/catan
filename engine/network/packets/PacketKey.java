@@ -69,7 +69,7 @@ public class PacketKey extends Packet {
 	
 	/**
 	 * Returns the stored public RSA key. 
-	 * @return [{@link PublicKey}] The public RSA key stored in this packet.
+	 * @return {@link PublicKey} The public RSA key stored in this packet.
 	 */
 	public PublicKey getKey() {
 		return key;
@@ -78,7 +78,7 @@ public class PacketKey extends Packet {
 	/**
 	 * Sets this packet's public RSA key.
 	 * @param key The new RSA public key this packet is to hold.
-	 * @return [{@link PacketConnect}] This same {@link PacketConnect} instance to allow for method chaining.
+	 * @return {@link PacketConnect} This same {@link PacketConnect} instance to allow for method chaining.
 	 */
 	public PacketKey setKey(PublicKey key) {
 		this.key = key;
@@ -87,7 +87,7 @@ public class PacketKey extends Packet {
 	
 	/**
 	 * Returns whether or not the receiver should respond with their own key.
-	 * @return [<b>boolean</b>] True if the receiver is to send back their key, false otherwise.
+	 * @return <b>boolean</b> True if the receiver is to send back their key, false otherwise.
 	 */
 	public boolean getRequestRemoteKey() {
 		return requestKey;
@@ -96,7 +96,7 @@ public class PacketKey extends Packet {
 	/**
 	 * Sets this packet's boolean requesting a remote key.
 	 * @param key The new value of the boolean.
-	 * @return [{@link PacketConnect}] This same {@link PacketConnect} instance to allow for method chaining.
+	 * @return {@link PacketConnect} This same {@link PacketConnect} instance to allow for method chaining.
 	 */
 	public PacketKey setRequestRemoteKey(boolean requestRemoteKey) {
 		this.requestKey = requestRemoteKey;

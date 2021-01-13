@@ -48,7 +48,7 @@ public abstract class Packet {
 
 	/**
 	 * Returns this packet's type as an integer.
-	 * @return [<b>int</b>] This packet's type integer-encoded value.
+	 * @return <b>int</b> This packet's type integer-encoded value.
 	 */
 	public int getType() {
 		return type;

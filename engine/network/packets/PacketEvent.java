@@ -68,7 +68,7 @@ public class PacketEvent extends Packet {
 
     /**
      * Returns the stored event ID.
-     * @return [<b>long</b>] The event ID stored in this packet.
+     * @return <b>long</b> The event ID stored in this packet.
      */
     public long getEventID() {
         return eventID;
@@ -77,7 +77,7 @@ public class PacketEvent extends Packet {
     /**
      * Sets the event ID stored in this packet.
      * @param eventID The new event ID.
-     * @return [{@link PacketEvent}] This same {@link PacketEvent} instance to allow for method chaining.
+     * @return {@link PacketEvent} This same {@link PacketEvent} instance to allow for method chaining.
      */
     public PacketEvent setEventID(long eventID) {
         this.eventID = eventID;
@@ -86,7 +86,7 @@ public class PacketEvent extends Packet {
 
     /**
      * Returns the stored event.
-     * @return [{@link NetworkEvent}] The event stored in this packet.
+     * @return {@link NetworkEvent} The event stored in this packet.
      */
     public NetworkEvent getEvent() {
         return event;
@@ -95,7 +95,7 @@ public class PacketEvent extends Packet {
     /**
      * Sets the event stored in this packet.
      * @param event The new event.
-     * @return [{@link PacketEvent}] This same {@link PacketEvent} instance to allow for method chaining.
+     * @return {@link PacketEvent} This same {@link PacketEvent} instance to allow for method chaining.
      */
     public PacketEvent setEvent(NetworkEvent event) {
         this.event = event;

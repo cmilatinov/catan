@@ -252,7 +252,7 @@ public class GameClient extends Thread {
 	 * @param address The remote IP address in string form (ie. "192.168.0.1") to connect to.
 	 * @param port The remote port number to connect to.
 	 * @param username The username to use.
-	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient connect(String address, int port, String username) {
 		if(!ready) return this;
@@ -276,7 +276,7 @@ public class GameClient extends Thread {
 
 	/**
 	 * Disconnects the client from the remote server it is currently connected to.
-	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient disconnect() {
 		if (!ready || !connected) return this;
@@ -290,7 +290,7 @@ public class GameClient extends Thread {
 	/**
 	 * Sets the callback to invoke when a connection to a remote server is made.
 	 * @param callback The new callback to run once a connection is made.
-	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient onConnect(Runnable callback) {
 		this.onConnect = callback;
@@ -300,7 +300,7 @@ public class GameClient extends Thread {
 	/**
 	 * Sets the callback to invoke when a connection to a remote server is terminated.
 	 * @param callback The new callback to run once a connection is terminated.
-	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient onDisconnect(Runnable callback) {
 		this.onDisconnect = callback;
@@ -310,7 +310,7 @@ public class GameClient extends Thread {
 	/**
 	 * Sets the callback to invoke when a connection to a remote server has timed out.
 	 * @param callback The new callback to run once a connection has timed out.
-	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient onTimeout(Runnable callback) {
 		this.onTimeout = callback;
@@ -320,7 +320,7 @@ public class GameClient extends Thread {
 	/**
 	 * Sends an event to the remote peer.
 	 * @param event The event to send.
-	 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+	 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 	 */
 	public GameClient sendEvent(NetworkEvent event) {
 		if (!ready && !connected)
@@ -331,7 +331,7 @@ public class GameClient extends Thread {
 	
 	/**
 	 * Returns whether or not this client is currently connected to a remote server.
-	 * @return [<b>boolean</b>] True if a connection exists between this client and a remote server, false otherwise.
+	 * @return <b>boolean</b> True if a connection exists between this client and a remote server, false otherwise.
 	 */
 	public boolean isConnected() {
 		return connected;
@@ -384,7 +384,7 @@ public class GameClient extends Thread {
 
 	/**
 	 * Returns the latency between the client and server in milliseconds.
-	 * @return [<b>long</b>] The latency between the client and server in milliseconds.
+	 * @return <b>long</b> The latency between the client and server in milliseconds.
 	 */
 	public long getPing() {
 		if (!ready || !connected)

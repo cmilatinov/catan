@@ -66,7 +66,7 @@ public class EventManager {
     /**
      * Sets this manager's remote peer address.
      * @param remote The remote peer's IP address and port.
-     * @return [{@link EventManager}] This same instance of the class.
+     * @return {@link EventManager} This same instance of the class.
      */
     public EventManager setRemoteAddress(InetSocketAddress remote) {
         this.remote = remote;

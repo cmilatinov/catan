@@ -67,7 +67,7 @@ public class PacketPing extends Packet {
 	/**
 	 * Sets whether or not this ping packet should be returned to the sender.
 	 * @param returnPing Whether or not to return this ping packet.
-	 * @return [{@link PacketPing}] This same {@link PacketPing} instance to allow for method chaining.
+	 * @return {@link PacketPing} This same {@link PacketPing} instance to allow for method chaining.
 	 */
 	public PacketPing setShouldReturnPing(boolean returnPing) {
 		this.returnPing = returnPing;
@@ -76,7 +76,7 @@ public class PacketPing extends Packet {
 	
 	/**
 	 * Returns this packet's stored timestamp.
-	 * @return [<b>long</b>] The timestamp given to this packet by its sender. Note that timestamps should only be compared if they originate from the same machine.
+	 * @return <b>long</b> The timestamp given to this packet by its sender. Note that timestamps should only be compared if they originate from the same machine.
 	 */
 	public long getTimestamp() {
 		return timestamp;

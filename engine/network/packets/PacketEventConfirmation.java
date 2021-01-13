@@ -46,7 +46,7 @@ public class PacketEventConfirmation extends Packet {
 
     /**
      * Returns the stored event ID.
-     * @return [<b>long</b>] The event ID stored in this packet.
+     * @return <b>long</b> The event ID stored in this packet.
      */
     public long getEventID() {
         return eventID;
@@ -55,7 +55,7 @@ public class PacketEventConfirmation extends Packet {
     /**
      * Sets the event ID stored in this packet.
      * @param eventID The new event ID.
-     * @return [{@link PacketEvent}] This same {@link PacketEventConfirmation} instance to allow for method chaining.
+     * @return {@link PacketEvent} This same {@link PacketEventConfirmation} instance to allow for method chaining.
      */
     public PacketEventConfirmation setEventID(long eventID) {
         this.eventID = eventID;

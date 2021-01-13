@@ -104,7 +104,7 @@ public class GameServer extends Thread {
 		/**
 		 * Sends an event to the remote client.
 		 * @param event The event to send.
-		 * @return [{@link GameClient}] This same {@link GameClient} instance to allow for method chaining.
+		 * @return {@link GameClient} This same {@link GameClient} instance to allow for method chaining.
 		 */
 		public ClientHandler sendEvent(NetworkEvent event) {
 			eventManager.sendEvent(event);

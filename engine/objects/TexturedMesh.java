@@ -1,8 +1,18 @@
 package objects;
 
+/**
+ * Represents a mesh which is to be rendered using a specific texture
+ */
 public class TexturedMesh implements GameResource {
 
+	/**
+	 * The mesh to render.
+	 */
 	private final Mesh mesh;
+
+	/**
+	 * The texture to use for the render.
+	 */
 	private final Texture texture;
 
 	/**
@@ -18,7 +28,7 @@ public class TexturedMesh implements GameResource {
 	
 	/**
 	 * Returns the mesh to render.
-	 * @return [{@link Mesh}] The mesh for this model.
+	 * @return {@link Mesh} The mesh for this model.
 	 */
 	public Mesh getMesh() {
 		return mesh;
@@ -26,7 +36,7 @@ public class TexturedMesh implements GameResource {
 	
 	/**
 	 * Returns the texture to use for rendering.
-	 * @return [{@link Texture}] The texture for this model.
+	 * @return {@link Texture} The texture for this model.
 	 */
 	public Texture getTexture() {
 		return texture;

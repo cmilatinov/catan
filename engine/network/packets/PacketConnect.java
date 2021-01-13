@@ -54,7 +54,7 @@ public class PacketConnect extends Packet {
 	
 	/**
 	 * Returns the stored username. 
-	 * @return [{@link String}] The stored username in string format.
+	 * @return {@link String} The stored username in string format.
 	 */
 	public String getUsername() {
 		return username;
@@ -63,7 +63,7 @@ public class PacketConnect extends Packet {
 	/**
 	 * Sets this packet's stored username.
 	 * @param username The new username this packet is to hold.
-	 * @return [{@link PacketConnect}] This same {@link PacketConnect} instance to allow for method chaining.
+	 * @return {@link PacketConnect} This same {@link PacketConnect} instance to allow for method chaining.
 	 */
 	public PacketConnect setUsername(String username) {
 		this.username = username;

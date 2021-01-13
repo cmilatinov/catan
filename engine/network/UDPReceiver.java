@@ -162,7 +162,7 @@ public class UDPReceiver extends Thread {
 	/**
 	 * Sets this {@link UDPReceiver}'s callback triggered when a packet is received.
 	 * @param callback The callback to use when a packet is received. 
-	 * @return [{@link UDPReceiver}] This same {@link UDPReceiver} instance to allow for method chaining.
+	 * @return {@link UDPReceiver} This same {@link UDPReceiver} instance to allow for method chaining.
 	 */
 	public UDPReceiver withCallback(PacketReceivedListener callback) {
 		this.callback = callback;
@@ -240,7 +240,7 @@ public class UDPReceiver extends Thread {
 
 	/**
 	 * Returns the bind port of this receiver.
-	 * @return [<b>int</b>] The local port number to which this receiver is bound to.
+	 * @return <b>int</b> The local port number to which this receiver is bound to.
 	 */
 	public int getPort() {
 		return port;
@@ -248,7 +248,7 @@ public class UDPReceiver extends Thread {
 	
 	/**
 	 * Returns the bind address of this receiver.
-	 * @return [{@link InetAddress}] The local IP address to which this receiver is bound to.
+	 * @return {@link InetAddress} The local IP address to which this receiver is bound to.
 	 */
 	public InetAddress getAddress() {
 		return address;
@@ -256,7 +256,7 @@ public class UDPReceiver extends Thread {
 	
 	/**
 	 * Returns the {@link DatagramSocket} backing this receiver.
-	 * @return [{@link DatagramSocket}] The {@link DatagramSocket} used to by this receiver receive packets.
+	 * @return {@link DatagramSocket} The {@link DatagramSocket} used to by this receiver receive packets.
 	 */
 	public DatagramSocket getSocket() {
 		return socket;

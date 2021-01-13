@@ -27,13 +27,13 @@ public class GameResourceFactory {
 	 * Loads a mesh from an OBJ file.
 	 * 
 	 * @param path The path to the OBJ file.
-	 * @return [{@link Mesh}] Null if unable to parse the file, the loaded mesh
+	 * @return {@link Mesh} Null if unable to parse the file, the loaded mesh
 	 *         object otherwise.
 	 */
 	public static Mesh loadOBJ(String path) {
 		AIScene scene = Assimp.aiImportFile(path, Assimp.aiProcess_Triangulate | Assimp.aiProcess_FlipUVs);
 
-		if (scene.mNumMeshes() <= 0)
+		if (scene == null || scene.mNumMeshes() <= 0)
 			return null;
 
 		AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(0));
@@ -79,7 +79,7 @@ public class GameResourceFactory {
 	 * @param vertices The vertex list of the mesh, in XYZ format.
 	 * @param normals  The normal list of the mesh, in XYZ format.
 	 * @param uvs      The texture coordinate list of the mesh, in UV format.
-	 * @return [{@link Mesh}] The resulting mesh object.
+	 * @return {@link Mesh} The resulting mesh object.
 	 */
 	public static Mesh loadMesh(int[] indices, float[] vertices, float[] normals, float[] uvs) {
 
@@ -115,7 +115,7 @@ public class GameResourceFactory {
 	 * @param indices  The index list of the mesh.
 	 * @param vertices The vertex list of the mesh, in XYZ format.
 	 * @param uvs      The texture coordinate list of the mesh, in UV format.
-	 * @return [{@link Mesh}] The resulting mesh object.
+	 * @return {@link Mesh} The resulting mesh object.
 	 */
 	public static Mesh loadMesh(int[] indices, float[] vertices, float[] uvs) {
 
@@ -147,7 +147,7 @@ public class GameResourceFactory {
 	 * 
 	 * @param indices  The index list of the mesh.
 	 * @param vertices The vertex list of the mesh, in XYZ format.
-	 * @return [{@link Mesh}] The resulting mesh object.
+	 * @return {@link Mesh} The resulting mesh object.
 	 */
 	public static Mesh loadMesh(int[] indices, float[] vertices) {
 
@@ -177,7 +177,7 @@ public class GameResourceFactory {
 	 * @param filepath  Path to the bitmap file.
 	 * @param filtering The filtering strategy to use when scaling the texture.
 	 * @param mipmap    Whether or not to generate a mipmap for the texture.
-	 * @return [{@link Texture}] Null if the texture could not be loaded, otherwise
+	 * @return {@link Texture} Null if the texture could not be loaded, otherwise
 	 *         returns the texture object corresponding to the loaded bitmap.
 	 */
 	public static Texture loadTexture2D(String filepath, int filtering, boolean mipmap) {
@@ -227,7 +227,7 @@ public class GameResourceFactory {
 	 * 
 	 * @param filepath Path to the folder containing the six textures. Textures must
 	 *                 be named 'skybox0.jpg' through 'skybox5.jpg'.
-	 * @return [{@link Texture}] Null if any of the textures could not be loaded, otherwise
+	 * @return {@link Texture} Null if any of the textures could not be loaded, otherwise
 	 *         returns the texture object corresponding to the loaded cube map.
 	 */
 	public static Texture loadTextureCubeMap(String filepath) {
@@ -272,7 +272,7 @@ public class GameResourceFactory {
 	 * Generates a plane with the given number of subdivisions.
 	 * 
 	 * @param subdivisions The number of subdivisions to create the plane with.
-	 * @return [{@link Mesh}] The resulting mesh.
+	 * @return {@link Mesh} The resulting mesh.
 	 */
 	public static Mesh generatePlane(int subdivisions) {
 
@@ -320,7 +320,7 @@ public class GameResourceFactory {
 	 * Stores the pixel data of an image into a byte buffer in RGBA format.
 	 *
 	 * @param img The source image.
-	 * @return [{@link ByteBuffer}] The resulting byte buffer.
+	 * @return {@link ByteBuffer} The resulting byte buffer.
 	 */
 	private static ByteBuffer imageToRGBABuffer(BufferedImage img) {
 		int[] pixels = new int[img.getWidth() * img.getHeight()];
@@ -336,7 +336,7 @@ public class GameResourceFactory {
 				buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
 				buffer.put((byte) ((pixel >> 8) & 0xFF)); // Green component
 				buffer.put((byte) (pixel & 0xFF)); // Blue component
-				buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component. Only for RGBA
+				buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
 			}
 		}
 

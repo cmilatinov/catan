@@ -30,7 +30,7 @@ public class PacketAcceptConnection extends Packet {
 
 	/**
 	 * Returns the ID stored in this packet.
-	 * @return [<b>int</b>] The ID stored in this packet.
+	 * @return <b>int</b> The ID stored in this packet.
 	 */
 	public int getID() {
 		return id;

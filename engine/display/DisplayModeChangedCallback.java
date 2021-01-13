@@ -1,7 +1,12 @@
 package display;
 
 public interface DisplayModeChangedCallback {
-	
-	public void invoke(DisplayMode newMode);
-	
+
+    /**
+     * Invoked whenever a frame's display mode is changed.
+     *
+     * @param newMode The frame's new display mode.
+     */
+    void invoke(DisplayMode newMode);
+
 }

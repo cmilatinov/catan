@@ -24,7 +24,7 @@ public class Packets {
 	/**
 	 * Creates a new packet instance with the given serialized data.
 	 * @param data The serialized packet data.
-	 * @return [{@link Packet}] The newly created packet instance.
+	 * @return {@link Packet} The newly created packet instance.
 	 */
 	public static Packet createFromData(byte[] data) {
 		
@@ -69,7 +69,7 @@ public class Packets {
 	 * Casts a packet to its specific subtype.
 	 * @param <P> The packet subtype class to cast to.
 	 * @param p The packet object to cast.
-	 * @return [<b>P</b>] The casted packet object or null if p is not of class P.
+	 * @return <b>P</b> The casted packet object or null if p is not of class P.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <P extends Packet> P cast(Packet p) {

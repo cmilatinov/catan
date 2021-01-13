@@ -25,7 +25,7 @@ public class NetworkModule {
 	
 	/**
 	 * Returns whether or not the module has correctly been initialized and is ready for use.
-	 * @return [<b>boolean</b>] Whether or not the module has correctly been initialized and is ready for use.
+	 * @return <b>boolean</b> Whether or not the module has correctly been initialized and is ready for use.
 	 */
 	public static boolean isReady() {
 		return READY;

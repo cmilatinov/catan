@@ -54,7 +54,7 @@ public class PacketRejectConnection extends Packet {
 	
 	/**
 	 * Returns the reason for the connection rejection.
-	 * @return [{@link String}] The reason for the connection rejection.
+	 * @return {@link String} The reason for the connection rejection.
 	 */
 	public String getReason() {
 		return reason;
@@ -63,7 +63,7 @@ public class PacketRejectConnection extends Packet {
 	/**
 	 * Sets the reason for the connection rejection.
 	 * @param reason The new reason for rejection.
-	 * @return [{@link PacketRejectConnection}] This same {@link PacketRejectConnection} instance to allow for method chaining.
+	 * @return {@link PacketRejectConnection} This same {@link PacketRejectConnection} instance to allow for method chaining.
 	 */
 	public PacketRejectConnection setReason(String reason) {
 		this.reason = reason;
