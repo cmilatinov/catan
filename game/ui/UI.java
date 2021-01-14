@@ -1,7 +1,6 @@
 package ui;
 
 import entities.Player;
-import gameplay.ResourceType;
 import objects.GameScript;
 import objects.InitializeSelfBefore;
 import objects.InjectableScript;
@@ -70,7 +69,7 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
     }
 
     @Override
-    public void onPlayerHandEvent(GameObserver.PlayerHandEvent eventType, ResourceType type, int count) {
+    public void onPlayerHandEvent(GameObserver.PlayerHandEvent eventType, int type, int count) {
         switch(eventType) {
             case RESOURCES_ADDED -> {
                 for(int i = 0; i < count; i ++)

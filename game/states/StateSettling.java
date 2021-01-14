@@ -1,12 +1,10 @@
 package states;
 
-import board.BuildingType;
-import board.nodes.Side;
-import board.nodes.Vertex;
+import entities.board.Piece;
+import entities.board.nodes.Side;
+import entities.board.nodes.Vertex;
 import entities.Entity;
 import entities.Player;
-import gameplay.Costs;
-import gameplay.DevelopmentCards;
 import observers.GameObserver.GameStates;
 import scripts.GameManager;
 
@@ -17,44 +15,35 @@ public class StateSettling implements GameState {
         if(clicked instanceof Vertex) {
             Vertex clickedVertex = ((Vertex) clicked);
 
-            if(clickedVertex.isNodeFree() &&
-               !clickedVertex.isBuildingNearby() &&
+            if(clickedVertex.isEmpty() &&
+               !clickedVertex.isPieceNearby() &&
                clickedVertex.isRoadNearby(player) &&
-               Costs.getInstance().canBuyBuilding(BuildingType.SETTLEMENT, player))
+               player.canAfford(Piece.getPrice(Piece.SETTLEMENT)))
             {
-                // Removes cards from player inventory
-                Costs.getInstance().purchaseBuilding(BuildingType.SETTLEMENT, player);
+                player.purchasePiece(Piece.getPrice(Piece.SETTLEMENT));
                 // Registers the settlement.
                 clickedVertex.settle(player);
-                context.getScene().register(clickedVertex.getBuilding());
-            } else if (!clickedVertex.isNodeFree() &&
+                context.getScene().register(clickedVertex.getPiece());
+            } else if (!clickedVertex.isEmpty() &&
                        clickedVertex.getOwner() == player &&
-                       Costs.getInstance().canBuyBuilding(BuildingType.CITY, player))
+                       player.canAfford(Piece.getPrice(Piece.CITY)))
             {
-                // Removes cards from player inventory
-                Costs.getInstance().purchaseBuilding(BuildingType.CITY, player);
-
+                player.purchasePiece(Piece.getPrice(Piece.CITY));
                 // First clear the old building from the scene and then register the city.
-                context.getScene().remove(clickedVertex.getBuilding());
-                clickedVertex.upgrade();
-                context.getScene().register(clickedVertex.getBuilding());
+                context.getScene().remove(clickedVertex.getPiece());
+                clickedVertex.settle(player);
+                context.getScene().register(clickedVertex.getPiece());
             }
         } else if (clicked instanceof Side) {
             Side clickedSide = ((Side) clicked);
-            if(clickedSide.isNodeFree() &&
+            if(clickedSide.isEmpty() &&
                (clickedSide.isAlliedBuildingNearby(player) || clickedSide.isAlliedRoadNearby(player)) &&
-               Costs.getInstance().canBuyBuilding(BuildingType.ROAD, player)) {
+                player.canAfford(Piece.getPrice(Piece.ROAD))) {
                 // Removes cards from player inventory
-                Costs.getInstance().purchaseBuilding(BuildingType.ROAD, player);
+                player.purchasePiece(Piece.getPrice(Piece.ROAD));
 
                 clickedSide.settle(player);
-                context.getScene().register(clickedSide.getBuilding());
-            }
-        } else if (clicked instanceof DevelopmentCards) {
-            DevelopmentCards deck = ((DevelopmentCards) clicked);
-
-            if(!deck.isEmpty()) {
-                player.addCards(deck.drawCard(), 1);
+                context.getScene().register(clickedSide.getPiece());
             }
         }
     }

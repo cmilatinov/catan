@@ -1,8 +1,6 @@
 package observers;
 
 import entities.Player;
-import gameplay.ResourceType;
-import scripts.GameManager;
 
 import java.util.ArrayList;
 
@@ -63,7 +61,7 @@ public class GameObserver {
             subject.onGamePhaseEvent(event);
     }
 
-    public void broadcast(PlayerHandEvent event, ResourceType type, int count) {
+    public void broadcast(PlayerHandEvent event, int type, int count) {
         playerHandEventSubjects.forEach(s -> s.onPlayerHandEvent(event, type, count));
     }
 

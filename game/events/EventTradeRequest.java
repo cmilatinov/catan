@@ -29,12 +29,9 @@ public class EventTradeRequest extends NetworkEvent {
         writeHeader(data);
 
         data.putInt(tradeContext.getOffer().size());
-        
-        SerializedHashmap.serialize(data, tradeContext.getOffer());
+
 
         data.putInt(tradeContext.getRequest().size());
-
-        SerializedHashmap.serialize(data, tradeContext.getRequest());
 
         data.putInt(tradeContext.getTradeOwner().getID());
         return data.array();

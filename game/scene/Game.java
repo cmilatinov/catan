@@ -1,7 +1,6 @@
 package scene;
 
 import camera.Camera;
-import gameplay.DevelopmentCards;
 import camera.CameraPan;
 import entities.Entity;
 import entities.Table;
@@ -57,9 +56,6 @@ public class Game extends Scene {
                 .scale(10)
                 .translate(new Vector3f(0, -0.07f, 0));
         register(table);
-
-        Entity devCards = DevelopmentCards.create().scale(0.1f).translate(new Vector3f(4f, 0, 5f));
-        register(devCards);
 
         Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
         Light sun2 = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(-500, 1000, 500));

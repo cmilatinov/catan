@@ -1,12 +1,10 @@
 package states;
 
-import board.Node;
-import board.nodes.Side;
-import board.nodes.Vertex;
 import entities.Entity;
 import entities.Player;
+import entities.board.nodes.Side;
+import entities.board.nodes.Vertex;
 import observers.GameObserver.GameStates;
-import org.joml.Vector3f;
 import scripts.GameManager;
 
 public class StateSetup implements GameState {
@@ -31,10 +29,10 @@ public class StateSetup implements GameState {
                 return;
 
             Vertex clickedVertex = ((Vertex) clicked);
-            if(clickedVertex.isNodeFree() && !clickedVertex.isBuildingNearby()) {
+            if(clickedVertex.isEmpty() && !clickedVertex.isPieceNearby()) {
                 // Registers the settlement.
                 clickedVertex.settle(player);
-                context.getScene().register(clickedVertex.getBuilding());
+                context.getScene().register(clickedVertex.getPiece());
 
                 currentPhase = phases.ROAD;
 
@@ -49,9 +47,9 @@ public class StateSetup implements GameState {
 
             Side clickedSide = ((Side) clicked);
 
-            if(clickedSide.isNodeFree() && clickedSide.isAlliedBuildingNearby(player)) {
+            if(clickedSide.isEmpty() && clickedSide.isAlliedBuildingNearby(player)) {
                 clickedSide.settle(player);
-                context.getScene().register(clickedSide.getBuilding());
+                context.getScene().register(clickedSide.getPiece());
 
                 currentPhase = phases.SETTLEMENT;
                 iterations --;

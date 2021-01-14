@@ -1,6 +1,6 @@
 package resources;
 
-import gameplay.ResourceType;
+import entities.board.Tile;
 
 public enum Resource {
 	
@@ -87,14 +87,14 @@ public enum Resource {
 		};
 	}
 
-	public static Resource getTileModel(ResourceType t) {
+	public static Resource getTileModel(int t) {
 		return switch (t) {
-			case BRICK -> MODEL_TILE_BRICK;
-			case DESERT -> MODEL_TILE_DESERT;
-			case FOREST -> MODEL_TILE_FOREST;
-			case STONE -> MODEL_TILE_STONE;
-			case WHEAT -> MODEL_TILE_WHEAT;
-			case SHEEP -> MODEL_TILE_SHEEP;
+			case Tile.BRICK -> MODEL_TILE_BRICK;
+			case Tile.DESERT -> MODEL_TILE_DESERT;
+			case Tile.WOOD -> MODEL_TILE_FOREST;
+			case Tile.STONE -> MODEL_TILE_STONE;
+			case Tile.WHEAT -> MODEL_TILE_WHEAT;
+			case Tile.SHEEP -> MODEL_TILE_SHEEP;
 			default -> null;
 		};
 	}

@@ -2,47 +2,43 @@ package gameplay;
 
 import entities.Player;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class TradeContext {
-    private final HashMap<ResourceType, Integer> offer = new HashMap<ResourceType, Integer>();
-    private final HashMap<ResourceType, Integer> request = new HashMap<ResourceType, Integer>();
+    private final ArrayList<Integer> offer = new ArrayList<Integer>();
+    private final ArrayList<Integer> request = new ArrayList<Integer>();
 
     private Player tradeOwner;
 
-    public void addToOffer(ResourceType resource, int count) {
-        if(ResourceType.isResource(resource)) {
-            offer.merge(resource, count, Integer::sum);
-        }
+    public void addToOffer(int resource, int count) {
+        offer.set(resource, offer.get(resource) + count);
     }
 
-    public void addToRequest(ResourceType resource, int count) {
-        if(ResourceType.isResource(resource)) {
-            request.merge(resource, count, Integer::sum);
-        }
+    public void addToRequest(int resource, int count) {
+        request.set(resource, offer.get(resource) + count);
     }
 
-    public void removeFromOffer(ResourceType resource, int count) {
+    public void removeFromOffer(int resource, int count) {
         if (offer.get(resource) != null) {
             if(offer.get(resource) - count > 0) {
-                offer.merge(resource, -count, Integer::sum);
+                offer.set(resource, offer.get(resource) - count);
             } else if (offer.get(resource) - count == 0) {
                 offer.remove(resource);
             }
         }
     }
 
-    public void removeFromRequest(ResourceType resource, int count) {
+    public void removeFromRequest(int resource, int count) {
         if (request.get(resource) != null) {
             if (request.get(resource) - count > 0) {
-                request.merge(resource, -count, Integer::sum);
+                request.set(resource, offer.get(resource) - count);
             } else if (request.get(resource) - count == 0) {
                 request.remove(resource);
             }
         }
     }
 
-    public HashMap<ResourceType, Integer> getOffer() { return offer; }
-    public HashMap<ResourceType, Integer> getRequest() { return request; }
+    public ArrayList<Integer> getOffer() { return offer; }
+    public ArrayList<Integer> getRequest() { return request; }
     public Player getTradeOwner() { return tradeOwner; }
 }

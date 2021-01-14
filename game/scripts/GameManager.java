@@ -1,11 +1,10 @@
 package scripts;
 
-import board.nodes.Vertex;
+import entities.board.nodes.Vertex;
 import entities.Entity;
 import entities.EntityToggleable;
 import entities.Player;
-import entities.Tile;
-import gameplay.ResourceType;
+import entities.board.Tile;
 import objects.GameScript;
 import objects.InjectableScript;
 import observers.GameObserver;
@@ -75,15 +74,15 @@ public class GameManager extends GameScript {
 
     public void rewardPlayerNearTile(int roll) {
         for(Tile t : tiles.getTiles(roll))
-            for(Vertex v : t.getOccupiedVertices()) {
-                v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
-                gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), v.getBuildingValue());
+            for(Vertex v : t.getNodes()) {
+                v.getOwner().addResourceCard(t.getType(), v.getPieceValue());
+                gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), v.getPieceValue());
             }
     }
 
     public void rewardPlayerOnNode(Vector3f nodePosition, Player player) {
         for(Tile t : tiles.getTilesNearVertex(nodePosition))
-            if(t.getType() != ResourceType.DESERT) {
+            if(t.getType() != Tile.DESERT) {
                 player.addResourceCard(t.getType(), 1);
                 if(player.getColor() == Resource.TEXTURE_COLOR_BLUE)
                     gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), 1);
