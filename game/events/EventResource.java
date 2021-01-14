@@ -1,5 +1,6 @@
 package events;
 
+import entities.board.Tile;
 import network.annotations.SerializableField;
 import network.events.NetworkEvent;
 
@@ -12,7 +13,11 @@ public class EventResource extends NetworkEvent {
 
     @SerializableField
     private PlayerHandEvent event;
+
+    @SerializableField
     private int resource;
+
+    @SerializableField
     private int count;
 
     public EventResource() {
@@ -21,7 +26,7 @@ public class EventResource extends NetworkEvent {
         count = 0;
     }
 
-    public EventResource(PlayerHandEvent event, ResourceType resource, int count) {
+    public EventResource(PlayerHandEvent event, int resource, int count) {
         this.event = event;
         this.resource = resource;
         this.count = count;
