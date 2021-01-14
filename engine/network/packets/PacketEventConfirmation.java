@@ -1,19 +1,23 @@
 package network.packets;
 
-import java.nio.ByteBuffer;
+import network.annotations.SerializableField;
 
+/**
+ * This packet is sent to confirm the receipt of a previously sent {@link network.events.NetworkEvent} carried by a {@link PacketEvent}.
+ */
+@SuppressWarnings("unused")
 public class PacketEventConfirmation extends Packet {
 
     /**
      * The event's ID.
      */
+    @SerializableField
     private long eventID;
 
     /**
      * Creates a new event confirmation packet with event ID of 0.
      */
     public PacketEventConfirmation() {
-        super(PacketType.EVENT_CONFIRMATION);
         this.eventID = 0;
     }
 
@@ -21,32 +25,12 @@ public class PacketEventConfirmation extends Packet {
      * Creates a new event confirmation packet with the specified event ID.
      */
     public PacketEventConfirmation(long eventID) {
-        super(PacketType.EVENT_CONFIRMATION);
         this.eventID = eventID;
     }
 
     /**
-     * Deserializes an event confirmation packet from a byte array.
-     */
-    public PacketEventConfirmation(byte[] data) {
-        super(PacketType.EVENT_CONFIRMATION);
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        this.eventID = buffer.getLong();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] serialize() {
-        ByteBuffer buffer = ByteBuffer.allocate(HEADER_SIZE + Long.BYTES);
-        writeHeader(buffer);
-        buffer.putLong(eventID);
-        return buffer.array();
-    }
-
-    /**
      * Returns the stored event ID.
-     * @return [<b>long</b>] The event ID stored in this packet.
+     * @return <b>long</b> The event ID stored in this packet.
      */
     public long getEventID() {
         return eventID;
@@ -55,7 +39,7 @@ public class PacketEventConfirmation extends Packet {
     /**
      * Sets the event ID stored in this packet.
      * @param eventID The new event ID.
-     * @return [{@link PacketEvent}] This same {@link PacketEventConfirmation} instance to allow for method chaining.
+     * @return {@link PacketEvent} This same {@link PacketEventConfirmation} instance to allow for method chaining.
      */
     public PacketEventConfirmation setEventID(long eventID) {
         this.eventID = eventID;

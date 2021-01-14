@@ -1,29 +1,15 @@
 package events;
 
+import network.annotations.SerializableField;
 import network.events.NetworkEvent;
-
-import java.nio.ByteBuffer;
 
 public class EventTradeResult extends NetworkEvent {
 
+    @SerializableField
     private boolean tradeResult;
 
     public EventTradeResult() {
-        super(EventType.TRADE_RESULT);
         tradeResult = false;
-    }
-
-    public EventTradeResult(byte[] data) {
-        super(EventType.TRADE_RESULT);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-        tradeResult = byteBuffer.get() > 0;
-    }
-
-    public byte[] serialize() {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(HEADER_SIZE + Byte.BYTES);
-        writeHeader(byteBuffer);
-        byteBuffer.put(tradeResult ? (byte)1 : (byte)0);
-        return byteBuffer.array();
     }
 
     public boolean isTradeResult() {

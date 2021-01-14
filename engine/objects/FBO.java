@@ -16,19 +16,36 @@ import static org.lwjgl.opengl.GL32.glDrawBuffer;
 import static org.lwjgl.opengl.GL32.glReadBuffer;
 import static org.lwjgl.opengl.GL32.*;
 
+/**
+ * Represents a Frame Buffer Object (FBO).
+ */
+@SuppressWarnings("unused")
 public class FBO implements FreeableObject {
 
+	/**
+	 * Represents a single attachment linked to an FBO.
+	 */
 	private static class Attachment implements FreeableObject {
 
+		/**
+		 * The attachment's internal ID assigned by OpenGL.
+		 */
 		public final int id;
+
+		/**
+		 * The OpenGL attachment type.
+		 */
 		public final int glAttachment;
+
+		/**
+		 * Indicates whether this attachment is a texture.
+		 */
 		public final boolean isTexture;
 
 		/**
 		 * Creates an attachment with the specified parameters.
 		 */
-		public Attachment(int width, int height, int internalFormat, int pixelFormat, int dataType, int glAttachment,
-				boolean isTexture) {
+		public Attachment(int width, int height, int internalFormat, int pixelFormat, int dataType, int glAttachment, boolean isTexture) {
 			if (isTexture) {
 				this.id = glGenTextures();
 				this.glAttachment = glAttachment;
@@ -53,8 +70,7 @@ public class FBO implements FreeableObject {
 		/**
 		 * Creates an attachment with the specified parameters.
 		 */
-		public Attachment(int width, int height, int internalFormat, int pixelFormat, int dataType, int glAttachment,
-				int samples, boolean isTexture) {
+		public Attachment(int width, int height, int internalFormat, int pixelFormat, int dataType, int glAttachment, int samples, boolean isTexture) {
 			if (isTexture) {
 				this.id = glGenTextures();
 				this.glAttachment = glAttachment;
@@ -94,6 +110,13 @@ public class FBO implements FreeableObject {
 
 	private int[] drawBuffers;
 
+	/**
+	 * Creates an FBO with the given
+	 * @param id
+	 * @param width
+	 * @param height
+	 * @param samples
+	 */
 	private FBO(int id, int width, int height, int samples) {
 		this.id = id;
 		this.width = width;
@@ -109,7 +132,7 @@ public class FBO implements FreeableObject {
 	 * @param dataType       The data type of the attachment.
 	 * @param glAttachment   The attachment unit number.
 	 * @param isTexture      Whether or not this attachment is a texture.
-	 * @return [{@link FBO}] This same instance of this class.
+	 * @return {@link FBO} This same instance of this class.
 	 */
 	public FBO addAttachment(int internalFormat, int pixelFormat, int dataType, int glAttachment, boolean isTexture) {
 		attachments.add(samples > 1
@@ -123,7 +146,7 @@ public class FBO implements FreeableObject {
 	 * should only be called whenever the attachments for this framebuffer are
 	 * changed.
 	 * 
-	 * @return [{@link FBO}] This same instance of this class.
+	 * @return {@link FBO} This same instance of this class.
 	 */
 	public FBO bindAttachments() {
 		ArrayList<Integer> buffers = new ArrayList<Integer>();
@@ -144,7 +167,7 @@ public class FBO implements FreeableObject {
 	 * Binds this framebuffer as the current framebuffer allowing for objects to be
 	 * rendered on it.
 	 * 
-	 * @return [{@link FBO}] This same instance of this class.
+	 * @return {@link FBO} This same instance of this class.
 	 */
 	public FBO bind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, id);
@@ -155,7 +178,7 @@ public class FBO implements FreeableObject {
 	/**
 	 * Unbinds this framebuffer.
 	 * 
-	 * @return [{@link FBO}] This same instance of this class.
+	 * @return {@link FBO} This same instance of this class.
 	 */
 	public FBO unbind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -166,7 +189,7 @@ public class FBO implements FreeableObject {
 	/**
 	 * Indicates if this framebuffer may be used for rendering.
 	 * 
-	 * @return [<b>boolean</b>] True if the framebuffer is complete and functional,
+	 * @return <b>boolean</b> True if the framebuffer is complete and functional,
 	 *         false otherwise.
 	 */
 	public boolean isFunctional() {
@@ -180,7 +203,7 @@ public class FBO implements FreeableObject {
 	 * @param dest          The destination framebuffer.
 	 * @param srcAttachment The source attachment from which to blit.
 	 * @param dstAttachment The destination attachment to which to blit.
-	 * @return [{@link FBO}] This same instance of this class.
+	 * @return {@link FBO} This same instance of this class.
 	 */
 	public FBO resolve(FBO dest, int srcAttachment, int dstAttachment) {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
@@ -207,7 +230,7 @@ public class FBO implements FreeableObject {
 	 * @param width   The height in pixels of the framebuffer.
 	 * @param height  The width in pixels of the framebuffer.
 	 * @param samples The number of samples per pixel the framebuffer is to store.
-	 * @return [{@link FBO}] The resulting framebuffer object.
+	 * @return {@link FBO} The resulting framebuffer object.
 	 */
 	public static FBO create(int width, int height, int samples) {
 		int id = glGenFramebuffers();

@@ -2,6 +2,7 @@ package network.serializers;
 
 import network.annotations.SerializableField;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -25,22 +26,22 @@ public class ObjectSerializer {
                     try {
                         // Find appropriate serializer for field, otherwise send empty field
                         FieldSerializer<T> serializer = (FieldSerializer<T>) Serializers.FIELD_SERIALIZER_FROM_TYPE.get(field.getType());
-                        if (serializer == null) {
-                            totalSize.addAndGet(2 * Integer.BYTES);
-                            return ByteBuffer.allocate(2 * Integer.BYTES)
-                                    .putInt(-1)
-                                    .putInt(0)
-                                    .array();
-                        }
 
                         // Serialize field and create byte array starting with the field type and size
                         field.setAccessible(true);
-                        byte[] bytes = serializer.serialize((T) field.get(object));
+                        byte[] bytes = serializer != null ? serializer.serialize((T) field.get(object)) : ObjectSerializer.serialize(field.get(object));
                         field.setAccessible(false);
+
+                        // Compute total buffer size and add it to counter
                         int bufferSize = 2 * Integer.BYTES + bytes.length;
                         totalSize.addAndGet(bufferSize);
+
+                        // This is to prevent null pointers for fields with no custom serializers
+                        Integer fieldID = Serializers.FIELD_ID_FROM_TYPE.get(field.getType());
+
+                        // Return constructed byte array
                         return ByteBuffer.allocate(bufferSize)
-                                .putInt(Serializers.FIELD_ID_FROM_TYPE.get(field.getType()))
+                                .putInt(fieldID != null ? fieldID : -1)
                                 .putInt(bytes.length)
                                 .put(bytes)
                                 .array();
@@ -75,7 +76,10 @@ public class ObjectSerializer {
                 return null;
 
             // Create instance using empty constructor
-            T instance = classType.getConstructor().newInstance();
+            Constructor<T> constructor = classType.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T instance = constructor.newInstance();
+            constructor.setAccessible(false);
 
             for (Field field : classFields) {
                 // Get field type and data
@@ -98,6 +102,7 @@ public class ObjectSerializer {
 
             return instance;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

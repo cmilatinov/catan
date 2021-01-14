@@ -52,7 +52,7 @@ public class UserToken {
 	
 	/**
 	 * Generates a new token.
-	 * @return [{@link UserToken}] The newly generated token.
+	 * @return {@link UserToken} The newly generated token.
 	 */
 	public static UserToken create() {
 		byte[] buffer = new byte[TOKEN_SIZE];

@@ -1,34 +1,30 @@
 package objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a Vertex Array Object (VAO).
  */
+@SuppressWarnings("unused")
 public class VAO implements FreeableObject {
 
 	/**
-	 * The VAO's ID.
+	 * The VAO's internal ID assigned by OpenGL.
 	 */
-	private int id;
+	private final int id;
 
 	/**
 	 * The VBOs attached to this VAO.
 	 */
-	private List<VBO> vbos = new ArrayList<VBO>();
+	private final List<VBO> vbos = new ArrayList<>();
 
 	/**
 	 * Creates a Vertex Array Object (VAO) with the specified ID.
@@ -42,7 +38,7 @@ public class VAO implements FreeableObject {
 	/**
 	 * Binds the VAO for use and manipulation.
 	 * 
-	 * @return [{@link VAO}] This same instance of the class.
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO bind() {
 		glBindVertexArray(id);
@@ -52,7 +48,7 @@ public class VAO implements FreeableObject {
 	/**
 	 * Unbinds the VAO.
 	 * 
-	 * @return [{@link VAO}] This same instance of the class.
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO unbind() {
 		glBindVertexArray(0);
@@ -64,7 +60,7 @@ public class VAO implements FreeableObject {
 	 * attribute lists.
 	 * 
 	 * @param attribs One or more attribute list indices.
-	 * @return [{@link VAO}] This same instance of the class.
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO bind(int... attribs) {
 		bind();
@@ -77,7 +73,6 @@ public class VAO implements FreeableObject {
 	 * Disables the use of the specified attribute lists.
 	 * 
 	 * @param attribs One or more attribute list indices.
-	 * @return [{@link VAO}] This same instance of the class.
 	 */
 	public void unbind(int... attribs) {
 		for (int i : attribs)
@@ -88,7 +83,7 @@ public class VAO implements FreeableObject {
 	/**
 	 * Returns the ID of the VAO.
 	 * 
-	 * @return [<b>int</b>] The ID of the VAO.
+	 * @return <b>int</b> The ID of the VAO.
 	 */
 	public int getID() {
 		return id;
@@ -99,11 +94,9 @@ public class VAO implements FreeableObject {
 	 * 
 	 * @param attribIndex The attribute list index in which to store the data.
 	 * @param data        The data to store.
-	 * @param vectorSize  The size of a single vertex worth of data (eg. 3 for a 3D
-	 *                    position).
-	 * @param usage       The purpose of the attribute list (eg.
-	 *                    {@link #GL_STATIC_DRAW} or {@link #GL_DYNAMIC_DRAW}).
-	 * @return [{@link VAO}] This same instance of the class.
+	 * @param vectorSize  The size of a single vertex worth of data (eg. 3 for a 3D position).
+	 * @param usage       The purpose of the attribute list (eg. {@link org.lwjgl.opengl.GL15#GL_STATIC_DRAW} or {@link org.lwjgl.opengl.GL15#GL_DYNAMIC_DRAW}).
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO storeFloatData(int attribIndex, float[] data, int vectorSize, int usage) {
 
@@ -134,11 +127,9 @@ public class VAO implements FreeableObject {
 	 * 
 	 * @param attribIndex The attribute list index in which to store the data.
 	 * @param data        The data to store.
-	 * @param vectorSize  The size of a single vertex worth of data (eg. 3 for a 3D
-	 *                    position).
-	 * @param usage       The purpose of the attribute list (eg.
-	 *                    {@link #GL_STATIC_DRAW} or {@link #GL_DYNAMIC_DRAW}).
-	 * @return [{@link VAO}] This same instance of the class.
+	 * @param vectorSize  The size of a single vertex worth of data (eg. 3 for a 3D position).
+	 * @param usage       The purpose of the attribute list (eg. {@link org.lwjgl.opengl.GL15#GL_STATIC_DRAW} or {@link org.lwjgl.opengl.GL15#GL_DYNAMIC_DRAW}).
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO storeIntData(int attribIndex, int[] data, int vectorSize, int usage) {
 
@@ -168,10 +159,10 @@ public class VAO implements FreeableObject {
 	 * 
 	 * @param attribIndex The attribute list index in which to store the data.
 	 * @param vectorSize The size of a single vertex worth of data (eg. 3 for a 3D position).
-	 * @param dataType The type of data (eg. {@link #GL_FLOAT}).
+	 * @param dataType The type of data (eg. {@link org.lwjgl.opengl.GL11#GL_FLOAT}).
 	 * @param stride The stride of the data in bytes (size of data for a single instance).
 	 * @param offset The offset of the data in bytes (always less than the stride).
-	 * @return
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO addInstancedAttribute(int attribIndex, int vectorSize, int dataType, int stride, int offset) {
 		glVertexAttribPointer(attribIndex, vectorSize, dataType, false, stride, offset);
@@ -183,7 +174,7 @@ public class VAO implements FreeableObject {
 	 * Add a VBO to this VAO, to be deleted when this VAO is deleted.
 	 * 
 	 * @param vbo The VBO object to associate to this VAO.
-	 * @return [{@link VAO}] This same instance of the class.
+	 * @return {@link VAO} This same instance of the class.
 	 */
 	public VAO addVBO(VBO vbo) {
 		vbos.add(vbo);
@@ -202,7 +193,7 @@ public class VAO implements FreeableObject {
 	/**
 	 * Creates and returns a Vertex Array Object.
 	 * 
-	 * @return [{@link Vao}] The created object.
+	 * @return {@link Vao} The created object.
 	 */
 	public static VAO create() {
 		int vaoID = glGenVertexArrays();

@@ -1,80 +1,78 @@
 package network.packets;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Packets {
-	
-	/**
-	 * Hashmap containing all possible packet types.
-	 */
-	private static final Map<Integer, Class<? extends Packet>> packets = new HashMap<>() {{
-		put(PacketType.KEY, PacketKey.class);
-		put(PacketType.CONNECT, PacketConnect.class);
-		put(PacketType.DISCONNECT, PacketDisconnect.class);
-		put(PacketType.ACCEPT_CONNECTION, PacketAcceptConnection.class);
-		put(PacketType.REJECT_CONNECTION, PacketRejectConnection.class);
-		put(PacketType.PING, PacketPing.class);
-		put(PacketType.EVENT, PacketEvent.class);
-		put(PacketType.EVENT_CONFIRMATION, PacketEventConfirmation.class);
-	}};
-	
-	/**
-	 * Creates a new packet instance with the given serialized data.
-	 * @param data The serialized packet data.
-	 * @return [{@link Packet}] The newly created packet instance.
-	 */
-	public static Packet createFromData(byte[] data) {
-		
-		try {
-			
-			// Parse packet header
-			int type = -1;
-			ByteBuffer bb = ByteBuffer.wrap(data);
-			if(bb.getShort(0) == Packet.PACKET_BEGIN && data.length >= Packet.HEADER_SIZE)
-				type = bb.getInt(2);
-			
-			// Get the packet type
-			Class<? extends Packet> packetType = packets.get(type);
-			
-			// If it does not exist return null reference
-			if(packetType == null)
-				return null;
-			
-			// Create a new instance of it with the rest of the data
-			return packetType.getConstructor(byte[].class)
-					.newInstance(Arrays.copyOfRange(data, Packet.HEADER_SIZE, data.length));
-			
-		} catch (Exception e) {
 
-			// Return a null reference in case of exceptions
-			return null;
-			
-		}
-		
-	}
-	
+	/**
+	 * Indicates the number of registered packet types.
+	 */
+	private static int numPacketTypes = 0;
+
+	/**
+	 * Hash map translating packet IDs to class types.
+	 */
+	private static final Map<Integer, Class<? extends Packet>> PACKET_CLASS_FROM_ID = new HashMap<>();
+
+	/**
+	 * Hash map translating packet classes to IDs.
+	 */
+	private static final Map<Class<? extends Packet>, Integer> PACKET_ID_FROM_CLASS = new HashMap<>();
+
+	static {{
+		register(PacketKey.class);
+		register(PacketConnect.class);
+		register(PacketDisconnect.class);
+		register(PacketAcceptConnection.class);
+		register(PacketRejectConnection.class);
+		register(PacketPing.class);
+		register(PacketEvent.class);
+		register(PacketEventConfirmation.class);
+	}}
+
 	/**
 	 * Dynamically maps packet types to packet classes allowing for custom packet implementations.
-	 * @param type A unique integer representing the packet.
+	 *
 	 * @param packet The corresponding packet class used to instantiate packets of that type.
 	 */
-	public static void register(int type, Class<? extends Packet> packet) {
-		packets.put(type, packet);
+	public static void register(Class<? extends Packet> packet) {
+		PACKET_CLASS_FROM_ID.put(numPacketTypes, packet);
+		PACKET_ID_FROM_CLASS.put(packet, numPacketTypes++);
 	}
-	
+
 	/**
-	 * Casts a packet to its specific subtype.
-	 * @param <P> The packet subtype class to cast to.
-	 * @param p The packet object to cast.
-	 * @return [<b>P</b>] The casted packet object or null if p is not of class P.
+	 * Returns an integer acting as a unique identifier for a specific {@link Packet} subclass.
+	 *
+	 * @param packet The packet class for which to retrieve an ID.
+	 * @return <b>int</b> An integer acting as a unique identifier for a specific {@link Packet} subclass. A negative integer indicates that the specified packet class does not exist or has not been registered.
+	 */
+	public static int getPacketID(Class<? extends Packet> packet) {
+		Integer packetID = PACKET_ID_FROM_CLASS.get(packet);
+		return packetID != null ? packetID : -1;
+	}
+
+	/**
+	 * Returns the {@link Class} instance to which an packet ID corresponds.
+	 *
+	 * @param packetID The packet ID for which to retrieve the corresponding class.
+	 * @return {@link Class} The class to which the packet ID corresponds or null if no such packet ID exists.
+	 */
+	public static Class<? extends Packet> getPacketClass(int packetID) {
+		return PACKET_CLASS_FROM_ID.get(packetID);
+	}
+
+	/**
+	 * Casts an packet to its specific subtype.
+	 *
+	 * @param <P>   The packet subtype class to cast to.
+	 * @param packet The packet object to cast.
+	 * @return <b>P</b> The casted packet object or null if packet is not of class P.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <P extends Packet> P cast(Packet p) {
+	public static <P extends Packet> P cast(Packet packet) {
 		try {
-			return (P) p;
+			return (P) packet;
 		} catch (ClassCastException e) {
 			return null;
 		}

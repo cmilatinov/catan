@@ -1,7 +1,6 @@
 package test;
 
 import network.events.EventTest;
-import network.NetworkModule;
 import network.managers.GameServer;
 
 import java.util.Scanner;
@@ -9,7 +8,6 @@ import java.util.Scanner;
 public class Server {
 
 	public static void main(String[] args) {
-		NetworkModule.initialize();
 		GameServer server = new GameServer(50000);
 		if(!server.isReady())
 			return;
@@ -25,6 +23,11 @@ public class Server {
 					case 1 -> {
 						server.halt();
 						System.exit(0);
+					}
+					case 2 -> {
+						System.out.println("Enter your message: ");
+						String msg = scanner.nextLine();
+						server.broadcastEvent(new EventTest(msg));
 					}
 				}
 			} catch (Exception ignored) {}
