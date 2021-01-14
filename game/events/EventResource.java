@@ -1,9 +1,8 @@
 package events;
 
 import gameplay.ResourceType;
+import network.annotations.SerializableField;
 import network.events.NetworkEvent;
-
-import java.nio.ByteBuffer;
 
 public class EventResource extends NetworkEvent {
 
@@ -12,39 +11,25 @@ public class EventResource extends NetworkEvent {
         RESOURCES_REMOVED
     }
 
+    @SerializableField
     private PlayerHandEvent event;
+
+    @SerializableField
     private ResourceType resource;
+
+    @SerializableField
     private int count;
 
     public EventResource() {
-        super(EventType.RESOURCE);
         event = PlayerHandEvent.RESOURCES_ADDED;
         resource = ResourceType.WHEAT;
         count = 0;
     }
 
     public EventResource(PlayerHandEvent event, ResourceType resource, int count) {
-        super(EventType.RESOURCE);
         this.event = event;
         this.resource = resource;
         this.count = count;
-    }
-
-    public EventResource(byte[] data) {
-        super(EventType.RESOURCE);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-        event = PlayerHandEvent.values()[byteBuffer.getInt()];
-        resource = ResourceType.values()[byteBuffer.getInt()];
-        count = byteBuffer.getInt();
-    }
-
-    public byte[] serialize() {
-        ByteBuffer data = ByteBuffer.allocate(HEADER_SIZE + 3 * Integer.BYTES);
-        writeHeader(data);
-        data.putInt(event.ordinal())
-            .putInt(resource.ordinal())
-            .putInt(count);
-        return data.array();
     }
 
     public PlayerHandEvent getEvent() {

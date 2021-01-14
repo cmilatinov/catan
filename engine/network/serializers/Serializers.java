@@ -14,7 +14,9 @@ public class Serializers {
             new LongSerializer(),
             new FloatSerializer(),
             new DoubleSerializer(),
-            new StringSerializer()
+            new StringSerializer(),
+            new NetworkEventSerializer(),
+            new PublicKeySerializer()
     );
 
     public static final List<Class<?>> FIELD_TYPE_FROM_ID =
@@ -35,21 +37,21 @@ public class Serializers {
 
     private static Class<?> serializerType(FieldSerializer<?> serializer) {
         Class<?> type = (Class<?>)((ParameterizedType) serializer.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        if (type == Byte.class)
+        if (Byte.class.equals(type))
             return byte.class;
-        else if (type == Short.class)
+        else if (Short.class.equals(type))
             return short.class;
-        else if (type == Integer.class)
+        else if (Integer.class.equals(type))
             return int.class;
-        else if (type == Long.class)
+        else if (Long.class.equals(type))
             return long.class;
-        else if (type == Float.class)
+        else if (Float.class.equals(type))
             return float.class;
-        else if (type == Double.class)
+        else if (Double.class.equals(type))
             return double.class;
-        else if (type == Boolean.class)
+        else if (Boolean.class.equals(type))
             return boolean.class;
-        else if (type == Character.class)
+        else if (Character.class.equals(type))
             return char.class;
         return type;
     }

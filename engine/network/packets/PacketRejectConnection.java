@@ -1,25 +1,23 @@
 package network.packets;
 
-import utils.StringUtils;
+import network.annotations.SerializableField;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-
+/**
+ * This packet is sent from the server to a client to reject an incoming connection.
+ */
+@SuppressWarnings("unused")
 public class PacketRejectConnection extends Packet {
-
-	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
 	/**
 	 * The reason for the connection rejection.
 	 */
+	@SerializableField
 	private String reason;
 	
 	/**
 	 * Creates a new connection rejecting packet.
 	 */
 	public PacketRejectConnection() {
-		super(PacketType.REJECT_CONNECTION);
 		this.reason = "Connection refused by host.";
 	}
 	
@@ -28,30 +26,9 @@ public class PacketRejectConnection extends Packet {
 	 * @param reason The reason given for the connection rejection.
 	 */
 	public PacketRejectConnection(String reason) {
-		super(PacketType.REJECT_CONNECTION);
 		this.reason = reason;
 	}
-	
-	/**
-	 * Parses a connection rejecting packet from the given packet data.
-	 * @param data The packet data to parse.
-	 */
-	public PacketRejectConnection(byte[] data) {
-		super(PacketType.REJECT_CONNECTION);
-		this.reason = StringUtils.createFromBytes(data, ENCODING);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public byte[] serialize() {
-		byte[] bReason = StringUtils.getBytes(reason, ENCODING);
-		ByteBuffer data = ByteBuffer.allocate(Packet.HEADER_SIZE + bReason.length);
-		writeHeader(data);
-		data.put(bReason);
-		return data.array();
-	}
-	
+
 	/**
 	 * Returns the reason for the connection rejection.
 	 * @return {@link String} The reason for the connection rejection.

@@ -1,66 +1,66 @@
 package network.events;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NetworkEvents {
 
     /**
-     * Hashmap containing all possible event types.
+     * Indicates the number of registered event types.
      */
-    private static final Map<Integer, Class<? extends NetworkEvent>> events = new HashMap<Integer, Class<? extends NetworkEvent>>();
+    private static int numEventTypes = 0;
 
     /**
-     * Creates a new event instance with the given serialized data.
-     * @param data The serialized event data.
-     * @return {@link NetworkEvent} The newly created event instance.
+     * Hash map translating event IDs to class types.
      */
-    public static NetworkEvent createFromData(byte[] data) {
+    private static final Map<Integer, Class<? extends NetworkEvent>> EVENT_CLASS_FROM_ID = new HashMap<>();
 
-        try {
+    /**
+     * Hash map translating event classes to IDs.
+     */
+    private static final Map<Class<? extends NetworkEvent>, Integer> EVENT_ID_FROM_CLASS = new HashMap<>();
 
-            // Parse event type
-            int type = -1;
-            ByteBuffer bb = ByteBuffer.wrap(data);
-            if(data.length >= Integer.BYTES)
-                type = bb.getInt(0);
-
-            // Get the event type
-            Class<? extends NetworkEvent> eventType = events.get(type);
-
-            // If it does not exist return null reference
-            if(eventType == null)
-                return null;
-
-            // Create a new instance of the event with the rest of the data
-            return eventType.getConstructor(byte[].class)
-                    .newInstance((Object)Arrays.copyOfRange(data, Integer.BYTES, data.length));
-
-        } catch (Exception e) {
-
-            // Return a null reference in case of exceptions
-            return null;
-
-        }
-
-    }
+    static {{
+        register(EventTest.class);
+    }}
 
     /**
      * Dynamically maps event types to event classes allowing for custom event implementations.
-     * @param type A unique integer representing the event.
+     *
      * @param event The corresponding event class used to instantiate events of that type.
      */
-    public static void register(int type, Class<? extends NetworkEvent> event) {
-        events.put(type, event);
+    public static void register(Class<? extends NetworkEvent> event) {
+        EVENT_CLASS_FROM_ID.put(numEventTypes, event);
+        EVENT_ID_FROM_CLASS.put(event, numEventTypes++);
+    }
+
+    /**
+     * Returns an integer acting as a unique identifier for a specific {@link NetworkEvent} subclass.
+     *
+     * @param event The event class for which to retrieve an ID.
+     * @return <b>int</b> An integer acting as a unique identifier for a specific {@link NetworkEvent} subclass. A negative integer indicates that the specified event class does not exist or has not been registered.
+     */
+    public static int getEventID(Class<? extends NetworkEvent> event) {
+        Integer eventID = EVENT_ID_FROM_CLASS.get(event);
+        return eventID != null ? eventID : -1;
+    }
+
+    /**
+     * Returns the {@link Class} instance to which an event ID corresponds.
+     *
+     * @param eventID The event ID for which to retrieve the corresponding class.
+     * @return {@link Class} The class to which the event ID corresponds or null if no such event ID exists.
+     */
+    public static Class<? extends NetworkEvent> getEventClass(int eventID) {
+        return EVENT_CLASS_FROM_ID.get(eventID);
     }
 
     /**
      * Casts an event to its specific subtype.
-     * @param <E> The event subtype class to cast to.
+     *
+     * @param <E>   The event subtype class to cast to.
      * @param event The event object to cast.
-     * @return <b>P</b> The casted event object or null if event is not of class E.
+     * @return <b>E</b> The casted event object or null if event is not of class E.
      */
     @SuppressWarnings("unchecked")
     public static <E extends NetworkEvent> E cast(NetworkEvent event) {

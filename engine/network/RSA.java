@@ -11,6 +11,7 @@ import java.security.spec.X509EncodedKeySpec;
 /**
  * Provides helper methods permitting RSA encryption.
  */
+@SuppressWarnings("unused")
 public class RSA {
 	
 	/**

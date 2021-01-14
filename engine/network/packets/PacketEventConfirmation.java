@@ -1,19 +1,23 @@
 package network.packets;
 
-import java.nio.ByteBuffer;
+import network.annotations.SerializableField;
 
+/**
+ * This packet is sent to confirm the receipt of a previously sent {@link network.events.NetworkEvent} carried by a {@link PacketEvent}.
+ */
+@SuppressWarnings("unused")
 public class PacketEventConfirmation extends Packet {
 
     /**
      * The event's ID.
      */
+    @SerializableField
     private long eventID;
 
     /**
      * Creates a new event confirmation packet with event ID of 0.
      */
     public PacketEventConfirmation() {
-        super(PacketType.EVENT_CONFIRMATION);
         this.eventID = 0;
     }
 
@@ -21,27 +25,7 @@ public class PacketEventConfirmation extends Packet {
      * Creates a new event confirmation packet with the specified event ID.
      */
     public PacketEventConfirmation(long eventID) {
-        super(PacketType.EVENT_CONFIRMATION);
         this.eventID = eventID;
-    }
-
-    /**
-     * Deserializes an event confirmation packet from a byte array.
-     */
-    public PacketEventConfirmation(byte[] data) {
-        super(PacketType.EVENT_CONFIRMATION);
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        this.eventID = buffer.getLong();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] serialize() {
-        ByteBuffer buffer = ByteBuffer.allocate(HEADER_SIZE + Long.BYTES);
-        writeHeader(buffer);
-        buffer.putLong(eventID);
-        return buffer.array();
     }
 
     /**
