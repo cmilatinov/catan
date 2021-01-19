@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 /**
  * Represents a single display mode applied to a frame. A display mode defines how a frame should be rendered in the context of the operating system.
  */
+@SuppressWarnings("unused")
 public class DisplayMode {
 
     /**
@@ -48,13 +49,13 @@ public class DisplayMode {
     );
 
     /**
-     * Sample default display mode. Standard HD resolution, windowed, decorated, appears at the center of the screen.
+     * Sample default display mode. 1920x1080 resolution, windowed, decorated, appears at the center of the screen.
      */
     public static final DisplayMode DEFAULT = new DisplayMode(
             DisplayMode.CENTER,    // Center X
             DisplayMode.CENTER,    // Center Y
-            1280,            // Width
-            720,                // Height
+            1920,            // Width
+            1080,                // Height
             GLFW_CURSOR_NORMAL,        // Normal cursor
             true,            // Decorated
             true,            // Use VSYNC

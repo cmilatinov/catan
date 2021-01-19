@@ -1,6 +1,8 @@
 package ui;
 
 import display.Window;
+import objects.FreeableObject;
+import org.joml.Vector2i;
 import ui.constraints.PixelConstraint;
 
 import java.awt.*;
@@ -8,17 +10,15 @@ import java.util.Iterator;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
-public class UIManager {
+public class UIManager implements FreeableObject {
 
     private final UIText framerate;
 
     private final UIComponent root;
 
-    private final UIRenderer renderer;
-
     private final Window window;
 
-    private int mouseMoveHandle;
+    private final int mouseMoveHandle;
 
     UIComponent lastHoveredComponent = null;
 
@@ -34,14 +34,13 @@ public class UIManager {
                 .setHeight(window.getHeight())
                 .setElevation(0))
                 .setVisible(false);
-        this.renderer = new UIRenderer(window);
         this.window = window;
 
         // FPS
-        framerate = new UIText(new Font("Arial", Font.BOLD, 30), "FPS");
+        framerate = new UIText(new Font("Arial", Font.BOLD, 30), "");
         framerate.setColor(UIColor.GREEN);
         UIConstraints fpsConstraints = new UIConstraints()
-                .setX(new PixelConstraint(4, UIDimensions.DIRECTION_LEFT))
+                .setX(new PixelConstraint(4, UIDimensions.DIRECTION_RIGHT))
                 .setY(new PixelConstraint(4, UIDimensions.DIRECTION_BOTTOM))
                 .setWidth(new PixelConstraint(100))
                 .setHeight(new PixelConstraint(30));
@@ -49,8 +48,8 @@ public class UIManager {
     }
 
     public boolean onMouseClick(int button, int action, int mods) {
-        var mouseCords = window.mouse().getMousePosition();
-        UIComponent uiComponent = findUIComponentFromCoords(mouseCords.first, mouseCords.second);
+        Vector2i mouseCoords = window.mouse().getMousePosition();
+        UIComponent uiComponent = findUIComponentFromCoords(mouseCoords.x, mouseCoords.y);
         if (uiComponent == null)
             return false;
 
@@ -60,24 +59,40 @@ public class UIManager {
         return true;
     }
 
+    /**
+     * This method is used as a {@link input.MouseMoveCallback} on the attached window.
+     *
+     * @param x  The new x-coordinate of the mouse cursor.
+     * @param y  The new y-coordinate of the mouse cursor.
+     * @param dx The difference in horizontal movement since the last call.
+     * @param dy The difference in vertical movement since the last call.
+     */
     private void onMouseMove(double x, double y, double dx, double dy) {
         UIComponent uiComponent = findUIComponentFromCoords((int) x, (int) y);
         if (lastHoveredComponent != null && lastHoveredComponent != uiComponent) {
-            lastHoveredComponent.onMouseHoverExit();
+            lastHoveredComponent.onMouseExit();
         }
         if (uiComponent != null) {
-            uiComponent.onMouseHover();
+            uiComponent.onMouseEnter();
             lastHoveredComponent = uiComponent;
         }
     }
 
-    public UIComponent findUIComponentFromCoords(int x, int y) {
+    /**
+     * Returns the top-most UI component whose bounding box encompasses the given coordinates.
+     * Non-interactive components are ignored.
+     *
+     * @param x The x-coordinate relative to the window.
+     * @param y The y-coordinate relative to the window.
+     * @return {@link UIComponent} The component at the specified coordinates or null if none is found.
+     */
+    private UIComponent findUIComponentFromCoords(int x, int y) {
         UIComponent found = null;
         Iterator<UIComponent> iterator = root.children.iterator();
         while (iterator.hasNext()) {
             UIComponent uiComponent = iterator.next();
 
-            if (!uiComponent.isInteractable()) {
+            if (!uiComponent.isInteractive()) {
                 continue;
             }
 
@@ -99,10 +114,20 @@ public class UIManager {
         return found;
     }
 
+    /**
+     * Returns the root component of the interface. Its size is the same as the window bound to this manager.
+     *
+     * @return {@link UIComponent} The interface container component.
+     */
     public UIComponent getContainer() {
         return root;
     }
 
+    /**
+     * Update method used to run UI computation logic every frame.
+     *
+     * @param delta The amount of time that has passed since the last rendered frame in seconds.
+     */
     public void update(double delta) {
         time += delta;
         fps++;
@@ -113,13 +138,13 @@ public class UIManager {
         root.update(delta);
     }
 
-    public void render() {
-        renderer.render(root);
-    }
-
-    public void cleanup() {
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
         window.mouse().removeMouseMoveCallback(mouseMoveHandle);
     }
+
 }
 
 

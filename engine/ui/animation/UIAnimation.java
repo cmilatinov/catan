@@ -14,11 +14,12 @@ public class UIAnimation {
     private float animTime = 0;
     private boolean running = false;
 
-    UIAnimation(UIAnimationMetrics start, UIAnimationMetrics end, UIInterpolator interpolator, float duration) {
+    protected UIAnimation(UIAnimationMetrics start, UIAnimationMetrics end, UIInterpolator interpolator, float duration) {
         this.start = start;
         this.end = end;
         this.interpolator = interpolator;
         this.duration = duration;
+        computeCurrentMetrics();
     }
 
     public void start() {

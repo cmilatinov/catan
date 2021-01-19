@@ -55,7 +55,7 @@ public abstract class Shader implements FreeableObject {
 		// Create and compile the vertex shader.
 		vertexShader = compileShader(vertexFile, GL_VERTEX_SHADER);
 		if (vertexShader < 0) {
-			Engine.LOGGER.log(Logger.ERROR, "Vertex shader compilation error : \n" + error);
+			Engine.log(Logger.ERROR, "Vertex shader compilation error : \n" + error);
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_COMPILATION);
 		}
@@ -63,7 +63,7 @@ public abstract class Shader implements FreeableObject {
 		// Create and compile the fragment shader.
 		fragmentShader = compileShader(fragmentFile, GL_FRAGMENT_SHADER);
 		if (fragmentShader < 0) {
-			Engine.LOGGER.log(Logger.ERROR, "Fragment shader compilation error : \n" + error);
+			Engine.log(Logger.ERROR, "Fragment shader compilation error : \n" + error);
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_COMPILATION);
 		}
@@ -85,7 +85,7 @@ public abstract class Shader implements FreeableObject {
 
 		// Linking failed
 		if (status.get(0) == GL_FALSE) {
-			Engine.LOGGER.log(Logger.ERROR, "Shader program linking error : \n" + glGetProgramInfoLog(program));
+			Engine.log(Logger.ERROR, "Shader program linking error : \n" + glGetProgramInfoLog(program));
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_LINKING);
 		}
@@ -112,7 +112,7 @@ public abstract class Shader implements FreeableObject {
 		// Create and compile the vertex shader.
 		vertexShader = compileShader(vertexFile, GL_VERTEX_SHADER);
 		if (vertexShader < 0) {
-			Engine.LOGGER.log(Logger.ERROR, "Vertex shader compilation error : \n" + error);
+			Engine.log(Logger.ERROR, "Vertex shader compilation error : \n" + error);
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_COMPILATION);
 		}
@@ -120,7 +120,7 @@ public abstract class Shader implements FreeableObject {
 		// Create and compile the fragment shader.
 		fragmentShader = compileShader(fragmentFile, GL_FRAGMENT_SHADER);
 		if (fragmentShader < 0) {
-			Engine.LOGGER.log(Logger.ERROR, "Fragment shader compilation error : \n" + error);
+			Engine.log(Logger.ERROR, "Fragment shader compilation error : \n" + error);
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_COMPILATION);
 		}
@@ -128,7 +128,7 @@ public abstract class Shader implements FreeableObject {
 		// Create and compile the geometry shader.
 		geometryShader = compileShader(geometryFile, GL_GEOMETRY_SHADER);
 		if (geometryShader < 0) {
-			Engine.LOGGER.log(Logger.ERROR, "Geometry shader compilation error : \n" + error);
+			Engine.log(Logger.ERROR, "Geometry shader compilation error : \n" + error);
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_COMPILATION);
 		}
@@ -151,7 +151,7 @@ public abstract class Shader implements FreeableObject {
 
 		// Linking failed
 		if (status.get(0) == GL_FALSE) {
-			Engine.LOGGER.log(Logger.ERROR, "Shader program linking error : \n" + glGetProgramInfoLog(program));
+			Engine.log(Logger.ERROR, "Shader program linking error : \n" + glGetProgramInfoLog(program));
 			glDeleteProgram(program);
 			Engine.stop(Engine.ERR_SHADER_LINKING);
 		}

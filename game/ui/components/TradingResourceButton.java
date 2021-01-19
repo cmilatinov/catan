@@ -1,6 +1,5 @@
 package ui.components;
 
-import resources.Resource;
 import ui.*;
 import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;

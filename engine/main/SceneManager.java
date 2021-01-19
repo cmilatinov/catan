@@ -5,61 +5,39 @@ import java.util.Map;
 
 public class SceneManager {
 
-    private final Map<String, Scene> scenes = new HashMap<>();
+    private final Map<Class<? extends Scene>, Scene> scenes = new HashMap<>();
     private final Engine engine;
 
     public SceneManager(Engine engine) {
         this.engine = engine;
     }
 
-    /**
-     * Load a Scene by it's tag
-     * @param tag the scene's tag
-     */
-    public void loadScene(String tag){
-        Scene scene = this.scenes.get(tag);
+    public void loadScene(Class<? extends Scene> sceneClass){
+        Scene scene = scenes.get(sceneClass);
         if(null == scene) {
-            System.out.println("Scene " + tag + "Not found!");
+            System.out.println("Scene " + sceneClass.getCanonicalName() + " not found!");
             return;
         }
+        scene.initialize();
         engine.setCurrentScene(scene);
     }
 
-    public void loadScene(Class<? extends Scene> sceneClass) {
-        this.loadScene(sceneClass.getCanonicalName());
-    }
-
-    /**
-     * Add a Scene to the manager
-     * @param scene the scene to add
-     */
-    public void addScene(Scene scene) {
+    public void registerScene(Scene scene) {
         scene.setup(engine.getWindow(), this);
-        scene.initialize();
-        this.scenes.put(scene.getClass().getCanonicalName(), scene);
+        scenes.put(scene.getClass(), scene);
     }
 
-    /**
-     * Remove a scene from the manager
-     * @param scene the scene to remove
-     */
-    public void removeScene(Scene scene) {
-        this.removeScene(scene.getTag());
+    public void registerScene(Class<? extends Scene> sceneClass) {
+        try {
+            Scene scene = sceneClass.getConstructor().newInstance();
+            registerScene(scene);
+        } catch (Exception e) {
+            Engine.error(e);
+        }
     }
 
-    /**
-     * Remove a scene by it's class
-     * @param sceneClass the class of the scene
-     */
-    public void removeScene(Class<Scene> sceneClass) {
-        this.removeScene(sceneClass.getCanonicalName());
+    public void removeScene(Class<? extends Scene> sceneClass) {
+        scenes.remove(sceneClass);
     }
 
-    /**
-     * Remove a scene from the manager by it's tag
-     * @param tag the tag of the scene
-     */
-    public void removeScene(String tag) {
-        this.scenes.remove(tag);
-    }
 }

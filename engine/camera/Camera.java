@@ -199,6 +199,7 @@ public abstract class Camera implements GameResource {
      * @param pos The point the camera is to look at.
      * @return {@link Camera} This same instance of the class.
      */
+    @SuppressWarnings("DuplicatedCode")
     public Camera lookAt(Vector3f pos) {
         Vector3f dir = new Vector3f();
         pos.sub(this.pos, dir);

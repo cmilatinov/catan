@@ -7,6 +7,7 @@ import main.Engine;
 import objects.FreeableObject;
 import org.joml.Vector2i;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -91,8 +92,10 @@ public class Window implements FreeableObject {
     public Window create() {
 
         // Init GLFW.
+        Engine.log(Logger.INFO,"Initializing GLFW ...");
+        GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit()) {
-            Engine.LOGGER.log(Logger.ERROR, "Unable to initialize GLFW.");
+            Engine.log(Logger.ERROR, "Unable to initialize GLFW.");
             Engine.stop(Engine.ERR_GLFW_INIT);
         }
 
@@ -245,7 +248,7 @@ public class Window implements FreeableObject {
      * Returns a vector representing the center point of this window in its own
      * coordinate space.
      *
-     * @return {@link Vector2f} The center of this window.
+     * @return {@link Vector2i} The center of this window.
      */
     public Vector2i getCenter() {
         IntBuffer width = BufferUtils.createIntBuffer(1);
@@ -309,6 +312,15 @@ public class Window implements FreeableObject {
      */
     public boolean shouldClose() {
         return glfwWindowShouldClose(window);
+    }
+
+    /**
+     * Indicates if this window has been created through the {@link #create} method.
+     *
+     * @return <b>boolean</b> True if the window was previously created using the {@link #create} method, false otherwise.
+     */
+    public boolean isCreated() {
+        return window != NULL;
     }
 
     /**

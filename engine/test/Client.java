@@ -31,10 +31,7 @@ public class Client {
 				switch (next) {
 					case 0 -> client.connect("localhost", 50000, username);
 					case 1 -> client.sendEvent(new EventTest("Hello from " + username));
-					case 2 -> {
-						client.halt();
-						System.exit(0);
-					}
+					case 2 -> exit.run();
 					case 3 -> client.disconnect();
 					case 4 -> {
 						System.out.println("Enter your username: ");

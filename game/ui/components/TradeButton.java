@@ -1,15 +1,11 @@
 package ui.components;
 
-import org.lwjgl.system.Callback;
-import scene.Game;
 import ui.UIButton;
 import ui.UIColor;
 import ui.UIConstraints;
 import ui.UIDimensions;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
-
-import javax.swing.*;
 
 public class TradeButton extends UIButton {
     private Runnable onClickRunnable;
@@ -29,12 +25,12 @@ public class TradeButton extends UIButton {
     }
 
     @Override
-    public void onMouseHoverExit() {
+    public void onMouseExit() {
         this.setColor(UIColor.WHITE);
     }
 
     @Override
-    public void onMouseHover() {
+    public void onMouseEnter() {
         this.setColor(UIColor.LIGHT_GRAY);
     }
 

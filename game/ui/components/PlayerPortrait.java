@@ -9,8 +9,6 @@ import ui.constraints.CenterConstraint;
 import ui.constraints.PixelConstraint;
 import ui.constraints.RelativeConstraint;
 
-import static resources.Resource.*;
-
 public class PlayerPortrait extends UIQuad {
 
     UIQuad portrait = new UIQuad();
@@ -18,8 +16,7 @@ public class PlayerPortrait extends UIQuad {
 
     private final int offset;
 
-    public PlayerPortrait(int offset)
-    {
+    public PlayerPortrait(int offset) {
         this.offset = offset;
         // This UIQuad acts like the border
         this.setColor(transparent);
@@ -41,17 +38,15 @@ public class PlayerPortrait extends UIQuad {
         UNKNOWN
     }
 
-    public UIConstraints getUIConstraints()
-    {
-        return  new UIConstraints()
+    public UIConstraints getUIConstraints() {
+        return new UIConstraints()
                 .setX(new PixelConstraint(30 + offset, UIDimensions.DIRECTION_LEFT))
                 .setY(new PixelConstraint(30, UIDimensions.DIRECTION_TOP))
                 .setWidth(new RelativeConstraint(0.10f))
                 .setHeight(new RelativeConstraint(0.10f));
     }
 
-    public void setActiveBorder(boolean status)
-    {
+    public void setActiveBorder(boolean status) {
         if (status) { // Show border
             this.setColor(UIColor.BLACK);
         } else {
@@ -59,8 +54,7 @@ public class PlayerPortrait extends UIQuad {
         }
     }
 
-    public void setColorFromResource(Resource resource)
-    {
+    public void setColorFromResource(Resource resource) {
         PortraitColor color = colorFromResource(resource);
         var uiColor = switch (color) {
             case BLUE -> UIColor.BLUE;
@@ -74,8 +68,7 @@ public class PlayerPortrait extends UIQuad {
         portrait.setColor(uiColor);
     }
 
-    public PortraitColor colorFromResource(Resource resource)
-    {
+    public PortraitColor colorFromResource(Resource resource) {
         return switch (resource) {
             case TEXTURE_COLOR_BLUE -> PortraitColor.BLUE;
             case TEXTURE_COLOR_RED -> PortraitColor.RED;

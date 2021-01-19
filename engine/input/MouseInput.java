@@ -9,10 +9,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import org.lwjgl.glfw.GLFWScrollCallbackI;
-import utils.Pair;
 
 import java.nio.DoubleBuffer;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -42,17 +42,17 @@ public class MouseInput {
     /**
      * A hash map describing the various registered cursor callbacks.
      */
-    private final HashMap<Integer, MouseMoveCallback> cursorCallbacks = new HashMap<>();
+    private final Map<Integer, MouseMoveCallback> cursorCallbacks = new ConcurrentHashMap<>();
 
     /**
      * A hash map describing the various registered mouse click callbacks.
      */
-    private final HashMap<Integer, MouseClickCallback> mouseCallbacks = new HashMap<>();
+    private final Map<Integer, MouseClickCallback> mouseCallbacks = new ConcurrentHashMap<>();
 
     /**
      * A hash map describing the various registered mouse scroll callbacks.
      */
-    private final HashMap<Integer, MouseScrollCallback> scrollCallbacks = new HashMap<>();
+    private final Map<Integer, MouseScrollCallback> scrollCallbacks = new ConcurrentHashMap<>();
 
     /**
      * An integer incremented to produce unique handle values for move callbacks.
@@ -224,7 +224,7 @@ public class MouseInput {
      * the handle returned from this method.
      *
      * @param mouseMove The callback to invoke whenever the mouse is moved.
-     * @return {@link MouseInput} This same instance of the class.
+     * @return <b>int</b> A handle corresponding to the registered callback.
      */
     public int registerMouseMoveCallback(MouseMoveCallback mouseMove) {
         cursorCallbacks.put(nextCursorHandle, mouseMove);
@@ -248,7 +248,7 @@ public class MouseInput {
      * the handle returned from this method.
      *
      * @param mouseScroll The callback to invoke whenever the mouse is scrolled.
-     * @return {@link MouseInput} This same instance of the class.
+     * @return <b>int</b> A handle corresponding to the registered callback.
      */
     public int registerMouseScrollCallback(MouseScrollCallback mouseScroll) {
         scrollCallbacks.put(nextScrollHandle, mouseScroll);
@@ -272,9 +272,8 @@ public class MouseInput {
      * {@link #removeMouseClickCallback} and passing the handle returned from this
      * method.
      *
-     * @param mouseClick The callback to invoke whenever a mouse button is
-     *                   activated.
-     * @return {@link MouseInput} This same instance of the class.
+     * @param mouseClick The callback to invoke whenever a mouse button is activated.
+     * @return <b>int</b> A handle corresponding to the registered callback.
      */
     public int registerMouseClickCallback(MouseClickCallback mouseClick) {
         mouseCallbacks.put(nextMouseHandle, mouseClick);
@@ -293,15 +292,15 @@ public class MouseInput {
     }
 
     /**
-     * Retrieve the current mouse position on the screen.
+     * Returns the current mouse position on the screen.
      *
-     * @return {@link Pair} A tuple with the first being the x, and the second being the y
+     * @return {@link Vector2i} An integer vector containing the position of the mouse cursor.
      */
-    public Pair<Integer, Integer> getMousePosition() {
+    public Vector2i getMousePosition() {
         DoubleBuffer x = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer y = BufferUtils.createDoubleBuffer(1);
-        glfwGetCursorPos(this.window.getHandle(), x, y);
-        return new Pair<>((int) x.get(), (int) y.get());
+        glfwGetCursorPos(window.getHandle(), x, y);
+        return new Vector2i((int)x.get(), (int)y.get());
     }
 
     /**

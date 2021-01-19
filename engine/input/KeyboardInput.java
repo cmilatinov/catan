@@ -20,12 +20,12 @@ public class KeyboardInput implements GLFWKeyCallbackI {
     /**
      * Hash map containing bindings for key presses.
      */
-    private final HashMap<Integer, KeyCallback> keyPressed = new HashMap<Integer, KeyCallback>();
+    private final HashMap<Integer, KeyActionCallback> keyPressed = new HashMap<Integer, KeyActionCallback>();
 
     /**
      * Hash map containing bindings for key releases.
      */
-    private final HashMap<Integer, KeyCallback> keyReleased = new HashMap<Integer, KeyCallback>();
+    private final HashMap<Integer, KeyActionCallback> keyReleased = new HashMap<Integer, KeyActionCallback>();
 
     /**
      * Creates a new keyboard input object using the specified window as its parent.
@@ -69,7 +69,7 @@ public class KeyboardInput implements GLFWKeyCallbackI {
      * @param key      The keycode to bind the callback to.
      * @param callback The callback to execute when the key is released.
      */
-    public void registerKeyUp(int key, KeyCallback callback) {
+    public void registerKeyUp(int key, KeyActionCallback callback) {
         keyReleased.put(key, callback);
     }
 
@@ -79,7 +79,7 @@ public class KeyboardInput implements GLFWKeyCallbackI {
      * @param key      The keycode to bind the callback to.
      * @param callback The callback to execute when the key is pressed down.
      */
-    public void registerKeyDown(int key, KeyCallback callback) {
+    public void registerKeyDown(int key, KeyActionCallback callback) {
         keyPressed.put(key, callback);
     }
 

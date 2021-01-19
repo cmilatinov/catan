@@ -20,26 +20,21 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Game extends Scene {
-    private Tiles tiles;
-
-    public Game() {
-
-    }
 
     @Override
     public void initialize() {
-        Camera camera = new CameraPan(90f, getWindow());
-        camera.setPosition(new Vector3f(0, 7f, 10));
-        camera.setRotation(new Vector3f(20, 0,0));
+        Camera camera = new CameraPan(90f, getWindow())
+                .setPosition(new Vector3f(0, 7f, 10))
+                .setRotation(new Vector3f(20, 0,0));
         setCamera(camera);
 
-        SettingsManager settingsManager = (SettingsManager)getGlobalInstance(SettingsManager.class);
+        SettingsManager settingsManager = getGlobalScriptInstance(SettingsManager.class);
 
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
 
         // Q to toggle wireframe
-        AtomicBoolean wireframe = new AtomicBoolean(false);
+        final AtomicBoolean wireframe = new AtomicBoolean(false);
         registerKeyUpAction(GLFW_KEY_ESCAPE, (int mods) -> getWindow().close());
         registerKeyUpAction(GLFW_KEY_Q, (int mods) -> {
             if(!wireframe.get())
@@ -49,8 +44,8 @@ public class Game extends Scene {
             wireframe.set(!wireframe.get());
         });
 
-        registerKeyUpAction(GLFW_KEY_1, (int mods) -> sceneManager.loadScene(MainMenu.class));
-        registerKeyUpAction(GLFW_KEY_2, (int mods) -> sceneManager.loadScene(Game.class));
+        registerKeyUpAction(GLFW_KEY_1, (int mods) -> loadNewScene(MainMenu.class));
+        registerKeyUpAction(GLFW_KEY_2, (int mods) -> loadNewScene(Game.class));
 
         Entity table = Table.create()
                 .scale(10)
@@ -62,7 +57,7 @@ public class Game extends Scene {
         register(sun);
         register(sun2);
 
-        tiles = new Tiles(settingsManager.getGameSettings().getBoardRadius());
+        Tiles tiles = new Tiles(settingsManager.getGameSettings().getBoardRadius());
         tiles.generateMap();
         register(tiles);
 

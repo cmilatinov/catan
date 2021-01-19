@@ -1,5 +1,7 @@
 package log;
 
+import main.Engine;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -82,7 +84,7 @@ public class Logger {
         log = new File(DEFAULT_LOG_FILEPATH);
 
         if (!createLogFile())
-            throw new RuntimeException("Unable to create log file.");
+            Engine.error(new RuntimeException("Unable to create log file."));
     }
 
     /**
@@ -119,7 +121,6 @@ public class Logger {
         } catch (Exception e) {
 
             // Error
-            e.printStackTrace();
             return false;
         }
     }
@@ -127,17 +128,18 @@ public class Logger {
     /**
      * Logs the specified string to the console and to the log file with the specified logging level.
      *
-     * @param logLevel The logging level to use ({@link #INFO}, {@link #DEBUG}, {@link #WARN}, {@link #ERROR}).
-     * @param str      The string to log.
+     * @param logLevel A valid log level describing the nature of the message. (ex: {@link Logger#INFO},
+     *                 {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR})
+     * @param msg      The message to log.
      */
-    public synchronized void log(int logLevel, String str) {
+    public synchronized void log(int logLevel, String msg) {
 
         // Invalid log level or log closed.
         if (closed || logLevel < 0 || logLevel >= LOG_PREFIXES.length)
             return;
 
         // Log string
-        String out = LOG_PREFIXES[logLevel].replace("$date", format.format(new Date())) + str.replace("\n", "\n" + " ".repeat(NEWLINE_NUM_CHARS[logLevel]));
+        String out = LOG_PREFIXES[logLevel].replace("$date", format.format(new Date())) + msg.replace("\n", "\n" + " ".repeat(NEWLINE_NUM_CHARS[logLevel]));
         writer.println(out);
         writer.flush();
         System.out.println(out);
@@ -145,18 +147,18 @@ public class Logger {
     }
 
     /**
-     * Logs the specified string to the console and to the log file using the current logging level.
+     * Logs the specified string to the console and to the log file using the current logging level. When
      *
-     * @param str The string to log.
+     * @param msg The message to log.
      */
-    public synchronized void log(String str) {
+    public synchronized void log(String msg) {
 
         // Log closed.
         if (closed)
             return;
 
         // Log string
-        String out = LOG_PREFIXES[logLevel].replace("$date", format.format(new Date())) + str.replace("\n", "\n" + " ".repeat(NEWLINE_NUM_CHARS[logLevel]));
+        String out = LOG_PREFIXES[logLevel].replace("$date", format.format(new Date())) + msg.replace("\n", "\n" + " ".repeat(NEWLINE_NUM_CHARS[logLevel]));
         writer.println(out);
         writer.flush();
         System.out.println(out);

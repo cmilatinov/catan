@@ -2,13 +2,11 @@ package settings;
 
 import main.Engine;
 
-import java.util.HashMap;
-
 public class SettingsGame implements Settings{
     private int boardRadius;
     private GameModes gameMode;
 
-    private SettingsManager manager;
+    private final SettingsManager manager;
 
     private enum GameModes {
         VANILLA

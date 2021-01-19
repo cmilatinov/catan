@@ -119,4 +119,8 @@ public class UIDimensions {
 		return elevationInParent;
 	}
 
+	public String toString() {
+		return "[" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight() + "]";
+	}
+
 }
