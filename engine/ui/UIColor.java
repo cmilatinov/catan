@@ -28,15 +28,15 @@ public class UIColor {
 		this.a = a;
 	}
 
-	public UIColor(UIColor from) {
-		if (from == null) {
+	public UIColor(UIColor src) {
+		if (src == null) {
 			r = g = b = a = 1.0f;
 			return;
 		}
-		this.r = from.r;
-		this.g = from.g;
-		this.b = from.b;
-		this.a = from.a;
+		this.r = src.r;
+		this.g = src.g;
+		this.b = src.b;
+		this.a = src.a;
 	}
 	
 	public float getR() {

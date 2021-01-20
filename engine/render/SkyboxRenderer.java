@@ -5,6 +5,7 @@ import objects.GameResourceFactory;
 import objects.Mesh;
 import objects.Texture;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL15;
 import shaders.skybox.ShaderSkybox;
 
 public class SkyboxRenderer {
@@ -50,6 +51,9 @@ public class SkyboxRenderer {
 	}
 	
 	public void render(Camera cam, Texture skybox) {
+		// Check texture is a cube map
+		if (skybox.getType() != GL15.GL_TEXTURE_CUBE_MAP)
+			return;
 		shader.use();
 		Matrix4f projView = cam.getViewMatrix().setTranslation(0, 0, 0);
 		projView = cam.getProjectionMatrix().mul(projView);

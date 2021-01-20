@@ -1,32 +1,90 @@
 package ui;
 
+import ui.animation.UIAnimationMetrics;
+import ui.animation.UIInterpolators;
 import ui.constraints.CenterConstraint;
-import ui.constraints.RelativeConstraint;
+import ui.constraints.ParentMinusDiffConstraint;
 
 import java.awt.*;
 
 public class UIButton extends UIQuad {
-    UIText text = new UIText(new Font("Arial", Font.PLAIN, 18), "");
 
-    public UIButton(){
-        text.setColor(UIColor.BLACK);
-        UIConstraints constraints = new UIConstraints()
-                .setX(new CenterConstraint())
-                .setY(new CenterConstraint())
-                .setWidth(new RelativeConstraint(0.6f))
-                .setHeight(new RelativeConstraint(0.6f));
-        this.add(text, constraints);
+    private Runnable onClick;
+
+    private final UIText text = new UIText(new Font("Arial", Font.BOLD, 35), "")
+            .setColor(UIColor.WHITE);
+
+    private final UIQuad innerBox = new UIQuad();
+    private final UIConstraints innerBoxConstraints = new UIConstraints()
+            .setX(new CenterConstraint())
+            .setY(new CenterConstraint())
+            .setWidth(new ParentMinusDiffConstraint(4))
+            .setHeight(new ParentMinusDiffConstraint(4));
+
+    public UIButton() {
+        super.setColor(new UIColor(0.3f, 0.3f, 0.3f, 1.0f));
+        setBorderRadius(5);
+        setBorderWidth(2);
+        add(innerBox, innerBoxConstraints);
+
+        innerBox.setColor(new UIColor(0.6f, 0.6f, 0.6f, 1.0f));
+        innerBox.add(text, null);
+        innerBox.setInteractive(false);
+
+        text.setColor(UIColor.WHITE);
     }
 
-    public UIText setText(String text) {
-        return this.text.setText(text);
+    public void onMouseEnter() {
+        this.animator().animate(new UIAnimationMetrics(40, 0, 1.2f, 0.0f), UIInterpolators.EASE_IN_OUT, 0.2f);
+        setColor(new UIColor(0.5f, 0.5f, 0.5f, 1.0f));
     }
 
-    public UIText setFont(Font font) {
-        return this.text.setFont(font);
+    public void onMouseExit() {
+        this.animator().animate(new UIAnimationMetrics(0, 0, 1.0f, 0.0f), UIInterpolators.EASE_IN_OUT, 0.2f);
+        setColor(new UIColor(0.6f, 0.6f, 0.6f, 1.0f));
     }
 
-    public UIText setTextColor(UIColor color) {
-        return this.text.setColor(color);
+    public void onMouseClick() {
+        if (onClick != null)
+            onClick.run();
     }
+
+    public UIButton setColor(UIColor color) {
+        innerBox.setColor(color);
+        return this;
+    }
+
+    public UIButton setBorderColor(UIColor color) {
+        super.setColor(color);
+        return this;
+    }
+
+    public UIButton setBorderWidth(int width) {
+        innerBoxConstraints
+                .setWidth(new ParentMinusDiffConstraint(width * 2))
+                .setHeight(new ParentMinusDiffConstraint(width * 2));
+        innerBox.setBorderRadius(Math.max(getBorderRadius() - width, 0));
+        return this;
+    }
+
+    public UIButton setText(String text) {
+        this.text.setText(text);
+        return this;
+    }
+
+    public UIButton setFont(Font font) {
+        text.setFont(font);
+        return this;
+    }
+
+    public UIButton setTextColor(UIColor color) {
+        this.text.setColor(color);
+        return this;
+    }
+
+    public UIButton setOnClick(Runnable onClick) {
+        this.onClick = onClick;
+        return this;
+    }
+
 }

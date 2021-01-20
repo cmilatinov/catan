@@ -1,8 +1,9 @@
 package scene;
 
 import camera.Camera;
-import camera.PanCamera;
-import entities.*;
+import camera.CameraPan;
+import entities.Entity;
+import entities.Table;
 import lights.Light;
 import main.Scene;
 import org.joml.Vector3f;
@@ -10,35 +11,30 @@ import resources.GameResources;
 import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
-import ui.PlayerHandUI;
-import ui.PlayerUI;
-import ui.UI;
+import settings.SettingsManager;
+import ui.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_FILL;
 
 public class Game extends Scene {
-    private Tiles tiles;
-
-    public Game() {
-
-    }
 
     @Override
     public void initialize() {
-        Camera camera = new PanCamera(90f, getWindow());
-        camera.setPosition(new Vector3f(0, 7f, 10));
-        camera.setRotation(new Vector3f(20, 0,0));
+        Camera camera = new CameraPan(90f, getWindow())
+                .setPosition(new Vector3f(0, 7f, 10))
+                .setRotation(new Vector3f(20, 0,0));
         setCamera(camera);
+
+        SettingsManager settingsManager = getGlobalScriptInstance(SettingsManager.class);
 
         // Skybox
         setSkyboxTexture(GameResources.get(Resource.TEXTURE_SKYBOX));
 
         // Q to toggle wireframe
-        AtomicBoolean wireframe = new AtomicBoolean(false);
+        final AtomicBoolean wireframe = new AtomicBoolean(false);
         registerKeyUpAction(GLFW_KEY_ESCAPE, (int mods) -> getWindow().close());
         registerKeyUpAction(GLFW_KEY_Q, (int mods) -> {
             if(!wireframe.get())
@@ -48,13 +44,12 @@ public class Game extends Scene {
             wireframe.set(!wireframe.get());
         });
 
-        registerKeyUpAction(GLFW_KEY_1, (int mods) -> sceneManager.loadScene(MainMenu.class));
-        registerKeyUpAction(GLFW_KEY_2, (int mods) -> sceneManager.loadScene(Game.class));
+        registerKeyUpAction(GLFW_KEY_1, (int mods) -> loadNewScene(MainMenu.class));
+        registerKeyUpAction(GLFW_KEY_2, (int mods) -> loadNewScene(Game.class));
 
         Entity table = Table.create()
                 .scale(10)
                 .translate(new Vector3f(0, -0.07f, 0));
-
         register(table);
 
         Light sun = new Light(new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(500, 1000, 500));
@@ -62,7 +57,7 @@ public class Game extends Scene {
         register(sun);
         register(sun2);
 
-        tiles = new Tiles(3);
+        Tiles tiles = new Tiles(settingsManager.getGameSettings().getBoardRadius());
         tiles.generateMap();
         register(tiles);
 
@@ -70,5 +65,6 @@ public class Game extends Scene {
         register(new UI());
         register(new PlayerUI());
         register(new PlayerHandUI());
+        register(new TradeMenuUI());
     }
 }

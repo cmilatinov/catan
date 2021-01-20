@@ -1,22 +1,25 @@
 package scripts;
 
-import board.Node;
-import board.nodes.Vertex;
-import entities.*;
-import gameplay.ResourceType;
-import org.joml.Vector3f;
-import states.*;
+import entities.board.nodes.Vertex;
+import entities.Entity;
+import entities.EntityToggleable;
+import entities.Player;
+import entities.board.Tile;
 import objects.GameScript;
 import objects.InjectableScript;
 import observers.GameObserver;
+import org.joml.Vector3f;
 import resources.Resource;
+import states.GameState;
+import states.StateSetup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
-import static observers.GameObserver.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static observers.GameObserver.PlayerEvent;
+import static observers.GameObserver.PlayerHandEvent;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class GameManager extends GameScript {
     // Entities registered in the scene that we need access to
@@ -40,17 +43,7 @@ public class GameManager extends GameScript {
      */
     public void setGameState(GameState state) {
         this.currentState = state;
-        GameStates currStateEnum = GameStates.ROLLING;
-
-        if (currentState instanceof StateSettling) {
-            currStateEnum = GameStates.SETTLING;
-        } else if (currentState instanceof StateSetup) {
-            currStateEnum = GameStates.SETTING_UP;
-        } else if (currentState instanceof StateStealing) {
-            currStateEnum = GameStates.STEALING;
-        }
-
-        gameObserver.broadcast(currStateEnum);
+        gameObserver.broadcast(currentState.getStateName());
     }
 
     /**
@@ -81,13 +74,15 @@ public class GameManager extends GameScript {
 
     public void rewardPlayerNearTile(int roll) {
         for(Tile t : tiles.getTiles(roll))
-            for(Vertex v : t.getOccupiedVertices())
-                v.getOwner().addResourceCard(t.getType(), v.getBuildingValue());
+            for(Vertex v : t.getNodes()) {
+                v.getOwner().addResourceCard(t.getType(), v.getPieceValue());
+                gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), v.getPieceValue());
+            }
     }
 
     public void rewardPlayerOnNode(Vector3f nodePosition, Player player) {
         for(Tile t : tiles.getTilesNearVertex(nodePosition))
-            if(t.getType() != ResourceType.DESERT) {
+            if(t.getType() != Tile.DESERT) {
                 player.addResourceCard(t.getType(), 1);
                 if(player.getColor() == Resource.TEXTURE_COLOR_BLUE)
                     gameObserver.broadcast(PlayerHandEvent.RESOURCES_ADDED, t.getType(), 1);
@@ -106,23 +101,29 @@ public class GameManager extends GameScript {
     public void initialize() {
         turn = 0;
 
-        for(int i = 0; i < 4; i ++) {
-            Player newPlayer = new Player();
-            players.add(newPlayer);
-            gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
-        }
-        players.get(0).setColor(Resource.TEXTURE_COLOR_BLUE);
+        Player newPlayer = new Player(0, Resource.TEXTURE_COLOR_BLUE);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(0));
-        players.get(1).setColor(Resource.TEXTURE_COLOR_GREEN);
+
+        newPlayer = new Player(1, Resource.TEXTURE_COLOR_ORANGE);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(1));
-        players.get(2).setColor(Resource.TEXTURE_COLOR_PURPLE);
+
+        newPlayer = new Player(2, Resource.TEXTURE_COLOR_PURPLE);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(2));
-        players.get(3).setColor(Resource.TEXTURE_COLOR_RED);
+
+        newPlayer = new Player(3, Resource.TEXTURE_COLOR_GREEN);
+        players.add(newPlayer);
+        gameObserver.broadcast(PlayerEvent.PLAYER_ADDED, newPlayer);
         gameObserver.broadcast(PlayerEvent.PLAYER_COLOR_CHANGED, players.get(3));
 
         setGameState(new StateSetup(players.size()));
 
-        getScene().registerMouseClickAction(this::onClick);
+        getScene().setOnSceneClick(this::onClick);
         getScene().registerKeyUpAction(GLFW_KEY_SPACE, this::onSpaceReleased);
 
         gameObserver.broadcast(PlayerEvent.PLAYER_TURN, getCurrentPlayer());

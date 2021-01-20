@@ -4,120 +4,188 @@ import camera.Camera;
 import camera.CameraFPS;
 import display.Window;
 import entities.Entity;
-import input.KeyCallback;
+import input.KeyActionCallback;
 import input.MouseClickCallback;
 import lights.Light;
 import objects.*;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.joml.Vector3f;
 import physics.PhysicsManager;
-import render.EntityRenderer;
-import render.SkyboxRenderer;
 import ui.UIManager;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static objects.GameScript.*;
+import static objects.GameScript.State;
 
-public abstract class Scene {
+/**
+ * Represents a collection of entities, lights and UI elements that make up a 3D scene.
+ */
+@SuppressWarnings("unused")
+public class Scene implements FreeableObject {
 
-    // Entities
-    private final ArrayList<Entity> allEntities = new ArrayList<>();
-    private final Map<Mesh, Map<Texture, List<Entity>>> entities = new HashMap<>();
+    /**
+     * A list of all entities active in this scene. Entities not registered to the scene will NOT appear in this list,
+     * and in turn, will not be updated or rendered.
+     */
+    private final List<Entity> entityList = new ArrayList<>();
+
+    /**
+     * A list of all lights present in the scene. Lights not registered to the scene will NOT appear in this list,
+     * and in turn, will not have any lighting effects on objects in this scene.
+     */
     private final List<Light> lights = new ArrayList<>();
-    private final ListOrderedMap<Class, GameScript> gameScripts = new ListOrderedMap<>();
 
-    // Manager
+    /**
+     * A mapped version of the {@link #entityList} ordered by mesh and then by texture.
+     */
+    private final Map<Mesh, Map<Texture, List<Entity>>> entityMap = new HashMap<>();
+
+    /**
+     * A list of {@link GameScript}s that persist across scenes. A {@link GameScript} defines logic pertaining to components of a scene.
+     */
+    private static final ListOrderedMap<Class<? extends GameScript>, GameScript> globalGameScripts = new ListOrderedMap<>();
+
+    /**
+     * A list of {@link GameScript}s attached to this scene. A {@link GameScript} defines logic pertaining to components of a scene.
+     */
+    private final ListOrderedMap<Class<? extends GameScript>, GameScript> gameScripts = new ListOrderedMap<>();
+
+    /**
+     * The {@link UIManager} in charge of properly sizing the UI.
+     */
     private UIManager uiManager;
-    private PhysicsManager physics;
 
-    // Renderers
-    private final SkyboxRenderer skyboxRenderer;
-    private final EntityRenderer entityRenderer;
-    protected SceneManager sceneManager;
+    /**
+     * The {@link SceneManager} that handles scene switching.
+     */
+    private SceneManager sceneManager;
 
-    // Other
-    private final HashMap<Class<GameScript>, List<GameScript>> deferred = new HashMap<>();
-    private Window attachedWindow;
+    /**
+     * The {@link PhysicsManager} in charge of handle physics-specific calculations.
+     */
+    private final PhysicsManager physics = new PhysicsManager(this);
+
+    /**
+     * The {@link Window} to which this scene is to be drawn.
+     */
+    private Window window;
+
+    /**
+     * The {@link Texture} to render as a skybox for the scene. Null to indicate that no skybox should be drawn.
+     */
     private Texture skybox = null;
+
+    /**
+     * The {@link Camera} through which the view of the scene is rendered. This {@link Camera} instance may change
+     * at any time during this {@link Scene}'s lifespan.
+     */
     private Camera camera;
 
-    public Scene() {
-        entityRenderer = new EntityRenderer();
-        skyboxRenderer = new SkyboxRenderer();
-    }
-
     /**
-     * Tag to identify current scene
-     *
-     * @return the tag
+     * The callback to invoke whenever a click event was not handled by the {@link UIManager}.
      */
-    public String getTag() {
-        return "default";
-    }
-
-    protected boolean isValid() {
-        return this.attachedWindow != null;
-    }
+    private MouseClickCallback onSceneClick;
 
     /**
-     * Initialize the Scene so that all of it's subsystems are ready
+     * Initializes the scene to a functional state. This method MUST be called before the scene can be used.
      *
-     * @param window the window to attach to the scene
+     * @param window The {@link Window} instance to attach to this scene.
      */
     public void setup(Window window, SceneManager sceneManager) {
-        this.attachedWindow = window;
+        this.window = window;
         this.sceneManager = sceneManager;
         this.uiManager = new UIManager(window);
-        this.physics = new PhysicsManager(this);
-        camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
+        this.camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
+        window.mouse().registerMouseClickCallback(this::onClick);
     }
 
     /**
-     * Do any initialization for the scene here
+     * This initialization method is called when the scene is registered. It is used to allow for the
+     * implementation of custom logic at startup.
      */
-    public abstract void initialize();
-
-    /**
-     * Get the scene manager attached to this scene
-     * @return the scene manager
-     */
-    public SceneManager getSceneManager() {
-        return sceneManager;
+    public void initialize() {
     }
 
     /**
-     * Return the Window for the current scene
+     * Indicates if this scene has been properly initialized.
      *
-     * @return the reference to the window
+     * @return <b>boolean</b> True if the scene was properly initialized, false otherwise.
+     */
+    protected boolean isReady() {
+        return this.window != null;
+    }
+
+    /**
+     * Returns the {@link Window} to which this scene is to be drawn.
+     *
+     * @return {@link Window} The {@link Window} to which this scene is to be drawn.
      */
     public Window getWindow() {
-        return attachedWindow;
+        return window;
     }
 
     /**
-     * Return the UI Manager for the current scene
+     * Returns this scene's {@link UIManager} instance used to modify the UI displayed in the scene.
      *
-     * @return the reference to the UI Manager
+     * @return {@link UIManager} This scene's {@link UIManager}.
      */
     public UIManager getUiManager() {
         return uiManager;
     }
 
     /**
-     * Access the physics subsystem
+     * Returns this scene's {@link PhysicsManager} instance used to run physics calculations for the scene.
      *
-     * @return the reference to the PhysicsManager
+     * @return {@link PhysicsManager} This scene's {@link PhysicsManager}.
      */
     public PhysicsManager physics() {
         return this.physics;
     }
 
     /**
-     * Set the current camera for the scene
+     * Get the active {@link Camera} instance through which the scene is rendered.
      *
-     * @param camera the new camera for the scene
+     * @return {@link Camera} The camera whose view will be rendered to the scene's attached window.
+     */
+    public Camera getCamera() {
+        return this.camera;
+    }
+
+    /**
+     * Returns a list of all entities registered to this scene.
+     *
+     * @return {@link List<Entity>} A collection of entities registered to this scene.
+     */
+    public List<Entity> getEntityList() {
+        return entityList;
+    }
+
+    /**
+     * Returns an ordered map of all entities registered to this scene.
+     *
+     * @return {@link Map} A map of entities registered to this scene ordered by mesh and texture.
+     */
+    public Map<Mesh, Map<Texture, List<Entity>>> getEntityMap() {
+        return entityMap;
+    }
+
+    /**
+     * Returns a list of all lights registered to this scene.
+     *
+     * @return {@link List<Light>} A collection of lights registered to this scene.
+     */
+    public List<Light> getLightList() {
+        return lights;
+    }
+
+
+    /**
+     * Sets this scene's active {@link Camera} instance. The active {@link Camera} is the camera through
+     * which the scene is rendered.
+     *
+     * @param camera The new active {@link Camera} instance.
      */
     public void setCamera(Camera camera) {
         if (this.camera != null) {
@@ -127,36 +195,37 @@ public abstract class Scene {
     }
 
     /**
-     * Get the current camera for the scene
+     * Sets the callback invoked when a mouse click was not handled by the UI.
      *
-     * @return The Camera Reference
+     * @param callback The new callback to invoke whenever the scene is clicked.
      */
-    public Camera getCamera() {
-        return this.camera;
-    }
-
-    /**
-     * Return all the entity's registered to this scene
-     *
-     * @return a list of all entities
-     */
-    public ArrayList<Entity> getEntities() {
-        return this.allEntities;
+    public void setOnSceneClick(MouseClickCallback callback) {
+        this.onSceneClick = callback;
     }
 
     /**
      * Run any attached GameScripts which handle game/ui logic
      *
      * @param delta the time delta between frames
-     * @throws Exception Exception for any of the GameScripts
      */
-    public void update(double delta) throws Exception {
-        if (!isValid()) {
-            throw new RuntimeException("Attempting to update the scene when it hasn't been setup (Scene::setup(Window window))");
-        }
+    public void update(double delta) {
+        if (!isReady())
+            throw new RuntimeException("Attempting to update an unregistered scene. Call UIManager.registerScene before loading a new scene.");
 
         camera.update(delta);
-        for (GameScript gameScript : gameScripts.values()) {
+        updateGameScripts(delta, globalGameScripts.values());
+        updateGameScripts(delta, gameScripts.values());
+        uiManager.update(delta);
+    }
+
+    /**
+     * Update a set of {@link GameScript} instances.
+     *
+     * @param delta The amount of time that has passed since the last rendered frame in seconds.
+     * @param scripts The list of scripts to update.
+     */
+    private void updateGameScripts(double delta, Collection<GameScript> scripts) {
+        for (GameScript gameScript : scripts) {
             switch (gameScript.getCurrentState()) {
                 case TO_START -> {
                     gameScript.start();
@@ -166,15 +235,12 @@ public abstract class Scene {
                     gameScript.stop();
                     gameScript.setState(State.STOPPED);
                 }
-                case TO_UPDATE -> {
-                    gameScript.update(delta);
-                }
+                case TO_UPDATE -> gameScript.update(delta);
                 case TO_INITIALIZE -> {
-                    if (handleDependencies(gameScript)) {
-                        gameScript.initialize();
-                        gameScript.setState(State.TO_UPDATE);
-                        handleDependents(gameScript);
-                    }
+                    if (!handleDependencies(gameScript))
+                        throw new RuntimeException("Unable to resolve dependencies for: " + gameScript.getClass());
+                    gameScript.initialize();
+                    gameScript.setState(State.TO_UPDATE);
                 }
                 case RE_INITIALIZE -> {
                     gameScript.initialize();
@@ -185,208 +251,233 @@ public abstract class Scene {
     }
 
     /**
-     * Handle any other scripts which were waiting upon this script
-     * @param gameScript Script Object to check dependents
+     * Invoked whenever a mouse button is pressed or released. This method attempts to pass the click to the underlying {@link UIManager}.
+     * If the {@link UIManager} fails to handle the click, the scene's {@link #onSceneClick} callback is invoked.
+     *
+     * @param button The mouse button that was actioned. (ex: {@link org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_LEFT}, {@link org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_RIGHT})
+     * @param action Indicates whether the button was pressed or released. (ex: {@link org.lwjgl.glfw.GLFW#GLFW_PRESS}, {@link org.lwjgl.glfw.GLFW#GLFW_RELEASE})
+     * @param mods The modifiers for the action. (ex: {@link org.lwjgl.glfw.GLFW#GLFW_MOD_CONTROL}, {@link org.lwjgl.glfw.GLFW#GLFW_MOD_SHIFT}, {@link org.lwjgl.glfw.GLFW#GLFW_MOD_ALT})
      */
-    protected void handleDependents(GameScript gameScript)
-    {
-        List<GameScript> dependentScripts = deferred.get(gameScript.getClass());
-        if (null != dependentScripts) {
-            for (GameScript script : dependentScripts) {
-                if (script.getCurrentState() == State.TO_INITIALIZE) {
-                    script.initialize();
-                    script.setState(State.TO_UPDATE);
-                }
-            }
-        }
+    private void onClick(int button, int action, int mods) {
+        if (!uiManager.onMouseClick(button, action, mods) && onSceneClick != null)
+            onSceneClick.invoke(button, action, mods);
     }
 
     /**
      * Handle dependency injection of other scripts and deferring the initialization
      * NOTE: only really handles one level of dependencies, will have to come back to this is we need
      * a more robust solution
-     * @param gameScript Script Object to handle
-     * @return true if there is no need to defer
-     * @throws IllegalAccessException if we fail to inject the dependency
+     *
+     * @param gameScript The {@link GameScript} instance in which to inject dependencies.
+     * @return True if all dependencies were injected correctly.
      */
-    protected boolean handleDependencies(GameScript gameScript) throws IllegalAccessException {
-        Field[] fields = gameScript.getClass().getDeclaredFields();
-        for (Field field: fields ) {
-            // Skip over things which are not GameScripts
-            if (!(GameScript.class.isAssignableFrom(field.getType()))) {
-                continue;
-            }
-            // Injection of the GameScript
-            InjectableScript annotation = field.getAnnotation(InjectableScript.class);
-            GameScript classToInject = gameScripts.get(field.getType());
-            if(null != annotation && null != classToInject) {
+    protected boolean handleDependencies(GameScript gameScript) {
+        List<Field> fields = Arrays.stream(gameScript.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(InjectableScript.class))
+                .collect(Collectors.toList());
+        for (Field field : fields) {
+            GameScript toInject = globalGameScripts.get(field.getType());
+            if (toInject == null)
+                toInject = gameScripts.get(field.getType());
+            if (toInject != null) {
                 field.setAccessible(true);
-                field.set(gameScript, classToInject);
+                try {
+                    field.set(gameScript, toInject);
+                } catch (IllegalAccessException e) {
+                    return false;
+                }
+                field.setAccessible(false);
             }
-            // TODO: MICHAEL FIX THIS
-//            // Check if we need to defer
-//            InitializeSelfAfter deferAnnotation = field.getAnnotation(InitializeSelfAfter.class);
-//            boolean dependencyNotInitialized = gameScripts.get(field.getType()).getCurrentState() == State.TO_INITIALIZE;
-//            if (null != deferAnnotation && dependencyNotInitialized) {
-//               List<GameScript> deferredList = deferred.get(field.getClass());
-//               if (null == deferredList) {
-//                  deferredList = new ArrayList<>();
-//               }
-//               deferredList.add(gameScript);
-//               //noinspection unchecked, we already know it's a GameScript object
-//               deferred.put((Class<GameScript>) field.getType(), deferredList);
-//               return false;
-//            }
         }
         return true;
     }
 
     /**
-     * Render all render-able entities
+     * Loads a new scene instance from its class.
+     *
+     * @param sceneClass The {@link Scene} derived class to load.
      */
-    public void renderScene() {
-        if (skybox != null)
-            skyboxRenderer.render(this.camera, skybox);
-        entityRenderer.render(this.camera, entities, lights);
+    public void loadNewScene(Class<? extends Scene> sceneClass) {
+        sceneManager.loadScene(sceneClass);
     }
 
     /**
-     * Shortcut to register key up actions
+     * This method serves as a shortcut to register key up actions. See {@link input.KeyboardInput#registerKeyUp}.
      *
-     * @param code     the keycode
-     * @param callback the callback to execute
+     * @param code     The keycode to bind the callback to.
+     * @param callback The callback to execute when the key is released.
      */
-    public void registerKeyUpAction(int code, KeyCallback callback) {
+    public void registerKeyUpAction(int code, KeyActionCallback callback) {
         this.getWindow().keyboard().registerKeyUp(code, callback);
     }
 
     /**
-     * Shortcut to register key down actions
+     * This method serves as a shortcut to register key down actions. See {@link input.KeyboardInput#registerKeyDown}.
      *
-     * @param code     the keycode
-     * @param callback the callback to execute
+     * @param code     The keycode to bind the callback to.
+     * @param callback The callback to execute when the key is pressed.
      */
-    public void registerKeyDownAction(int code, KeyCallback callback) {
+    public void registerKeyDownAction(int code, KeyActionCallback callback) {
         this.getWindow().keyboard().registerKeyDown(code, callback);
     }
 
     /**
-     * Shortcut to register mouse click actions
-     * @param callback the callback to register
+     * This method serves as a shortcut to register mouse click actions. See {@link input.MouseInput#registerMouseClickCallback}.
+     *
+     * @param callback The callback to invoke whenever a mouse button is activated.
      */
-    public void registerMouseClickAction(MouseClickCallback callback) {
-        this.getWindow().mouse().registerMouseClickCallback(callback);
+    public int registerMouseClickAction(MouseClickCallback callback) {
+        return window.mouse().registerMouseClickCallback(callback);
     }
 
     /**
-     * Register a Game Script to be ran during the Scene
-     * @param object the Gamescript to register
+     * Registers a global {@link GameScript} to persisting across all scenes.
+     *
+     * @param script The game script to register.
      */
-    public void register(GameScript object) {
-        object.setContext(this);
-        //Check if we have to modify the order
+    public static void registerGlobal(GameScript script) {
+        // we set the context when the scene is switched
+        registerGameScript(script, globalGameScripts);
+    }
+
+    /**
+     * Registers a {@link GameScript} to the scene.
+     *
+     * @param script The game script to register.
+     */
+    public void register(GameScript script) {
+        script.setContext(this);
+        registerGameScript(script, gameScripts);
+    }
+
+    private static void registerGameScript(GameScript object, ListOrderedMap<Class<? extends GameScript>, GameScript> source) {
+        // Check if we have to modify the order
         InitializeSelfBefore[] annotations = object.getClass().getAnnotationsByType(InitializeSelfBefore.class);
-        for(InitializeSelfBefore annotation : annotations) {
-            if(null != annotation) {
-                int scriptIndex = gameScripts.indexOf(annotation.clazz());
+        for (InitializeSelfBefore annotation : annotations) {
+            if (annotation != null) {
+                int scriptIndex = source.indexOf(annotation.clazz());
                 if (scriptIndex != -1) {
-                    gameScripts.put(scriptIndex, object.getClass(), object);
+                    source.put(scriptIndex, object.getClass(), object);
                     return;
                 }
             }
         }
         // Insert the game script normally
-        gameScripts.put(object.getClass(), object);
+        source.put(object.getClass(), object);
     }
 
     /**
-     * Register a Entity to the scene
+     * Registers an {@link Entity} to the scene. Entities MUST be registered to a scene in order to be properly updated.
      *
-     * @param ent the entity to be registered
+     * @param ent The entity to register.
      */
     public void register(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
 
-        allEntities.add(ent);
+        entityList.add(ent);
 
-        if (!entities.containsKey(mesh))
-            entities.put(ent.getModel().getMesh(), new HashMap<Texture, List<Entity>>() {{
-                put(ent.getModel().getTexture(), new ArrayList<Entity>() {{
+        if (!entityMap.containsKey(mesh))
+            entityMap.put(ent.getModel().getMesh(), new HashMap<>() {{
+                put(ent.getModel().getTexture(), new ArrayList<>() {{
                     add(ent);
                 }});
             }});
-
-        else if (!entities.get(mesh).containsKey(texture))
-            entities.get(mesh).put(texture, new ArrayList<Entity>() {{
+        else if (!entityMap.get(mesh).containsKey(texture))
+            entityMap.get(mesh).put(texture, new ArrayList<>() {{
                 add(ent);
             }});
-
         else
-            entities.get(mesh).get(texture).add(ent);
+            entityMap.get(mesh).get(texture).add(ent);
     }
 
     /**
-     * Register a light source to the scene
+     * Registers a {@link Light} to the scene. Lights MUST be registered to a scene in order to affect visual lighting.
      *
-     * @param light the light to be registerd
+     * @param light The light to be registered.
      */
     public void register(Light light) {
         lights.add(light);
     }
 
     /**
-     * Remove a entity from the scene
+     * Removes an {@link Entity} from the scene.
      *
-     * @param ent the entity the remove
+     * @param ent The entity instance to remove.
      */
     public void remove(Entity ent) {
         Texture texture = ent.getModel().getTexture();
         Mesh mesh = ent.getModel().getMesh();
 
-        allEntities.remove(ent);
+        entityList.remove(ent);
 
-        if (!entities.containsKey(mesh))
+        if (!entityMap.containsKey(mesh))
             return;
 
-        if (!entities.get(mesh).containsKey(texture))
+        if (!entityMap.get(mesh).containsKey(texture))
             return;
 
-        entities.get(mesh).get(texture).remove(ent);
+        entityMap.get(mesh).get(texture).remove(ent);
     }
 
     /**
-     * Remove a light from the scene
+     * Removes a {@link Light} from the scene.
      *
-     * @param light the light to be removed
+     * @param light The light instance to remove.
      */
     public void remove(Light light) {
         lights.remove(light);
     }
 
     /**
-     * Set the skybox texture to be used for this scene;
+     * Set the skybox texture to be used for this scene.
      *
-     * @param skybox the skybox texture to use
+     * @param skybox The texture to render as a skybox for the scene.
      */
     public void setSkyboxTexture(Texture skybox) {
         this.skybox = skybox;
     }
 
     /**
-     * Call any destruction logic for objects in this scene
+     * Returns the texture to be used as a skybox for this scene.
+     *
+     * @return {@link Texture} The texture to render as a skybox for the scene.
      */
-    public void cleanup() {
-        for (Mesh m : entities.keySet()) {
+    public Texture getSkyboxTexture() {
+        return skybox;
+    }
+
+    /**
+     * Returns the collection of global {@link GameScript}s.
+     *
+     * @return The collection of global {@link GameScript}s.
+     */
+    public static Collection<GameScript> getGlobalScripts() {
+        return globalGameScripts.values();
+    }
+
+    /**
+     * Returns a specific global {@link GameScript} instance.
+     *
+     * @param scriptClass The class of the script to return.
+     * @return The resulting {@link GameScript}.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends GameScript> T getGlobalScriptInstance(Class<T> scriptClass) {
+        return (T) globalGameScripts.get(scriptClass);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
+        for (Mesh m : entityMap.keySet()) {
             m.destroy();
-            for (Texture t : entities.get(m).keySet()) {
+            for (Texture t : entityMap.get(m).keySet())
                 t.destroy();
-            }
         }
-        entityRenderer.destroy();
         camera.destroy();
-        uiManager.cleanup();
-        //NOTE: Scene shouldn't be responsible for the destruction of the window
+        uiManager.destroy();
     }
 
 }

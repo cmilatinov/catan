@@ -1,7 +1,5 @@
 package ui;
 
-import org.joml.Vector2f;
-
 public class UIConstraints {
 
 	public static final byte PRIORITY_LAST = 0;
@@ -10,6 +8,11 @@ public class UIConstraints {
 	private UIConstraint x, y, width, height;
 	private float rotation;
 
+	public UIConstraints setAll(UIConstraint constraint) {
+		x = y = width = height = constraint;
+		return this;
+	}
+
 	public UIConstraints setX(UIConstraint xConstraint) {
 		x = xConstraint;
 		return this;
@@ -17,13 +20,6 @@ public class UIConstraints {
 
 	public UIConstraints setY(UIConstraint yConstraint) {
 		y = yConstraint;
-		return this;
-	}
-
-	public UIConstraints setHeightWidth(UIConstraint scaleConstraint)
-	{
-		width = scaleConstraint;
-		height = scaleConstraint;
 		return this;
 	}
 

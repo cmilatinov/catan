@@ -1,7 +1,6 @@
 package ui;
 
 import entities.Player;
-import gameplay.ResourceType;
 import objects.GameScript;
 import objects.InitializeSelfBefore;
 import objects.InjectableScript;
@@ -11,6 +10,7 @@ import observers.PlayerEventSubject;
 import observers.PlayerHandEventSubject;
 import scripts.GameManager;
 import ui.components.GamePhase;
+import ui.components.TradeButton;
 
 @InitializeSelfBefore(clazz = GameManager.class)
 public class UI extends GameScript implements PlayerEventSubject, PlayerHandEventSubject, GameStateEventSubject {
@@ -24,7 +24,11 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
     @InjectableScript
     PlayerHandUI playerHandUI;
 
+    @InjectableScript
+    TradeMenuUI tradeMenuUI;
+
     GamePhase gamePhaseUI = new GamePhase();
+    TradeButton tButton = new TradeButton();
 
     @Override
     public void initialize() {
@@ -33,6 +37,13 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
         gameManager.gameObserver.register((GameStateEventSubject)this);
 
         getScene().getUiManager().getContainer().add(gamePhaseUI, gamePhaseUI.getConstraints());
+        getScene().getUiManager().getContainer().add(tButton, tButton.getConstraints());
+
+        tButton.setOnMouseClickEvent(this::toggleTradeMenu);
+    }
+
+    public void toggleTradeMenu() {
+        tradeMenuUI.toggleTradingMenu();
     }
 
     @Override
@@ -58,7 +69,7 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
     }
 
     @Override
-    public void onPlayerHandEvent(GameObserver.PlayerHandEvent eventType, ResourceType type, int count) {
+    public void onPlayerHandEvent(GameObserver.PlayerHandEvent eventType, int type, int count) {
         switch(eventType) {
             case RESOURCES_ADDED -> {
                 for(int i = 0; i < count; i ++)

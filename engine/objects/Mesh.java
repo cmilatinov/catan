@@ -5,9 +5,19 @@ import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
+/**
+ * Represents a mesh with vertex, face, and normal data.
+ */
 public class Mesh implements GameResource {
 
+	/**
+	 * The underlying OpenGL VAO structure.
+	 */
 	private final VAO vao;
+
+	/**
+	 * The total number of vertices in the mesh. This number corresponds to the number of indices if this is an indexed mesh.
+	 */
 	private final int vertexCount;
 
 	/**
@@ -24,7 +34,7 @@ public class Mesh implements GameResource {
 	/**
 	 * Returns the VAO backing this mesh.
 	 * 
-	 * @return [{@link VAO}] The VAO describing this mesh.
+	 * @return {@link VAO} The VAO describing this mesh.
 	 */
 	public VAO getVAO() {
 		return vao;
@@ -33,7 +43,7 @@ public class Mesh implements GameResource {
 	/**
 	 * Returns this mesh's vertex count.
 	 * 
-	 * @return [<b>int</b>] The vertex count of this mesh.
+	 * @return <b>int</b> The vertex count of this mesh.
 	 */
 	public int getVertexCount() {
 		return vertexCount;

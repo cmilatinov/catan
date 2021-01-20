@@ -1,82 +1,59 @@
 package scripts;
 
-import main.SceneManager;
-import objects.GameResourceFactory;
 import objects.GameScript;
-import objects.Texture;
+import resources.GameResources;
+import resources.Resource;
 import scene.Game;
-import ui.*;
-import ui.constraints.PixelConstraint;
-import ui.constraints.RelativeConstraint;
+import ui.UIButton;
+import ui.UIComponent;
+import ui.UIConstraints;
+import ui.UISprite;
+import ui.constraints.*;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static resources.GameResources.TEXTURE_PATH;
+import static ui.UIDimensions.DIRECTION_BOTTOM;
 
 public class MainMenu extends GameScript {
     @Override
     public void initialize() {
-        SceneManager sceneManager = this.getScene().getSceneManager();
-        Texture mainMenuTexture = GameResourceFactory.loadTexture2D(TEXTURE_PATH + "color_red.png", GL_LINEAR, true);
-        UISprite mainMenuSprite = new UISprite(mainMenuTexture);
-        var backgroundConstraints = new UIConstraints()
-                .setX(new PixelConstraint(0, UIDimensions.DIRECTION_LEFT))
-                .setY(new PixelConstraint(0, UIDimensions.DIRECTION_TOP))
-                .setWidth(new RelativeConstraint(1.0f))
-                .setHeight(new RelativeConstraint(1.0f));
-        getScene().getUiManager().getContainer().add(mainMenuSprite, backgroundConstraints);
-        var loadGameButton = new UIButton() {
-            @Override
-            public void onMouseHoverExit() {
-                this.setColor(UIColor.WHITE);
-            }
+        UIComponent container = getScene().getUiManager().getContainer();
 
-            @Override
-            public void onMouseHover() {
-                this.setColor(UIColor.LIGHT_GRAY);
-            }
+        UISprite mainMenuSprite = new UISprite(GameResources.get(Resource.TEXTURE_MAIN_MENU));
+        mainMenuSprite.setInteractive(false);
+        AspectCoverConstraint constraint = new AspectCoverConstraint(21.0f / 9.0f);
+        UIConstraints backgroundConstraints = new UIConstraints()
+                .setAll(constraint);
+        container.add(mainMenuSprite, backgroundConstraints);
 
-            @Override
-            public void onMouseClick() {
-                sceneManager.loadScene(Game.class);
-            }
-        };
+        UIComponent buttonContainer = new UIComponent();
+        UIConstraints buttonContainerConstraints = new UIConstraints()
+                .setX(new PixelConstraint(50))
+                .setY(new PixelConstraint(50, DIRECTION_BOTTOM))
+                .setWidth(new RelativeConstraint(0.35f))
+                .setHeight(new ParentMinusDiffConstraint(100));
+        container.add(buttonContainer, buttonContainerConstraints);
+
         // Setup constraints for the Load Game Button
-        UIConstraints constraints = new UIConstraints()
-                .setX(new PixelConstraint(30, UIDimensions.DIRECTION_LEFT))
-                .setY(new PixelConstraint(30, UIDimensions.DIRECTION_TOP))
-                .setWidth(new RelativeConstraint(0.1f))
-                .setHeight(new RelativeConstraint(0.1f));
+        UIButton loadGameButton = new UIButton()
+                .setOnClick(() -> getScene().loadNewScene(Game.class));
+        UIConstraints loadConstraints = new UIConstraints()
+                .setX(new CenterConstraint())
+                .setY(new PixelConstraint(0, DIRECTION_BOTTOM))
+                .setHeight(new PixelConstraint(80));
+
         // Register the Load Game button
-        loadGameButton.setColor(UIColor.WHITE);
         loadGameButton.setText("Load Game");
-        mainMenuSprite.add(loadGameButton, constraints);
+        buttonContainer.add(loadGameButton, loadConstraints);
 
-        var exitGame = new UIButton() {
-            @Override
-            public void onMouseHoverExit() {
-                this.setColor(UIColor.WHITE);
-            }
-
-            @Override
-            public void onMouseHover() {
-                this.setColor(UIColor.LIGHT_GRAY);
-            }
-
-            @Override
-            public void onMouseClick() {
-                getWindow().close();
-            }
-        };
         // Setup constraints for Exit Button
-        UIConstraints constraints2 = new UIConstraints()
-                .setX(new PixelConstraint(30, UIDimensions.DIRECTION_LEFT))
-                .setY(new PixelConstraint(200, UIDimensions.DIRECTION_TOP))
-                .setWidth(new RelativeConstraint(0.1f))
-                .setHeight(new RelativeConstraint(0.1f));
+        UIButton exitGame = new UIButton()
+                .setOnClick(() -> getWindow().close());
+        UIConstraints exitConstraints = new UIConstraints()
+                .setX(new CenterConstraint())
+                .setY(new PixelConstraint(120, DIRECTION_BOTTOM))
+                .setHeight(new PixelConstraint(80));
         // Register Exit button
-        exitGame.setColor(UIColor.WHITE);
         exitGame.setText("Exit Game");
-        mainMenuSprite.add(exitGame, constraints2);
+        buttonContainer.add(exitGame, exitConstraints);
     }
 
     @Override

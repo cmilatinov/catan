@@ -1,11 +1,11 @@
 package ui.constraints;
 
-import static ui.UIDimensions.DIMENSION_X;
-import static ui.UIDimensions.DIMENSION_Y;
-
 import ui.UIConstraint;
 import ui.UIConstraints;
 import ui.UIDimensions;
+
+import static ui.UIDimensions.DIMENSION_X;
+import static ui.UIDimensions.DIMENSION_Y;
 
 public class CenterConstraint extends UIConstraint {
 
@@ -21,10 +21,9 @@ public class CenterConstraint extends UIConstraint {
 		this.offset = offset;
 	}
 
-	@Override
 	public int compute(UIDimensions parent, UIDimensions computed, int dimension) {
 		int computedValue = 0;
-		switch(dimension) {
+		switch (dimension) {
 			case DIMENSION_X -> computedValue = parent.getCenterX() - computed.getWidth() / 2;
 			case DIMENSION_Y-> computedValue = parent.getCenterY() - computed.getHeight() / 2;
 		}
