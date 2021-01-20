@@ -479,6 +479,10 @@ public class Scene implements FreeableObject {
         camera.destroy();
         uiManager.destroy();
         window.mouse().removeMouseClickCallback(this.onClickRef);
+        entityList.clear();
+        entityMap.clear();
+        lights.clear();
+        gameScripts.clear();
     }
 
 }
