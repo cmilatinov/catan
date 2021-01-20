@@ -1,12 +1,13 @@
 package scripts;
 
-import board.Node;
-import board.NodeType;
+import entities.board.nodes.Vertex;
+import entities.board.nodes.Node;
+import entities.board.nodes.Side;
 import entities.Entity;
-import entities.Robber;
-import entities.Tile;
-import gameplay.ResourceType;
+import entities.EntityStatic;
+import entities.board.Tile;
 import objects.GameScript;
+import objects.TexturedMesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import resources.GameResources;
@@ -14,8 +15,6 @@ import resources.Resource;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static gameplay.ResourceType.*;
 
 public class Tiles extends GameScript{
 
@@ -25,31 +24,20 @@ public class Tiles extends GameScript{
     private Entity robber;
 
     private final int BOARD_RADIUS;
-
-    private Map<ResourceType, Integer> tileConfiguration = new HashMap<ResourceType, Integer>();
     private ArrayList<Integer> tokenConfig = new ArrayList<Integer>();
-
-    private int SHEEP_COUNT = 4;
-    private int WHEAT_COUNT = 4;
-    private int FOREST_COUNT = 4;
-    private int STONE_COUNT = 3;
-    private int BRICK_COUNT = 3;
-    private int DESERT_COUNT = 1;
-
-    private final int SIDES = 6;
 
     public Tiles(int boardRadius) {
         BOARD_RADIUS = boardRadius;
     }
 
     public List<Tile> getTiles(int val) {
-        return tiles.stream().filter(t -> t.getValue() == val && !t.isEmbargoed()).collect(Collectors.toList());
+        return tiles.stream().filter(t -> t.getValue() == val && !t.isBlocked()).collect(Collectors.toList());
     }
 
     public void resetEmbargoedTile() {
         tiles.forEach(t -> {
-            if(t.isEmbargoed())
-                t.setEmbargoed(false);
+            if(t.isBlocked())
+                t.setIsBlocked(false);
         });
     }
 
@@ -57,7 +45,16 @@ public class Tiles extends GameScript{
      * Method generating the tiles and assigning the vertices to each tile
      */
     public void generateMap() {
-        robber = Robber.create(Resource.TEXTURE_COLOR_BLUE).scale(0.01f);
+        robber = new EntityStatic(new TexturedMesh(GameResources.get(Resource.MESH_ROBBER), GameResources.get(Resource.TEXTURE_COLOR_BLUE))).scale(0.01f);
+
+        // Create resource configuration
+        int[] resourceCount = new int[6];
+        resourceCount[Tile.WOOD] = 4;
+        resourceCount[Tile.BRICK] = 3;
+        resourceCount[Tile.WHEAT] = 4;
+        resourceCount[Tile.SHEEP] = 4;
+        resourceCount[Tile.STONE] = 3;
+        resourceCount[Tile.DESERT] = 1;
 
         tokenConfig.add(1); //0 -> 2
         tokenConfig.add(2); //1 -> 3
@@ -71,27 +68,12 @@ public class Tiles extends GameScript{
         tokenConfig.add(2); //9 -> 11
         tokenConfig.add(1); //10 -> 12
 
-        tileConfiguration.put(SHEEP, SHEEP_COUNT);
-        tileConfiguration.put(WHEAT, WHEAT_COUNT);
-        tileConfiguration.put(FOREST, FOREST_COUNT);
-        tileConfiguration.put(STONE, STONE_COUNT);
-        tileConfiguration.put(BRICK, BRICK_COUNT);
-        tileConfiguration.put(DESERT, DESERT_COUNT);
-
         tiles = new ArrayList<Tile>();
         nodes = new ArrayList<Node>();
 
-        // Generates the appropriate amount of types for the tiles
-        Iterator tileIterator = tileConfiguration.entrySet().iterator();
-
-        while(tileIterator.hasNext()) {
-            Map.Entry mapElement = (Map.Entry)tileIterator.next();
-            for(int i = 0; i < (int)mapElement.getValue(); i ++) {
-                tiles.add(new Tile
-                        (GameResources.get(Resource.getTileModel((ResourceType) mapElement.getKey()))
-                                , (ResourceType) mapElement.getKey()));
-            }
-        }
+        for(int i = 0; i < resourceCount.length; i ++)
+            for(int j = 0; j < resourceCount[i]; j ++)
+                tiles.add(new Tile(GameResources.get(Resource.getTileModel(i)), i));
 
         Collections.shuffle(tiles);
 
@@ -99,7 +81,7 @@ public class Tiles extends GameScript{
 
         for(int t = 0; t < tokenConfig.size(); t ++) {
             for(int i = 0; i < tokenConfig.get(t); i ++) {
-                while(tiles.get(tIndex).getType() == DESERT)
+                while(tiles.get(tIndex).getType() == Tile.DESERT)
                     tIndex ++;
                 tiles.get(tIndex ++).setValue(t + 2);
             }
@@ -110,7 +92,7 @@ public class Tiles extends GameScript{
         generateTiles();
         generateNodes();
 
-        getDesertTile().setEmbargoed(true);
+        getDesertTile().setIsBlocked(true);
         robber.setPosition(getDesertTile().getPosition());
     }
 
@@ -137,10 +119,10 @@ public class Tiles extends GameScript{
 
                 if (null == newNode) {
                     if(isSide) {
-                        newNode = Node.createNode(NodeType.SIDE);
+                        newNode = new Side();
                     } else {
-                        newNode = Node.createNode(NodeType.VERTEX);
-                        t.addVertex(newNode);
+                        newNode = new Vertex();
+                        t.addNode( (Vertex) newNode);
                     }
 
                     newNode.setPosition(new Vector3f(nodeX, 0.1f, nodeZ));
@@ -152,7 +134,6 @@ public class Tiles extends GameScript{
             }
         }
 
-        // TODO: rotate the sides properly
         for(Node currNode :  nodes) {
             for(Node node : nodes) {
                 Vector3f result = new Vector3f();
@@ -191,7 +172,7 @@ public class Tiles extends GameScript{
             hexCoords[1] = 0;
             hexCoords[2] = -i;
 
-            for(int t = 0; t < i * SIDES; t ++) {
+            for(int t = 0; t < i * 6; t ++) {
                 tiles.get(tIndex).setHexCoords(new Vector2f(hexCoords[0], hexCoords[2]));
                 tiles.get(tIndex).scale(0.996f);
 
@@ -222,7 +203,7 @@ public class Tiles extends GameScript{
      */
     public Tile getDesertTile() {
         return tiles.stream()
-                .filter(t -> t.getType() == DESERT)
+                .filter(t -> t.getType() == Tile.DESERT)
                 .findFirst()
                 .orElse(null);
     }
@@ -230,7 +211,6 @@ public class Tiles extends GameScript{
     public Entity getRobber(){
         return robber;
     }
-
 
     @Override
     public void initialize() {
@@ -242,8 +222,10 @@ public class Tiles extends GameScript{
                 .forEach(t -> getScene().register(t.getToken()));
         getScene().register(robber);
     }
+
     @Override
     public void destroy() {
 
     }
+    
 }

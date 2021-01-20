@@ -2,7 +2,7 @@ package states;
 
 import entities.Entity;
 import entities.Player;
-import observers.GameObserver;
+import observers.GameObserver.*;
 import scripts.GameManager;
 
 public class StateRolling implements GameState {
@@ -12,8 +12,13 @@ public class StateRolling implements GameState {
      */
     public int roll(GameManager context) {
         int roll = (int)(Math.random() * 6) + 1;
-        context.gameObserver.broadcast(GameObserver.DiceEvents.DICE_ROLLED, roll);
+        context.gameObserver.broadcast(DiceEvents.DICE_ROLLED, roll);
         return roll;
+    }
+
+    @Override
+    public GameStates getStateName() {
+        return GameStates.ROLLING;
     }
 
     @Override

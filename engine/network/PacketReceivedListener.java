@@ -1,5 +1,7 @@
 package network;
 
+import network.packets.Packet;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -9,10 +11,9 @@ public interface PacketReceivedListener {
 	
 	/**
 	 * Handles a received packet.
-	 * @param source The sender's remote IP address.
-	 * @param port The sender's remote port number.
+	 * @param source The sender's remote IP address and port.
 	 * @param packet The packet sent.
 	 */
-	public void invoke(InetSocketAddress source, Packet packet);
+	void invoke(InetSocketAddress source, Packet packet);
 
 }

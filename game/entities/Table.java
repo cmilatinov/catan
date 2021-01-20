@@ -10,9 +10,8 @@ public class Table extends EntityStatic {
         super(model);
     }
 
-    public static Table create ()
-    {
-        var model = (TexturedMesh)GameResources.get(Resource.MODEL_TABLE);
+    public static Table create() {
+        TexturedMesh model = GameResources.get(Resource.MODEL_TABLE);
         return new Table(model);
     }
 }

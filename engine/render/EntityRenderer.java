@@ -1,19 +1,17 @@
 package render;
 
-import java.util.List;
-import java.util.Map;
-
-import objects.FreeableObject;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
 import camera.Camera;
 import entities.Entity;
 import lights.Light;
+import objects.FreeableObject;
 import objects.Mesh;
 import objects.Texture;
-import physics.colliders.SphereCollider;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import shaders.entity.ShaderEntity;
+
+import java.util.List;
+import java.util.Map;
 
 public class EntityRenderer implements FreeableObject {
 	
@@ -53,13 +51,9 @@ public class EntityRenderer implements FreeableObject {
 			for(Texture texture : entities.get(mesh).keySet()) {
 				
 				texture.bindToUnit(0);
-				
+
+				// TODO instanced rendering to alleviate the need for this loop
 				for (Entity entity : entities.get(mesh).get(texture)) {
-
-//					if(Entity instanceof SphereCollider) {
-//
-//					}
-
 					if(!entity.shouldRender())
 						continue;
 					

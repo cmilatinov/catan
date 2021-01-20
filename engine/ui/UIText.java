@@ -3,6 +3,7 @@ package ui;
 import objects.Texture;
 
 import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -12,32 +13,39 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class UIText extends UIComponent {
 
-    private final JTextArea textArea;
+    private final SimpleAttributeSet attrs = new SimpleAttributeSet();
+    private final JTextPane textPane;
     boolean shouldUpdateImage = true;
 
     public UIText(Font font, String text) {
-        this.textArea = new JTextArea(text);
-        this.textArea.setFont(font);
-        this.textArea.setLineWrap(true);
-        this.textArea.setWrapStyleWord(true);
-        this.textArea.setBackground(new Color(0, 0, 0, 0));
-        this.setIsInteractable(false);
+        textPane = new JTextPane();
+        textPane.setFont(font);
+        textPane.setEditorKit(new MyEditorKit());
+        StyleConstants.setAlignment(attrs, StyleConstants.ALIGN_CENTER);
+        StyledDocument doc = (StyledDocument) textPane.getDocument();
+        textPane.setText(text);
+        textPane.setBackground(new Color(0, 0, 0, 0));
+
+        doc.setParagraphAttributes(0,doc.getLength() - 1, attrs, false);
+        setInteractive(false);
     }
 
     public UIText setText(String text) {
-        this.textArea.setText(text);
+        this.textPane.setText(text);
+        StyledDocument doc = (StyledDocument) textPane.getDocument();
+        doc.setParagraphAttributes(0,doc.getLength() - 1, attrs, false);
         this.shouldUpdateImage = true;
         return this;
     }
 
     public UIText setFont(Font font) {
-        this.textArea.setFont(font);
+        this.textPane.setFont(font);
         this.shouldUpdateImage = true;
         return this;
     }
 
     public UIText setColor(UIColor color) {
-        this.textArea.setForeground(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
+        this.textPane.setForeground(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
         this.shouldUpdateImage = true;
         return this;
     }
@@ -51,10 +59,10 @@ public class UIText extends UIComponent {
         Graphics g = image.createGraphics();
 
         // Set label dimensions
-        textArea.setSize(dimensions.getWidth(), dimensions.getHeight());
+        textPane.setSize(dimensions.getWidth(), dimensions.getHeight());
 
         // Paint the label using graphics
-        textArea.paint(g);
+        textPane.paint(g);
 
         // Dispose of the graphics
         g.dispose();
@@ -74,4 +82,56 @@ public class UIText extends UIComponent {
 
     }
 
+}
+
+class MyEditorKit extends StyledEditorKit {
+
+    public ViewFactory getViewFactory() {
+        return new StyledViewFactory();
+    }
+
+    static class StyledViewFactory implements ViewFactory {
+
+        public View create(Element elem) {
+            String kind = elem.getName();
+            if (kind != null) {
+                if (kind.equals(AbstractDocument.ContentElementName)) {
+                    return new LabelView(elem);
+                } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
+                    return new ParagraphView(elem);
+                } else if (kind.equals(AbstractDocument.SectionElementName)) {
+                    return new CenteredBoxView(elem, View.Y_AXIS);
+                } else if (kind.equals(StyleConstants.ComponentElementName)) {
+                    return new ComponentView(elem);
+                } else if (kind.equals(StyleConstants.IconElementName)) {
+                    return new IconView(elem);
+                }
+            }
+
+            return new LabelView(elem);
+        }
+
+    }
+}
+
+class CenteredBoxView extends BoxView {
+    public CenteredBoxView(Element elem, int axis) {
+
+        super(elem,axis);
+    }
+    protected void layoutMajorAxis(int targetSpan, int axis, int[] offsets, int[] spans) {
+
+        super.layoutMajorAxis(targetSpan,axis,offsets,spans);
+        int textBlockHeight = 0;
+        int offset = 0;
+
+        for (int span : spans) {
+            textBlockHeight = span;
+        }
+        offset = (targetSpan - textBlockHeight) / 2;
+        for (int i = 0; i < offsets.length; i++) {
+            offsets[i] += offset;
+        }
+
+    }
 }
