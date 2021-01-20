@@ -173,6 +173,9 @@ public final class Engine {
     }
 
     public void setCurrentScene(Scene currentScene) {
+        if (null != this.currentScene) {
+            this.currentScene.destroy();
+        }
         this.currentScene = currentScene;
         // Have to set the context of any globals here since
         // this is the only point where the transfer of a new scene happens
