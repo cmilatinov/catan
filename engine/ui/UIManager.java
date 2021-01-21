@@ -143,6 +143,7 @@ public class UIManager implements FreeableObject {
      */
     public void destroy() {
         window.mouse().removeMouseMoveCallback(mouseMoveHandle);
+        root.children.clear();
     }
 
 }

@@ -89,6 +89,11 @@ public class Scene implements FreeableObject {
     private MouseClickCallback onSceneClick;
 
     /**
+     * The reference to the scene's on click
+     */
+    private int onClickRef;
+
+    /**
      * Initializes the scene to a functional state. This method MUST be called before the scene can be used.
      *
      * @param window The {@link Window} instance to attach to this scene.
@@ -98,7 +103,7 @@ public class Scene implements FreeableObject {
         this.sceneManager = sceneManager;
         this.uiManager = new UIManager(window);
         this.camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
-        window.mouse().registerMouseClickCallback(this::onClick);
+        this.onClickRef = window.mouse().registerMouseClickCallback(this::onClick);
     }
 
     /**
@@ -471,13 +476,13 @@ public class Scene implements FreeableObject {
      * {@inheritDoc}
      */
     public void destroy() {
-        for (Mesh m : entityMap.keySet()) {
-            m.destroy();
-            for (Texture t : entityMap.get(m).keySet())
-                t.destroy();
-        }
         camera.destroy();
         uiManager.destroy();
+        window.mouse().removeMouseClickCallback(this.onClickRef);
+        entityList.clear();
+        entityMap.clear();
+        lights.clear();
+        gameScripts.clear();
     }
 
 }
