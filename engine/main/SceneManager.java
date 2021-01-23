@@ -19,6 +19,7 @@ public class SceneManager {
             return;
         }
         scene.initialize();
+        scene.setup();
         engine.setCurrentScene(scene);
     }
 
