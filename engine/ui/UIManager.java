@@ -12,13 +12,13 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class UIManager implements FreeableObject {
 
-    private final UIText framerate;
-
     private final UIComponent root;
 
     private final Window window;
 
-    private final int mouseMoveHandle;
+    private int mouseMoveHandle;
+
+    private UIText framerate;
 
     private UIComponent lastHoveredComponent = null;
     private boolean mouseEnterCalled = false;
@@ -27,7 +27,6 @@ public class UIManager implements FreeableObject {
     private int fps = 0;
 
     public UIManager(Window window) {
-        this.mouseMoveHandle = window.mouse().registerMouseMoveCallback(this::onMouseMove);
         this.root = new UIComponent(new UIDimensions()
                 .setX(0)
                 .setY(0)
@@ -36,7 +35,11 @@ public class UIManager implements FreeableObject {
                 .setElevation(0))
                 .setVisible(false);
         this.window = window;
+    }
 
+    public UIManager initialize()
+    {
+        this.mouseMoveHandle = window.mouse().registerMouseMoveCallback(this::onMouseMove);
         // FPS
         framerate = new UIText(new Font("Arial", Font.BOLD, 30), "");
         framerate.setColor(UIColor.GREEN);
@@ -46,6 +49,7 @@ public class UIManager implements FreeableObject {
                 .setWidth(new PixelConstraint(100))
                 .setHeight(new PixelConstraint(30));
         root.add(framerate, fpsConstraints);
+        return this;
     }
 
     public boolean onMouseClick(int button, int action, int mods) {

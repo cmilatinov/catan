@@ -103,6 +103,11 @@ public class Scene implements FreeableObject {
         this.sceneManager = sceneManager;
         this.uiManager = new UIManager(window);
         this.camera = new CameraFPS(70, window).translate(new Vector3f(0, 0, 1));
+    }
+
+    public void setup()
+    {
+        uiManager.initialize();
         this.onClickRef = window.mouse().registerMouseClickCallback(this::onClick);
     }
 
