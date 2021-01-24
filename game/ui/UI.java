@@ -10,7 +10,8 @@ import observers.PlayerEventSubject;
 import observers.PlayerHandEventSubject;
 import scripts.GameManager;
 import ui.components.GamePhase;
-import ui.components.TradeButton;
+import ui.constraints.PixelConstraint;
+import ui.constraints.RelativeConstraint;
 
 @InitializeSelfBefore(clazz = GameManager.class)
 public class UI extends GameScript implements PlayerEventSubject, PlayerHandEventSubject, GameStateEventSubject {
@@ -28,7 +29,7 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
     TradeMenuUI tradeMenuUI;
 
     GamePhase gamePhaseUI = new GamePhase();
-    TradeButton tButton = new TradeButton();
+    UIButton tButton = new UIButton("Start Trade");
 
     @Override
     public void initialize() {
@@ -36,10 +37,18 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
         gameManager.gameObserver.register((PlayerHandEventSubject)this);
         gameManager.gameObserver.register((GameStateEventSubject)this);
 
-        getScene().getUiManager().getContainer().add(gamePhaseUI, gamePhaseUI.getConstraints());
-        getScene().getUiManager().getContainer().add(tButton, tButton.getConstraints());
+        UIComponent container = getScene().getUiManager().getContainer();
 
-        tButton.setOnMouseClickEvent(this::toggleTradeMenu);
+        container.add(gamePhaseUI, gamePhaseUI.getConstraints());
+
+        UIConstraints tButtonConstraints = new UIConstraints()
+                .setX(new PixelConstraint(30, UIDimensions.DIRECTION_LEFT))
+                .setY(new PixelConstraint(30, UIDimensions.DIRECTION_BOTTOM))
+                .setWidth(new RelativeConstraint(0.1f))
+                .setHeight(new RelativeConstraint(0.1f));
+        container.add(tButton, tButtonConstraints);
+
+        tButton.setOnClick(this::toggleTradeMenu);
     }
 
     public void toggleTradeMenu() {
@@ -66,6 +75,7 @@ public class UI extends GameScript implements PlayerEventSubject, PlayerHandEven
 
     @Override
     public void destroy() {
+
     }
 
     @Override

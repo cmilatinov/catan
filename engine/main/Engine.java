@@ -5,6 +5,7 @@ import log.Logger;
 import objects.FBO;
 import objects.GameResourceFactory;
 import objects.GameScript;
+import org.lwjgl.opengl.GL;
 import render.SceneRenderer;
 import resources.GameResourceLoader;
 
@@ -12,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
@@ -40,6 +42,8 @@ public final class Engine {
     private Scene currentScene;
     private final Class<? extends Scene> initialScene;
 
+    private final Thread renderThread = new Thread(this::run);
+
     public Engine(Window window, Class<? extends GameResourceLoader> resourceLoader, Class<? extends Scene> initialScene) {
         // Create window if not created yet
         this.window = window;
@@ -62,7 +66,41 @@ public final class Engine {
         this.initialScene = initialScene;
     }
 
+    public void start() {
+        // Unbind OpenGL context from main thread
+        glfwMakeContextCurrent(0);
+
+        // Start render thread
+        renderThread.start();
+
+        // Poll window events on main thread
+        pollEvents();
+
+        // Join render thread
+        try {
+            renderThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Destroy scene and window
+        log("Destroying object(s) ...");
+        currentScene.destroy();
+        window.destroy();
+
+        // Unload resources
+        log("Unloading all assets ...");
+        GameResourceFactory.cleanGameResources();
+
+        // Flush and close logs
+        logger.close();
+    }
+
     private void load() {
+        // Transfer window context to current thread
+        glfwMakeContextCurrent(window.getHandle());
+        GL.createCapabilities();
+
         // Depth test, if certain triangles are occluded by others, don't draw them
         glEnable(GL_DEPTH_TEST);
 
@@ -92,8 +130,7 @@ public final class Engine {
             long currentTime = System.nanoTime();
             double delta = (currentTime - lastTime) * 1e-9;
 
-            // Update window and scene
-            window.update();
+            // Update scene
             loadingScene.update(delta);
 
             // Clear screen
@@ -103,6 +140,9 @@ public final class Engine {
             // Render scene
             sceneRenderer.render(loadingScene);
 
+            // Show the newly drawn frame
+            window.swapBuffers();
+
             // Execute one load operation
             loadOperations.pop().run();
 
@@ -111,7 +151,7 @@ public final class Engine {
 
     }
 
-    public void run() {
+    private void run() {
 
         // Load the needed resources
         load();
@@ -133,7 +173,6 @@ public final class Engine {
             double delta = (currentTime - lastTime) * 1e-9;
 
             // Update
-            window.update();
             currentScene.update(delta);
 
             fbo.bind();
@@ -150,18 +189,19 @@ public final class Engine {
             // Resolve to display
             fbo.resolve(null, GL_COLOR_ATTACHMENT0, GL_BACK);
 
+            // Show the newly drawn frame
+            window.swapBuffers();
+
             lastTime = currentTime;
         }
 
-        log("Destroying object(s) ...");
-        currentScene.destroy();
-        window.destroy();
         fbo.destroy();
+    }
 
-        log("Unloading all assets ...");
-        GameResourceFactory.cleanGameResources();
-
-        logger.close();
+    private void pollEvents() {
+        while (!window.shouldClose()) {
+            window.pollEvents();
+        }
     }
 
     public Window getWindow() {

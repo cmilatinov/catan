@@ -1,7 +1,7 @@
 package scene;
 
 import camera.Camera;
-import camera.CameraPan;
+import camera.CameraFPS;
 import entities.Entity;
 import entities.Table;
 import lights.Light;
@@ -12,7 +12,10 @@ import resources.Resource;
 import scripts.GameManager;
 import scripts.Tiles;
 import settings.SettingsManager;
-import ui.*;
+import ui.PlayerHandUI;
+import ui.PlayerUI;
+import ui.TradeMenuUI;
+import ui.UI;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,7 +26,7 @@ public class Game extends Scene {
 
     @Override
     public void initialize() {
-        Camera camera = new CameraPan(90f, getWindow())
+        Camera camera = new CameraFPS(90f, getWindow())
                 .setPosition(new Vector3f(0, 7f, 10))
                 .setRotation(new Vector3f(20, 0,0));
         setCamera(camera);

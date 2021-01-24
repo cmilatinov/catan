@@ -20,7 +20,7 @@ public class UIText extends UIComponent {
     public UIText(Font font, String text) {
         textPane = new JTextPane();
         textPane.setFont(font);
-        textPane.setEditorKit(new MyEditorKit());
+        textPane.setEditorKit(new VerticalCenterEditorKit());
         StyleConstants.setAlignment(attrs, StyleConstants.ALIGN_CENTER);
         StyledDocument doc = (StyledDocument) textPane.getDocument();
         textPane.setText(text);
@@ -84,7 +84,7 @@ public class UIText extends UIComponent {
 
 }
 
-class MyEditorKit extends StyledEditorKit {
+class VerticalCenterEditorKit extends StyledEditorKit {
 
     public ViewFactory getViewFactory() {
         return new StyledViewFactory();

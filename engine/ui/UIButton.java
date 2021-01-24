@@ -11,7 +11,7 @@ public class UIButton extends UIQuad {
 
     private Runnable onClick;
 
-    private final UIText text = new UIText(new Font("Arial", Font.BOLD, 35), "")
+    private final UIText textComponent = new UIText(new Font("Arial", Font.BOLD, 35), "")
             .setColor(UIColor.WHITE);
 
     private final UIQuad innerBox = new UIQuad();
@@ -21,17 +21,19 @@ public class UIButton extends UIQuad {
             .setWidth(new ParentMinusDiffConstraint(4))
             .setHeight(new ParentMinusDiffConstraint(4));
 
-    public UIButton() {
+    public UIButton(String text) {
         super.setColor(new UIColor(0.3f, 0.3f, 0.3f, 1.0f));
         setBorderRadius(5);
         setBorderWidth(2);
         add(innerBox, innerBoxConstraints);
 
         innerBox.setColor(new UIColor(0.6f, 0.6f, 0.6f, 1.0f));
-        innerBox.add(text, null);
+        innerBox.add(textComponent, null);
         innerBox.setInteractive(false);
 
-        text.setColor(UIColor.WHITE);
+        textComponent.setColor(UIColor.WHITE);
+        textComponent.setText(text);
+
     }
 
     public void onMouseEnter() {
@@ -68,17 +70,17 @@ public class UIButton extends UIQuad {
     }
 
     public UIButton setText(String text) {
-        this.text.setText(text);
+        textComponent.setText(text);
         return this;
     }
 
     public UIButton setFont(Font font) {
-        text.setFont(font);
+        textComponent.setFont(font);
         return this;
     }
 
     public UIButton setTextColor(UIColor color) {
-        this.text.setColor(color);
+        textComponent.setColor(color);
         return this;
     }
 

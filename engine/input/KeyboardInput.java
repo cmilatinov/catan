@@ -4,6 +4,7 @@ import display.Window;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -20,12 +21,12 @@ public class KeyboardInput implements GLFWKeyCallbackI {
     /**
      * Hash map containing bindings for key presses.
      */
-    private final HashMap<Integer, KeyActionCallback> keyPressed = new HashMap<Integer, KeyActionCallback>();
+    private final Map<Integer, KeyActionCallback> keyPressed = new HashMap<>();
 
     /**
      * Hash map containing bindings for key releases.
      */
-    private final HashMap<Integer, KeyActionCallback> keyReleased = new HashMap<Integer, KeyActionCallback>();
+    private final Map<Integer, KeyActionCallback> keyReleased = new HashMap<>();
 
     /**
      * Creates a new keyboard input object using the specified window as its parent.

@@ -10,8 +10,9 @@ public class TradingResourceButton extends UIButton {
     UIQuad portrait = new UIQuad();
     private final int offset;
 
-    public TradingResourceButton(int offset)
+    public TradingResourceButton(String text, int offset)
     {
+        super(text);
         this.offset = offset;
         // This UIQuad acts like the border
         this.setColor(new UIColor(0, 0, 0, 1));

@@ -338,12 +338,17 @@ public class Window implements FreeableObject {
     }
 
     /**
-     * Updates the window by swapping its draw buffers and polling any new events
-     * received.
+     * Updates the window by polling any new events received.
      */
-    public void update() {
+    public void pollEvents() {
+        glfwWaitEvents();
+    }
+
+    /**
+     * Swaps the window's buffers to show a new rendered frame.
+     */
+    public void swapBuffers() {
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
 }

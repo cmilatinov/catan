@@ -78,8 +78,7 @@ public class TradeMenu extends UIComponent {
                 .setWidth(new RelativeConstraint(0.20f));
     }
 
-    public void toggle()
-    {
+    public void toggle() {
         isActive = !isActive;
         ourPanel.setVisible(isActive);
         otherPanel.setVisible(isActive);

@@ -19,7 +19,7 @@ public class Main {
         sceneManager.registerScene(MainMenu.class);
         sceneManager.registerScene(Game.class);
 
-        engine.run();
+        engine.start();
     }
 
 }

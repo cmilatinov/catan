@@ -33,26 +33,25 @@ public class MainMenu extends Scene {
         container.add(buttonContainer, buttonContainerConstraints);
 
         // Setup constraints for the Load Game Button
-        UIButton loadGameButton = new UIButton()
+        UIButton loadGameButton = new UIButton("Load Game")
                 .setOnClick(() -> loadNewScene(Game.class));
         UIConstraints loadConstraints = new UIConstraints()
                 .setX(new CenterConstraint())
-                .setY(new PixelConstraint(0, DIRECTION_BOTTOM))
+                .setY(new PixelConstraint(120, DIRECTION_BOTTOM))
                 .setHeight(new PixelConstraint(80));
 
         // Register the Load Game button
-        loadGameButton.setText("Load Game");
         buttonContainer.add(loadGameButton, loadConstraints);
 
         // Setup constraints for Exit Button
-        UIButton exitGame = new UIButton()
+        UIButton exitGame = new UIButton("Exit Game")
                 .setOnClick(() -> getWindow().close());
         UIConstraints exitConstraints = new UIConstraints()
                 .setX(new CenterConstraint())
-                .setY(new PixelConstraint(120, DIRECTION_BOTTOM))
+                .setY(new PixelConstraint(0, DIRECTION_BOTTOM))
                 .setHeight(new PixelConstraint(80));
         // Register Exit button
-        exitGame.setText("Exit Game");
         buttonContainer.add(exitGame, exitConstraints);
     }
+
 }

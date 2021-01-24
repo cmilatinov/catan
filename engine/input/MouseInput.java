@@ -121,8 +121,11 @@ public class MouseInput {
             if (hwnd != window.getHandle())
                 return;
 
-            for (int callback : mouseCallbacks.keySet())
-                mouseCallbacks.get(callback).invoke(button, action, mods);
+            for (int callback : mouseCallbacks.keySet()) {
+                MouseClickCallback cb = mouseCallbacks.get(callback);
+                if (cb != null)
+                    cb.invoke(button, action, mods);
+            }
         }
 
     }

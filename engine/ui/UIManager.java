@@ -20,7 +20,8 @@ public class UIManager implements FreeableObject {
 
     private final int mouseMoveHandle;
 
-    UIComponent lastHoveredComponent = null;
+    private UIComponent lastHoveredComponent = null;
+    private boolean mouseEnterCalled = false;
 
     private float time = 0;
     private int fps = 0;
@@ -71,10 +72,13 @@ public class UIManager implements FreeableObject {
         UIComponent uiComponent = findUIComponentFromCoords((int) x, (int) y);
         if (lastHoveredComponent != null && lastHoveredComponent != uiComponent) {
             lastHoveredComponent.onMouseExit();
+            lastHoveredComponent = null;
+            mouseEnterCalled = false;
         }
-        if (uiComponent != null) {
+        if (!mouseEnterCalled && uiComponent != null) {
             uiComponent.onMouseEnter();
             lastHoveredComponent = uiComponent;
+            mouseEnterCalled = true;
         }
     }
 
