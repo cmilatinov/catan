@@ -1,6 +1,7 @@
 package ui;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import ui.animation.UIAnimationMetrics;
 import ui.animation.UIAnimator;
@@ -102,11 +103,12 @@ public class UIComponent {
         // Update this component's bounds if needed
         if (animator.hasAnimation()) {
             UIAnimationMetrics animMetrics = animator.getCurrentAnimationMetrics();
+            Vector2i center = new Vector2i(dimensions.getCenterX(), dimensions.getCenterY());
             dimensions
-                    .setX(dimensions.getX() + (int) animMetrics.x)
-                    .setY(dimensions.getY() + (int) animMetrics.y)
                     .setWidth((int) (dimensions.getWidth() * animMetrics.scale))
                     .setHeight((int) (dimensions.getHeight() * animMetrics.scale))
+                    .setX((int) animMetrics.x + center.x - dimensions.getWidth() / 2)
+                    .setY((int) animMetrics.y + center.y - dimensions.getHeight() / 2)
                     .setRotation(dimensions.getRotation() + animMetrics.rotation);
         }
 
@@ -118,7 +120,7 @@ public class UIComponent {
             if (child.getConstraints() != null)
                 child.getConstraints().computeDimensions(dimensions, child.dimensions);
 
-                // Otherwise, set the dimensions to be the same as those of the parent component
+            // Otherwise, set the dimensions to be the same as those of the parent component
             else
                 child.dimensions.set(dimensions);
 
@@ -131,11 +133,11 @@ public class UIComponent {
             child.sizeChanged = child.dimensions.getWidth() != child.lastDimensions.getWidth()
                     || child.dimensions.getHeight() != child.lastDimensions.getHeight();
 
-            // Update the children
-            child.update(delta);
-
             // Set last dimensions
             child.lastDimensions.set(child.dimensions);
+
+            // Update the children
+            child.update(delta);
 
         }
 

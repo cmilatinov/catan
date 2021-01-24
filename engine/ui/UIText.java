@@ -13,40 +13,39 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class UIText extends UIComponent {
 
-    private final SimpleAttributeSet attrs = new SimpleAttributeSet();
-    private final JTextPane textPane;
     boolean shouldUpdateImage = true;
 
+    private final SimpleAttributeSet attrs = new SimpleAttributeSet();
+    private final JTextPane textPane = new JTextPane();
+
     public UIText(Font font, String text) {
-        textPane = new JTextPane();
         textPane.setFont(font);
         textPane.setEditorKit(new VerticalCenterEditorKit());
         StyleConstants.setAlignment(attrs, StyleConstants.ALIGN_CENTER);
         StyledDocument doc = (StyledDocument) textPane.getDocument();
         textPane.setText(text);
         textPane.setBackground(new Color(0, 0, 0, 0));
-
         doc.setParagraphAttributes(0,doc.getLength() - 1, attrs, false);
         setInteractive(false);
     }
 
     public UIText setText(String text) {
-        this.textPane.setText(text);
+        textPane.setText(text);
         StyledDocument doc = (StyledDocument) textPane.getDocument();
         doc.setParagraphAttributes(0,doc.getLength() - 1, attrs, false);
-        this.shouldUpdateImage = true;
+        shouldUpdateImage = true;
         return this;
     }
 
     public UIText setFont(Font font) {
-        this.textPane.setFont(font);
-        this.shouldUpdateImage = true;
+        textPane.setFont(font);
+        shouldUpdateImage = true;
         return this;
     }
 
     public UIText setColor(UIColor color) {
-        this.textPane.setForeground(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
-        this.shouldUpdateImage = true;
+        textPane.setForeground(new Color(color.getR(), color.getG(), color.getB(), color.getA()));
+        shouldUpdateImage = true;
         return this;
     }
 
@@ -82,56 +81,47 @@ public class UIText extends UIComponent {
 
     }
 
-}
+    private static class VerticalCenterEditorKit extends StyledEditorKit {
 
-class VerticalCenterEditorKit extends StyledEditorKit {
+        public ViewFactory getViewFactory() {
+            return new StyledViewFactory();
+        }
 
-    public ViewFactory getViewFactory() {
-        return new StyledViewFactory();
-    }
+        private static class StyledViewFactory implements ViewFactory {
 
-    static class StyledViewFactory implements ViewFactory {
-
-        public View create(Element elem) {
-            String kind = elem.getName();
-            if (kind != null) {
-                if (kind.equals(AbstractDocument.ContentElementName)) {
-                    return new LabelView(elem);
-                } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
-                    return new ParagraphView(elem);
-                } else if (kind.equals(AbstractDocument.SectionElementName)) {
-                    return new CenteredBoxView(elem, View.Y_AXIS);
-                } else if (kind.equals(StyleConstants.ComponentElementName)) {
-                    return new ComponentView(elem);
-                } else if (kind.equals(StyleConstants.IconElementName)) {
-                    return new IconView(elem);
-                }
+            public View create(Element elem) {
+                String kind = elem.getName();
+                return switch (kind) {
+                    case AbstractDocument.ParagraphElementName -> new ParagraphView(elem);
+                    case AbstractDocument.SectionElementName -> new CenteredBoxView(elem, View.Y_AXIS);
+                    case StyleConstants.ComponentElementName -> new ComponentView(elem);
+                    case StyleConstants.IconElementName -> new IconView(elem);
+                    default -> new LabelView(elem);
+                };
             }
 
-            return new LabelView(elem);
         }
 
     }
-}
 
-class CenteredBoxView extends BoxView {
-    public CenteredBoxView(Element elem, int axis) {
+    private static class CenteredBoxView extends BoxView {
 
-        super(elem,axis);
-    }
-    protected void layoutMajorAxis(int targetSpan, int axis, int[] offsets, int[] spans) {
-
-        super.layoutMajorAxis(targetSpan,axis,offsets,spans);
-        int textBlockHeight = 0;
-        int offset = 0;
-
-        for (int span : spans) {
-            textBlockHeight = span;
+        public CenteredBoxView(Element elem, int axis) {
+            super(elem,axis);
         }
-        offset = (targetSpan - textBlockHeight) / 2;
-        for (int i = 0; i < offsets.length; i++) {
-            offsets[i] += offset;
+
+        protected void layoutMajorAxis(int targetSpan, int axis, int[] offsets, int[] spans) {
+            super.layoutMajorAxis(targetSpan, axis, offsets, spans);
+            int textBlockHeight = 0;
+
+            for (int span : spans)
+                textBlockHeight = span;
+
+            int offset = (targetSpan - textBlockHeight) / 2;
+            for (int i = 0; i < offsets.length; i++)
+                offsets[i] += offset;
         }
 
     }
+
 }

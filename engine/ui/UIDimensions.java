@@ -21,6 +21,18 @@ public class UIDimensions {
 	private float rotation = 0;
 	private int elevation = -1, elevationInParent = -1;
 
+	public UIDimensions() {}
+
+	public UIDimensions(UIDimensions src) {
+		this.width = src.width;
+		this.height = src.height;
+		this.x = src.x;
+		this.y = src.y;
+		this.rotation = src.rotation;
+		this.elevation = src.elevation;
+		this.elevationInParent = src.elevationInParent;
+	}
+
 	UIDimensions setWidth(int width) {
 		this.width = width;
 		return this;
