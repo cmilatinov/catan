@@ -2,6 +2,7 @@ package objects;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glDrawBuffers;
@@ -101,21 +102,42 @@ public class FBO implements FreeableObject {
 
 	}
 
+	/**
+	 * OpenGL's internal ID for the framebuffer object.
+	 */
 	private final int id;
+
+	/**
+	 * The width in pixels of the framebuffer.
+	 */
 	private final int width;
+
+	/**
+	 * The height in pixels of the framebuffer.
+	 */
 	private final int height;
+
+	/**
+	 * The number of samples for each pixel in the framebuffer.
+	 */
 	private final int samples;
 
-	private final ArrayList<Attachment> attachments = new ArrayList<Attachment>();
+	/**
+	 * The list of attachments for this framebuffer.
+	 */
+	private final List<Attachment> attachments = new ArrayList<>();
 
+	/**
+	 * Internal array of draw buffers to use when binding the FBO.
+	 */
 	private int[] drawBuffers;
 
 	/**
-	 * Creates an FBO with the given
-	 * @param id
-	 * @param width
-	 * @param height
-	 * @param samples
+	 * Creates an FBO with the given arguments.
+	 * @param id OpenGL's internal ID for the framebuffer object.
+	 * @param width The width in pixels of the framebuffer.
+	 * @param height The height in pixels of the framebuffer.
+	 * @param samples The number of samples for each pixel in the framebuffer.
 	 */
 	private FBO(int id, int width, int height, int samples) {
 		this.id = id;
@@ -149,7 +171,7 @@ public class FBO implements FreeableObject {
 	 * @return {@link FBO} This same instance of this class.
 	 */
 	public FBO bindAttachments() {
-		ArrayList<Integer> buffers = new ArrayList<Integer>();
+		ArrayList<Integer> buffers = new ArrayList<>();
 		for (Attachment a : attachments)
 			if (a.glAttachment >= GL_COLOR_ATTACHMENT0 && a.glAttachment <= GL_COLOR_ATTACHMENT31)
 				buffers.add(a.glAttachment);
@@ -198,7 +220,7 @@ public class FBO implements FreeableObject {
 	}
 
 	/**
-	 * Resolves this frambuffer's content onto a destination framebuffer.
+	 * Resolves this framebuffer's content onto a destination framebuffer.
 	 * 
 	 * @param dest          The destination framebuffer.
 	 * @param srcAttachment The source attachment from which to blit.
